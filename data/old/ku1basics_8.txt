@@ -1,0 +1,215 @@
+#?#box#calculatedX@65#calculatedY@60#children@45,1679375926472,1679467038402#name@0:seed#id@seed#parent@#x@52#y@48#tag@kubernetes
+kubernetes
+
+#?#box#calculatedX@70#calculatedY@150#children@#name@0:properties#id@45#parent@#x@56#y@120
+todo
+
+#?#box#calculatedX@291#calculatedY@150#children@1679375814785#name@1:ControlPlane#id@1679375926472#parent@#x@232#y@120
+--q--
+octopus
+what is control plane 
+bunch of server services running on one or more machines
+components
+kube-apiserver, kube-controller-manager, kube-scheduler, and etcd
+
+kube-apiserver is the --- for the Kubernetes API server.
+front end
+
+kube-controller-manager is a ?
+daemon that manages the Kubernetes control loop
+Logically, each controller is a ---, but to reduce complexity, they are all compiled into a single binary and run in a single process.
+separate process
+eg of few:
+--- : Responsible for noticing and responding when nodes go down.
+Node controller
+--- : Watches for Job objects that represent one-off tasks, then creates Pods to run those tasks to completion.
+Job controller
+
+kube-scheduler is a function that looks for --- that have no Nodes, and assigns them a Node based on a host of requirements
+newly created Pods
+
+---- is a highly available key-value store that provides the backend database for Kubernetes
+Etcd
+what is the use of Etcd
+stores and replicates the entirety of the Kubernetes cluster state.
+in what language is Etcd written 
+Its written in Go and uses the Raft protocol
+why Go and Raft protocol
+it maintains identical logs of state changing commands across nodes and coordinates the order in which these state changes occur.
+
+kubelet is reposible for 
+communication between the Kubernetes control plane and the Node; it manages the Pods and the containers running on a machine.
+
+#?#box#calculatedX@295#calculatedY@235#children@66#name@1:node#id@1679375814785#parent@#x@236#y@188
+--q--
+glassbox
+node is a 
+logical VM on which multiple pods run VK CARNATIC
+mandatory node components - 
+kube-proxy (Vasool raja mbbs crazy mohan proxy exam)- implementing part of the Kubernetes Service concept.
+Container runtime (whale)- interface with container technology such as docker 
+kubelet (icecube) - It makes sure that containers are running in a Pod.
+
+#?#box#calculatedX@295#calculatedY@285#children@1679466667599#name@1:pod#id@66#parent@#x@236#y@228
+--q--
+VK
+smallest kubernetes unit
+pod
+pod usually has one container running inside it but it can contain more SHIP CONTAINER ON VK SHOULDER
+eg two container in a pod is known as 
+side car pattern - second pod captures logs 
+
+#?#box#calculatedX@300#calculatedY@340#children@#name@0:properties#id@1679466667599#parent@#x@240#y@272
+--q--
+pod is an abstraction over 
+container 
+why it is abstracted because if not docker we can use some other container
+pod keeps crashing EXPLOSIONS IN GLASSBOX so it cant have 
+permanent ip address
+___ provides permanent ip address
+SERVICES
+pods communicate with each other using services
+
+#?#box#calculatedX@531#calculatedY@145#children@1681808561331,1681808586243,1681808607412,1681808629487,1681808647862#name@2:services#id@1679467038402#parent@#x@424#y@116
+--q--
+service
+The idea of a Service is to group a set of Pod endpoints into a single resource
+A client sends a request to the stable IP address, and the request is routed to one of the Pods in the Service.
+
+#?#box#calculatedX@532#calculatedY@206#children@1681808765388#name@1:ClusterIP(default)#id@1681808561331#parent@#x@425#y@164
+Internal clients send requests to a stable internal IP address
+
+#?#box#calculatedX@535#calculatedY@275#children@#name@1:manifest#id@1681808765388#parent@#x@428#y@220
+--q--
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-cip-service
+spec:
+  selector:
+    app: metrics
+    department: sales
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+view ip address of clusterIP
+kubectl get service
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)
+my-cip-service   ClusterIP   10.11.247.213   none          80/TCP
+
+#?#box#calculatedX@660#calculatedY@202#children@1681809835565,1681809880031,1681809972394#name@2:NodePort#id@1681808586243#parent@#x@528#y@161
+Clients send requests to the IP address of a node on one or more nodePort values that are specified by the Service.
+
+#?#box#calculatedX@664#calculatedY@278#children@#name@0:properties#id@1681809835565#parent@#x@531#y@222
+--q--
+The NodePort Service type is an extension of the ClusterIP Service type
+You can specify your own nodePort value in the 30000--32767 range. However, it's best to omit the field and let Kubernetes allocate a nodePort for you. This avoids collisions between Services.
+
+#?#box#calculatedX@663#calculatedY@329#children@#name@1:manifest#id@1681809880031#parent@#x@530#y@263
+--q--
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-np-service
+spec:
+  selector:
+    app: products
+    department: sales
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+see what is created
+kubectl get service -o yaml
+spec:
+  clusterIP: 10.11.254.114
+  externalTrafficPolicy: Cluster
+  ports:
+  - nodePort: 32675
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+
+#?#box#calculatedX@666#calculatedY@378#children@#name@2:howToCall#id@1681809972394#parent@#x@532#y@302
+--q--
+how external client calls node port 
+203.0.113.2(example) on TCP port 32675(nodePort)
+The request is forwarded to one of the member Pods on TCP port 8080(targetPort)
+
+internal clients have two ways to call the Service:
+Use clusterIP and port.
+Use a node's IP address and nodePort.
+
+#?#box#calculatedX@781#calculatedY@205#children@1681810812353,1681810862261#name@3:LoadBalancer#id@1681808607412#parent@#x@624#y@164
+--q--
+Clients send requests to the IP address of a network load balancer.
+
+#?#box#calculatedX@783#calculatedY@285#children@#name@0:properties#id@1681810812353#parent@#x@626#y@228
+typically used with ingress , its a wider topic need more analysis
+
+#?#box#calculatedX@782#calculatedY@348#children@#name@1:manifest#id@1681810862261#parent@#x@625#y@278
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-tp-service
+spec:
+  clusterIP: 10.11.242.196
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: my-first-service-port
+    nodePort: 31233
+    port: 60000
+    protocol: TCP
+    targetPort: 50000
+  - name: my-second-service-port
+    nodePort: 31081
+    port: 60001
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: tests
+    department: engineering
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer:
+    ingress:
+    - ip: 203.0.113.201
+	
+	
+if a client calls the Service at 203.0.113.201 on TCP port 60000, the request is forwarded to a member Pod on TCP port 50000. But if a client calls the Service at 203.0.113.201 on TCP port 60001, the request is forwarded to a member Pod on TCP port 8080.
+
+#?#box#calculatedX@900#calculatedY@206#children@1681810681994,1681810603179#name@4:ExternalName#id@1681808629487#parent@#x@720#y@164
+--q--
+Internal clients use the DNS name of a Service as an alias for an external DNS name
+
+#?#box#calculatedX@903#calculatedY@262#children@#name@0:properties#id@1681810681994#parent@#x@722#y@209
+--q--
+Though a Service of type ExternalName does not fit the definition of Service
+ExternalName is not associated with a set of Pods
+does not have a stable IP address
+it is just a mapping from an internal DNS name to an external DNS name.
+
+#?#box#calculatedX@906#calculatedY@324#children@#name@1:manifest#id@1681810603179#parent@#x@724#y@259
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-xn-service
+spec:
+  type: ExternalName
+  externalName: example.com
+  
+For the preceding example, the DNS name is my-xn-service.default.svc.cluster.local. When an internal client makes a request to my-xn-service.default.svc.cluster.local, the request gets redirected to example.com.
+
+#?#box#calculatedX@1011#calculatedY@206#children@#name@5:Headless#id@1681808647862#parent@#x@808#y@164
+--q--
+You can use a headless service when you want a Pod grouping, but don't need a stable IP address.
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node
+

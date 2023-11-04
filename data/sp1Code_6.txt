@@ -1,0 +1,654 @@
+#?#box#calculatedX@-342#calculatedY@-50#children@45,1682351746408,1680960041975,1680961042136,1680971872429,1682354751121#name@0:seed#id@seed#parent@#x@66#y@60#tag@sp1code
+sp1code
+
+#?#box#calculatedX@-330#calculatedY@22#children@66,1680957096037,1680957448228#name@1:schema#id@45#parent@#x@76#y@117#tag@schema#t_color@red
+schema
+
+#?#box#calculatedX@-322#calculatedY@95#children@#name@0:properties#id@1680957096037#parent@#x@82#y@176#t_color@red
+why define schema 
+spark need not infer
+spark need not read a chunk of file to infer 
+detect errors early
+define schema upfront for large files
+
+#?#box#calculatedX@-198#calculatedY@95#children@#name@1:showschema#id@66#parent@#x@181#y@176
+df.printSchema() - pretty print 
+df.schema() - programmatic print , can be reused
+
+#?#box#calculatedX@-65#calculatedY@86#children@1680957493676,1680957666397,1680957845412#name@2:defineSchema#id@1680957448228#parent@#x@288#y@168
+two ways
+1 programmatically
+2 Data Definition Language (DDL) string
+
+#?#box#calculatedX@-58#calculatedY@166#children@#name@1:Programmatic#id@1680957493676#parent@#x@293#y@232
+---programmatically
+// In Scala
+import org.apache.spark.sql.types._
+val schema = StructType(Array(StructField("author", StringType, false),
+StructField("title", StringType, false),
+StructField("pages", IntegerType, false)))
+# In Python
+from pyspark.sql.types import *
+schema = StructType([StructField("author", StringType(), False),
+StructField("title", StringType(), False),
+StructField("pages", IntegerType(), False)])
+
+StructField - name , type , nullable , metadata
+Spark uses metadata in its machine learning library
+//scala
+import org.apache.spark.sql.types.{StructField, StructType, StringType, LongType}
+StructField("count", LongType, false,Metadata.fromJson("{\"hello\":\"world\"}"))
+
+Schemas can contain other StructTypes (Sparks complex types)
+
+#?#box#calculatedX@62#calculatedY@162#children@#name@2:DDL#id@1680957666397#parent@#x@389#y@229
+DDL
+// In Scala
+val schema = "author STRING, title STRING, pages INT"
+# In Python
+schema = "author STRING, title STRING, pages INT"
+
+#?#box#calculatedX@182#calculatedY@170#children@#name@3:useSchema#id@1680957845412#parent@#x@485#y@236
+val blogsDF = spark.read.schema(schema).json(jsonFile)
+example
+data = ["Jules", "Damji", 1],[...]]
+blogs_df = spark.createDataFrame(data, schema)
+
+#?#box#calculatedX@-22#calculatedY@-34#children@1682351773308#name@1.1:start#id@1682351746408#parent@#x@322#y@72
+start
+
+#?#box#calculatedX@38#calculatedY@15#children@#d_visibility@hidden#name@1:sparkSession#id@1682351773308#parent@#x@370#y@112
+// Creating a SparkSession in Scala
+import org.apache.spark.sql.SparkSession
+val spark = SparkSession.builder().appName("Databricks Spark Example")
+.config("spark.sql.warehouse.dir", "/user/hive/warehouse")
+.getOrCreate()
+# Creating a SparkSession in Python
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.master("local").appName("Word Count")\
+.config("spark.some.config.option", "some-value")\
+.getOrCreate()
+
+#?#box#calculatedX@-318#calculatedY@278#children@1680960103320,1680960452448,1680960578496#name@2:columns#id@1680960041975#parent@#x@85#y@322#tag@columns
+columns
+
+#?#box#calculatedX@-314#calculatedY@342#children@#name@0:properties#id@1680960103320#parent@#x@88#y@373
+content
+
+#?#box#calculatedX@-194#calculatedY@342#children@#name@1:referColumn#id@1680960452448#parent@#x@184#y@373
+// in Scala
+import org.apache.spark.sql.functions.{col, column}
+# in Python
+from pyspark.sql.functions import col, column
+col("someColumnName")
+column("someColumnName")
+
+// only in scala
+$"myColumn"
+'myColumn
+
+//refer to a specific DataFrames column
+df.col("count")
+
+//columns are expressions
+expr("someCol") same as col("someCol")
+expr("someCol - 5"), col("someCol") - 5 , expr("someCol") - 5 are same 
+
+example 
+// in Scala
+import org.apache.spark.sql.functions.expr
+# in Python
+from pyspark.sql.functions import expr
+expr("(((someCol + 5) * 200) - 6) < otherCol")
+
+#?#box#calculatedX@-70#calculatedY@346#children@#name@2:printColumns#id@1680960578496#parent@#x@284#y@376
+1 use schema print
+2 programmatic access - df.columns 
+spark.catalog.listColumns("us_delay_flights_tbl")
+
+#?#box#calculatedX@122#calculatedY@330#children@1680961120775,1680961286163,1680961531718#name@3:Rows#id@1680961042136#parent@#x@437#y@364
+rows
+
+#?#box#calculatedX@130#calculatedY@390#children@#name@0:properties#id@1680961120775#parent@#x@444#y@412
+Row objects internally represent arrays of bytes
+each row in a DataFrame is a single record
+
+#?#box#calculatedX@266#calculatedY@395#children@1680961351483#name@1:createRow#id@1680961286163#parent@#x@552#y@416
+# in Python
+from pyspark.sql import Row
+myRow = Row("Hello", None, 1, False)
+// in Scala
+import org.apache.spark.sql.Row
+val myRow = Row("Hello", null, 1, false)
+
+#?#box#calculatedX@282#calculatedY@510#children@#name@1:createDFFromRow#id@1680961351483#parent@#x@565#y@508
+# In Python
+rows = [Row("Matei Zaharia", "CA"), Row("Reynold Xin", "CA")]
+authors_df = spark.createDataFrame(rows, ["Authors", "State"])
+--they didnt even mention row here 
+spark.createDataFrame([("Brooke", 20), ("Denny", 31), ("Jules", 30),("TD", 35), ("Brooke", 25)], ["name", "age"])
+// In Scala
+val rows = Seq(("Matei Zaharia", "CA"), ("Reynold Xin", "CA"))
+val authorsDF = rows.toDF("Author", "State") or spark.createDataFrame(rows, myManualSchema))
+note!!!!!toDF works only in scala and does not work well with null use createDataFrame instead
+--they didnt even mention row here 
+spark.createDataFrame(Seq(("Brooke", 20), ("Brooke", 25),("Denny", 31), ("Jules", 30), ("TD", 35))).toDF("name", "age")
+
+#?#box#calculatedX@386#calculatedY@398#children@#name@2:accessRowCol#id@1680961531718#parent@#x@648#y@418
+// in Scala
+myRow(0) // type Any
+myRow(0).asInstanceOf[String] // String
+myRow.getString(0) // String
+myRow.getInt(2) // Int
+# in Python
+myRow[0]
+myRow[2]
+
+#?#box#calculatedX@558#calculatedY@370#children@1680972113830,1681044570793,1681044806954,1681045136704,1681045246432,1681045398064,1681046870296,1681047133288,1681717160565,1681717339072#name@4:DataFrameOperations#id@1680971872429#parent@#x@786#y@396#tag@dataframe
+DFoperation
+
+#?#box#calculatedX@566#calculatedY@430#children@1680972143683,1680972350291,1680972502866,1680973276310,1680973577219,1680973637171,1680973715231#name@1:columnManipulation#id@1680972113830#parent@#x@792#y@444
+columnManipulation
+
+#?#box#calculatedX@642#calculatedY@515#children@#name@1:select#id@1680972143683#parent@#x@853#y@512
+select
+
+// in Scala
+df.select("DEST_COUNTRY_NAME", "ORIGIN_COUNTRY_NAME").show(2)
+# in Python
+df.select("DEST_COUNTRY_NAME", "ORIGIN_COUNTRY_NAME").show(2)
+-- in SQL
+SELECT DEST_COUNTRY_NAME, ORIGIN_COUNTRY_NAME FROM dfTable LIMIT 2
+
+different types of col in select 
+// in Scala
+import org.apache.spark.sql.functions.{expr, col, column}
+df.select(
+df.col("DEST_COUNTRY_NAME"),
+col("DEST_COUNTRY_NAME"),
+column("DEST_COUNTRY_NAME"),
+'DEST_COUNTRY_NAME,
+$"DEST_COUNTRY_NAME",
+expr("DEST_COUNTRY_NAME"))
+.show(2)
+# in Python
+from pyspark.sql.functions import expr, col, column
+df.select(
+expr("DEST_COUNTRY_NAME"),
+col("DEST_COUNTRY_NAME"),
+column("DEST_COUNTRY_NAME"))\
+.show(2)
+
+---mixture of string and col is not allowed 
+df.select(col("DEST_COUNTRY_NAME"), "DEST_COUNTRY_NAME")
+
+#?#box#calculatedX@782#calculatedY@518#children@#name@2:alias#id@1680972350291#parent@#x@965#y@514
+// in Scala
+df.select(expr("DEST_COUNTRY_NAME AS destination")).show(2)
+# in Python
+df.select(expr("DEST_COUNTRY_NAME AS destination")).show(2)
+-- in SQL
+SELECT DEST_COUNTRY_NAME as destination FROM dfTable LIMIT 2
+
+// in Scala --change it to alias and back to original
+----select followed by a series of expr is such a common pattern so short cut is selectExpr
+df.select(expr("DEST_COUNTRY_NAME as destination").alias("DEST_COUNTRY_NAME")).show(2)
+
+// in Scala
+df.selectExpr("DEST_COUNTRY_NAME as newColumnName", "DEST_COUNTRY_NAME").show(2)
+# in Python
+df.selectExpr("DEST_COUNTRY_NAME as newColumnName", "DEST_COUNTRY_NAME").show(2)
+
+#?#box#calculatedX@902#calculatedY@518#children@1680972767483,1680972935251,1680972973402#name@3:addColumn#id@1680972502866#parent@#x@1061#y@514
+addColumn
+
+#?#box#calculatedX@910#calculatedY@610#children@#name@1:addConstant#id@1680972767483#parent@#x@1068#y@588
+--with column
+// in Scala
+df.withColumn("numberOne", lit(1)).show(2)
+# in Python
+df.withColumn("numberOne", lit(1)).show(2)
+
+--using select 
+// in Scala
+import org.apache.spark.sql.functions.lit
+df.select(expr("*"), lit(1).as("One")).show(2)
+# in Python
+from pyspark.sql.functions import lit
+df.select(expr("*"), lit(1).alias("One")).show(2)
+
+-- in SQL
+SELECT *, 1 as One FROM dfTable LIMIT 2
+
+#?#box#calculatedX@1035#calculatedY@615#children@#name@2:withColumn#id@1680972935251#parent@#x@1168#y@592
+// in Scala
+df.withColumn("withinCountry", expr("ORIGIN_COUNTRY_NAME == DEST_COUNTRY_NAME"))
+.show(2)
+# in Python
+df.withColumn("withinCountry", expr("ORIGIN_COUNTRY_NAME == DEST_COUNTRY_NAME"))\
+.show(2)
+// in Scala
+df.withColumnRenamed("DEST_COUNTRY_NAME", "dest").columns
+# in Python
+df.withColumnRenamed("DEST_COUNTRY_NAME", "dest").columns
+
+#?#box#calculatedX@1155#calculatedY@615#children@#name@3:selectExpr#id@1680972973402#parent@#x@1264#y@592
+// in Scala
+df.selectExpr(
+"*", // include all original columns
+"(DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME) as withinCountry")
+.show(2)
+# in Python
+df.selectExpr(
+"*", # all original columns
+"(DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME) as withinCountry")\
+.show(2)
+
+-- in SQL
+SELECT *, (DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME) as withinCountry
+FROM dfTable
+LIMIT 2
+
+#?#box#calculatedX@1070#calculatedY@535#children@#name@4:renameColumn#id@1680973276310#parent@#x@1196#y@528
+Use With or SQL or select alias
+check add column
+
+#?#box#calculatedX@1210#calculatedY@530#children@#name@5:specialCharacters#id@1680973577219#parent@#x@1308#y@524
+first parameter is a string , so no need for escaping 
+val dfWithLongColName = df.withColumn("This Long Column-Name",expr("ORIGIN_COUNTRY_NAME"))
+
+parameter is a string , so no need for escaping 
+dfWithLongColName.select(col("This Long Column-Name")).columns
+
+parameters are expressions so need escapign 
+dfWithLongColName.selectExpr("`This Long Column-Name`","`This Long Column-Name` as `new col`").show(2)
+-- in SQL
+SELECT `This Long Column-Name`, `This Long Column-Name` as `new col` FROM dfTableLong LIMIT 2
+
+By default Spark is case insensitive 
+to change do 
+set spark.sql.caseSensitive true
+
+#?#box#calculatedX@1335#calculatedY@530#children@#name@6:removeColumn#id@1680973637171#parent@#x@1408#y@524
+df.drop("ORIGIN_COUNTRY_NAME").columns
+remove multiple columns
+dfWithLongColName.drop("ORIGIN_COUNTRY_NAME", "DEST_COUNTRY_NAME")
+
+#?#box#calculatedX@1466#calculatedY@530#children@#name@7:typeCast#id@1680973715231#parent@#x@1512#y@524
+df.withColumn("count2", col("count").cast("long"))
+-- in SQL
+SELECT *, cast(count as long) AS count2 FROM dfTable
+
+#?#box#calculatedX@570#calculatedY@682#children@#name@2:Filter#id@1681044570793#parent@#x@796#y@645
+if you put multiple filters into the same expression
+it is not always useful
+Spark automatically performs all filtering operations at the same time
+regardless of the filter ordering.
+
+In Scala, you must use the =!= operator
+
+for null safety use eqNullSafe
+
+--basic
+df.filter(col("count") < 2).show(2)
+df.where("count < 2").show(2)
+-- in SQL
+SELECT * FROM dfTable WHERE count < 2 LIMIT 2
+
+--and multiple where basically means AND
+// in Scala
+df.where(col("count") < 2).where(col("ORIGIN_COUNTRY_NAME") =!= "Croatia")
+.show(2)
+# in Python
+df.where(col("count") < 2).where(col("ORIGIN_COUNTRY_NAME") != "Croatia")\
+.show(2)
+-- in SQL
+SELECT * FROM dfTable WHERE count < 2 AND ORIGIN_COUNTRY_NAME != "Croatia"
+LIMIT 2
+
+
+EXPRESS PREDICATE AS STRING - APPLICABLE FOR PYTHON AND SCALA 
+df.where("InvoiceNo = 536365")
+.show(5, false)
+df.where("InvoiceNo <> 536365")
+.show(5, false)
+
+STORE FILTER IN A VARIABLE AND USE IT , ALSO SEE OR CONDITION USAGE
+// in Scala
+val priceFilter = col("UnitPrice") > 600
+val descripFilter = col("Description").contains("POSTAGE")
+df.where(col("StockCode").isin("DOT")).where(priceFilter.or(descripFilter))
+.show()
+# in Python
+from pyspark.sql.functions import instr
+priceFilter = col("UnitPrice") > 600
+descripFilter = instr(df.Description, "POSTAGE") >= 1
+df.where(df.StockCode.isin("DOT")).where(priceFilter | descripFilter).show()
+-- in SQL
+SELECT * FROM dfTable WHERE StockCode in ("DOT") AND(UnitPrice > 600 OR
+instr(Description, "POSTAGE") >= 1)
+
+use PREDICATE AS A COLUMN , NOTICE USAGE OF AND AS WELL AS OR 
+// in Scala
+val DOTCodeFilter = col("StockCode") === "DOT"
+val priceFilter = col("UnitPrice") > 600
+val descripFilter = col("Description").contains("POSTAGE")
+df.withColumn("isExpensive", DOTCodeFilter.and(priceFilter.or(descripFilter)))
+.where("isExpensive")
+.select("unitPrice", "isExpensive").show(5)
+# in Python
+from pyspark.sql.functions import instr
+DOTCodeFilter = col("StockCode") == "DOT"
+priceFilter = col("UnitPrice") > 600
+descripFilter = instr(col("Description"), "POSTAGE") >= 1
+df.withColumn("isExpensive", DOTCodeFilter & (priceFilter | descripFilter))\
+.where("isExpensive")\
+.select("unitPrice", "isExpensive").show(5)
+
+NULL SAFE BOOLEAN TEST 
+df.where(col("Description").eqNullSafe("hello")).show()
+
+AND FILTER CAN BE SEPARATED FOR EASIER READ 
+or statements need to be specified in the same statement
+
+#?#box#calculatedX@715#calculatedY@686#children@#name@3:Distinct#id@1681044806954#parent@#x@912#y@648
+// in Scala
+df.select("ORIGIN_COUNTRY_NAME", "DEST_COUNTRY_NAME").distinct().count()
+# in Python
+df.select("ORIGIN_COUNTRY_NAME", "DEST_COUNTRY_NAME").distinct().count()
+-- in SQL
+SELECT COUNT(DISTINCT(ORIGIN_COUNTRY_NAME, DEST_COUNTRY_NAME)) FROM dfTable
+
+#?#box#calculatedX@842#calculatedY@686#children@#name@4:union#id@1681045136704#parent@#x@1013#y@648
+To union two DataFrames, you must be sure that they have the same schema and number of columns
+Unions are currently performed based on location, not on the schema. This means that columns will not automatically line
+up the way you think they might
+
+df.union(newDF)
+.where("count = 1")
+.where($"ORIGIN_COUNTRY_NAME" =!= "United States")
+.show() // get all of them and we'll see our new rows at the end
+
+#?#box#calculatedX@978#calculatedY@682#children@#name@5:sort#id@1681045246432#parent@#x@1122#y@645
+two equivalent operations to do this sort and orderBy that work the exact same way.
+
+// in Scala
+df.sort("count").show(5)
+df.orderBy("count", "DEST_COUNTRY_NAME").show(5)
+df.orderBy(col("count"), col("DEST_COUNTRY_NAME")).show(5)
+# in Python
+df.sort("count").show(5)
+df.orderBy("count", "DEST_COUNTRY_NAME").show(5)
+df.orderBy(col("count"), col("DEST_COUNTRY_NAME")).show(5)
+
+
+--explicit direction of sort
+// in Scala
+import org.apache.spark.sql.functions.{desc, asc}
+df.orderBy(expr("count desc")).show(2)
+df.orderBy(desc("count"), asc("DEST_COUNTRY_NAME")).show(2)
+# in Python
+from pyspark.sql.functions import desc, asc
+df.orderBy(expr("count desc")).show(2)
+df.orderBy(col("count").desc(), col("DEST_COUNTRY_NAME").asc()).show(2)
+-- in SQL
+SELECT * FROM dfTable ORDER BY count DESC, DEST_COUNTRY_NAME ASC LIMIT 2
+
+An advanced tip is to use asc_nulls_first, desc_nulls_first, asc_nulls_last, or desc_nulls_last to specify where you would like your null values to appear in an ordered DataFrame.
+
+#?#box#calculatedX@1095#calculatedY@682#children@#name@6:limit#id@1681045398064#parent@#x@1216#y@645
+df.limit(5)
+
+#?#box#calculatedX@570#calculatedY@782#children@1681046911517,1681046946021,1681046968245#name@7:changePartition#id@1681046870296#parent@#x@796#y@725
+ change parition in node
+
+#?#box#calculatedX@582#calculatedY@875#children@#name@1:repartition#id@1681046911517#parent@#x@805#y@800
+repartition
+Always triggers a full shuffle 
+Good when increasing number of partition
+if round robin , equal sized paritions 
+if hash based on column, depends on data distribution . 
+
+// in Scala
+df.rdd.getNumPartitions // 1
+# in Python
+df.rdd.getNumPartitions() # 1
+// in Scala
+df.repartition(5)
+# in Python
+df.repartition(5)
+
+--hash parition default value of spark 200
+// in Scala
+df.repartition(col("DEST_COUNTRY_NAME"))
+# in Python
+df.repartition(col("DEST_COUNTRY_NAME"))
+
+--hash parition default value of spark 5
+// in Scala
+df.repartition(5, col("DEST_COUNTRY_NAME"))
+# in Python
+df.repartition(5, col("DEST_COUNTRY_NAME"))
+
+#?#box#calculatedX@702#calculatedY@875#children@#name@2:coalesce#id@1681046946021#parent@#x@901#y@800
+coalesce 
+for deacreasing number of paritions
+partitions : A , B , C - coalesce(2) A+B , C - only B moves so it avoids full shuffle 
+// in Scala
+df.repartition(5, col("DEST_COUNTRY_NAME")).coalesce(2)
+# in Python
+df.repartition(5, col("DEST_COUNTRY_NAME")).coalesce(2)
+
+#?#box#calculatedX@818#calculatedY@870#children@#name@3:partitionBy#id@1681046968245#parent@#x@994#y@796
+partition by 
+df.write.partitionBy(Col)
+existing partition * Unique COl values 
+10 partition * VIBGYOR present in all 10 partition - 10 * 7 = 70 
+10 parition * V in p1 , I in p2 so on - 10 * 1 = 10
+
+#?#box#calculatedX@962#calculatedY@778#children@#name@8:collectDataToDriver#id@1681047133288#parent@#x@1109#y@722
+// in Scala
+val collectDF = df.limit(10)
+collectDF.take(5) // take works with an Integer count
+collectDF.show() // this prints it out nicely
+collectDF.show(5, false)
+collectDF.collect()
+# in Python
+collectDF = df.limit(10)
+collectDF.take(5) # take works with an Integer count
+collectDF.show() # this prints it out nicely
+collectDF.show(5, False)
+collectDF.collect()
+
+collectDF.toLocalIterator() -collects partitions as iterator
+allows you to iterate over the entire dataset partition-by-partition in a serial manner
+
+#?#box#calculatedX@1090#calculatedY@778#children@#name@9:ViewPhysicalPlan#id@1681717160565#parent@#x@1212#y@722
+In Spark 3.0, you can use ___ to display a readable and digestible output.
+joinedDF.explain('mode')
+The modes include 
+'simple', 'extended', 'codegen', 'cost', and 'formatted'.
+
+#?#box#calculatedX@578#calculatedY@982#children@1681717393360#name@10:join#id@1681717339072#parent@#x@802#y@885
+join
+
+#?#box#calculatedX@582#calculatedY@1046#children@#name@1:broadcastHashJoin#id@1681717393360#parent@#x@805#y@936
+// In Scala
+import org.apache.spark.sql.functions.broadcast
+val joinedDF = playersDF.join(broadcast(clubsDF), "key1 === key2")
+
+#?#box#calculatedX@415#calculatedY@-5#children@1682351996063,1682354930334,1682355470173,1682355539084#name@5:SQLoperations#id@1682354751121#parent@#x@672#y@96
+sqloperations
+
+#?#box#calculatedX@550#calculatedY@26#children@1682352260216,1682352322759,1682352799303,1682353175166,1682353292787,1682354117638,1682354181479#name@1:table#id@1682351996063#parent@#x@780#y@120
+table
+
+#?#box#calculatedX@558#calculatedY@82#children@#name@1:start#id@1682352260216#parent@#x@786#y@165
+--start interactive session
+./bin/spark-sql
+can also interact using odbc/jdbc thrift server 
+jdbc is available with beeline - hive command line
+
+--REGISTER AS A VIEW TO OPERATE
+// in Scala
+spark.read.json("/data/flight-data/json/2015-summary.json")
+.createOrReplaceTempView("some_sql_view") // DF => SQL
+spark.sql("""
+SELECT DEST_COUNTRY_NAME, sum(count)
+FROM some_sql_view GROUP BY DEST_COUNTRY_NAME
+""")
+.where("DEST_COUNTRY_NAME like 'S%'").where("`sum(count)` > 10")
+.count() // SQL => DF
+
+#?#box#calculatedX@662#calculatedY@78#children@1682352420603#name@2:createTableUsing#id@1682352322759#parent@#x@869#y@162
+CREATE TABLE flights (
+DEST_COUNTRY_NAME STRING, ORIGIN_COUNTRY_NAME STRING, count LONG)
+USING JSON OPTIONS (path '/data/flight-data/json/2015-summary.json')
+
+csv with comments
+CREATE TABLE flights_csv (
+DEST_COUNTRY_NAME STRING,
+ORIGIN_COUNTRY_NAME STRING COMMENT "remember, the US will be most prevalent",
+count LONG)
+USING csv OPTIONS (header true, path '/data/flight-data/csv/2015-summary.csv')
+
+create from query
+CREATE TABLE flights_from_select USING parquet AS SELECT * FROM flights
+
+create if not exists , !!ALSO NOTE no "USING" so its HIVE compatible table
+CREATE TABLE IF NOT EXISTS flights_from_select
+AS SELECT * FROM flights
+
+#?#box#calculatedX@666#calculatedY@122#children@#name@98:gotcha#id@1682352420603#parent@#x@872#y@197
+USING is of significant importance. 
+If you do not specify the format, Spark will default to a Hive SerDe configuration. 
+This has performance
+implications for future readers and writers because Hive SerDes are much slower than Sparks
+native serialization. 
+
+Hive users can also use the STORED AS syntax to specify that this should be a
+Hive table
+
+#?#box#calculatedX@762#calculatedY@75#children@1682353011199#name@3:createExternalTable#id@1682352799303#parent@#x@949#y@160
+CREATE TABLE flights (
+DEST_COUNTRY_NAME STRING, ORIGIN_COUNTRY_NAME STRING, count LONG)
+USING JSON OPTIONS (path '/data/flight-data/json/2015-summary.json')
+
+csv with comments
+CREATE TABLE flights_csv (
+DEST_COUNTRY_NAME STRING,
+ORIGIN_COUNTRY_NAME STRING COMMENT "remember, the US will be most prevalent",
+count LONG)
+USING csv OPTIONS (header true, path '/data/flight-data/csv/2015-summary.csv')
+
+create from query
+CREATE TABLE flights_from_select USING parquet AS SELECT * FROM flights
+
+create if not exists , !!ALSO NOTE no "USING" so its HIVE compatible table
+CREATE TABLE IF NOT EXISTS flights_from_select
+AS SELECT * FROM flights
+
+
+csv_file = "/databricks-datasets/learning-spark-v2/flights/departuredelays.csv"
+schema="date STRING, delay INT, distance INT, origin STRING, destination STRING"
+flights_df = spark.read.csv(csv_file, schema=schema)
+flights_df.write.saveAsTable("managed_us_delay_flights_tbl")
+
+#?#box#calculatedX@770#calculatedY@130#children@#name@98:gotcha#id@1682353011199#parent@#x@956#y@204
+create table with location or path is equivalent to CREATE EXTERNAL TABLE
+
+#?#box#calculatedX@875#calculatedY@75#children@1682353762774#name@4:tableToDataframe#id@1682353175166#parent@#x@1040#y@160
+1: val usFlightsDF = spark.sql("SELECT * FROM us_delay_flights_tbl")
+2: val usFlightsDF2 = spark.table("us_delay_flights_tbl")
+
+us_delay_flights_tbl.. is table
+spark.table converts it to dataframe
+
+#?#box#calculatedX@875#calculatedY@130#children@#name@98:gotcha#id@1682353762774#parent@#x@1040#y@204
+spark.read.table points to spark.table so they are same
+spark.table is available in spark session
+spark.read.table is available in dataframereader
+
+#?#box#calculatedX@975#calculatedY@75#children@#name@5:getTableMetadata#id@1682353292787#parent@#x@1120#y@160
+spark.catalog.listDatabases()
+spark.catalog.listTables()
+spark.catalog.listColumns("us_delay_flights_tbl")
+
+DESCRIBE TABLE flights_csv
+SHOW PARTITIONS partitioned_flights
+refresh metadata -> REFRESH table partitioned_flights
+refresh partition information -> MSCK REPAIR TABLE partitioned_flights
+
+#?#box#calculatedX@1070#calculatedY@70#children@#name@6:dropTable#id@1682354117638#parent@#x@1196#y@156
+DROP TABLE flights_csv
+DROP TABLE IF EXISTS flights_csv;
+if its unmanaged table it will drop just reference and not data
+
+#?#box#calculatedX@1166#calculatedY@66#children@#name@7:cachetable#id@1682354181479#parent@#x@1272#y@152
+CACHE [LAZY] TABLE flights
+UNCACHE TABLE FLIGHTS
+lazy 3.0 feature,created when first used
+
+#?#box#calculatedX@555#calculatedY@198#children@1682355313713#name@2:view#id@1682354930334#parent@#x@784#y@258
+view
+
+#?#box#calculatedX@570#calculatedY@242#children@#name@1:createDropViews#id@1682355313713#parent@#x@796#y@293
+A view is effectively a transformation and Spark will perform it only at query time
+
+df.createOrReplaceTempView("us_origin_airport_JFK_tmp_view")
+df.createOrReplaceTempView("us_delay_flights_tbl")
+
+global temp view
+!!!Spark creates global temporary views in a global temporary database called  global_temp
+   use the prefix global_temp.<view_name>
+df_jfk = spark.sql("SELECT date, delay, origin, destination FROM us_delay_flights_tbl WHERE origin = 'JFK'")
+df_sfo.createOrReplaceGlobalTempView("us_origin_airport_SFO_global_tmp_view")
+
+
+CREATE OR REPLACE TEMP VIEW just_usa_view_temp AS
+SELECT * FROM flights WHERE dest_country_name = 'United States'
+
+--visible across session in an application
+CREATE GLOBAL TEMP VIEW just_usa_global_view_temp AS
+SELECT * FROM flights WHERE dest_country_name = 'United States'
+
+--permanent view (only metadata)
+CREATE VIEW just_usa_view AS
+SELECT * FROM flights WHERE dest_country_name = 'United States'
+
+DROP VIEW IF EXISTS just_usa_view
+// In Scala/Python
+spark.catalog.dropGlobalTempView("us_origin_airport_SFO_global_tmp_view")
+spark.catalog.dropTempView("us_origin_airport_JFK_tmp_view")
+// sql
+DROP VIEW IF EXISTS us_origin_airport_SFO_global_tmp_view;
+--no global temporary available in syntax
+
+#?#box#calculatedX@675#calculatedY@195#children@#name@3:database#id@1682355470173#parent@#x@880#y@256
+default database name 
+default (it is default , not a mistake)
+
+CREATE DATABASE some_db
+USE some_db
+SELECT current_database()
+DROP DATABASE IF EXISTS some_db;
+
+#?#box#calculatedX@782#calculatedY@195#children@1682355559385#name@4:operations#id@1682355539084#parent@#x@965#y@256
+operations
+
+#?#box#calculatedX@795#calculatedY@238#children@#name@1:case#id@1682355559385#parent@#x@976#y@290
+spark.sql("""SELECT delay, origin, destination,
+CASE
+WHEN delay > 360 THEN 'Very Long Delays'
+WHEN delay > 120 AND delay < 360 THEN 'Long Delays'
+WHEN delay > 60 AND delay < 120 THEN 'Short Delays'
+WHEN delay > 0 and delay < 60 THEN 'Tolerable Delays'
+WHEN delay = 0 THEN 'No Delays'
+ELSE 'Early'
+END AS Flight_Delays
+FROM us_delay_flights_tbl
+ORDER BY origin, delay DESC""").show(10)
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@831#y@359
+root Node
+

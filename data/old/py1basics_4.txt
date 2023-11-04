@@ -1,0 +1,192 @@
+#?#box#calculatedX@420#calculatedY@100#children@45,1690875626919,1685259800875#name@0:seed#id@seed#parent@#x@336#y@220
+#?#topic@pythonbasics#tag@pythonbasics
+
+#?#box#calculatedX@395#calculatedY@325#children@1694957722984,1694847682128,1694957789130#name@0:basicOperation#id@45#parent@#x@316#y@400
+#?#section@basicOperation#tag@basicOperation
+
+#?#box#calculatedX@254#calculatedY@371#children@1685259883148,1685260199442,1685283245145,1690881098550#name@1:add#id@1694957722984#parent@#x@203#y@436
+C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
+
+#?#box#calculatedX@200#calculatedY@405#children@#name@3:+=#id@1685259883148#parent@#x@160#y@464
+list+=list , tuple+=tuple , list+=tuple
+tuple+=list WONT WORK
+if __iadd__ present inplace upgrade,else use __add__ and do reassignment
+can only access immediate local variable
+a=[11,22,33]
+a+=(1,2,3,4)
+a
+[11, 22, 33, 1, 2, 3, 4]
+---
+a=[11,22,33]
+a+=([1,2,3,4]) <--- not the list
+a
+[11, 22, 33, 1, 2, 3, 4]
+---
+[1,2]+(4, ) single element tuple needs comma at end
+
+#?#box#calculatedX@200#calculatedY@485#children@#name@4:extends#id@1685260199442#parent@#x@160#y@528
+a property of list,argument is any iterable(can be tuple)
+same as += except it  always tries inplace change does not fallback to reassignment
+can access local and global variable
+faster that for loop
+
+a=[11,22,33]
+a.extend([99,100])
+a
+[11, 22, 33, 99, 100]
+
+#?#box#calculatedX@80#calculatedY@400#children@#name@6:plus +#id@1685283245145#parent@#x@64#y@460
+not in place,a property of list , argument must be a list 
+
+[1]+[1,2]=[1,1,2]
+[1,2]+[454]
+
+#?#box#calculatedX@202#calculatedY@547#children@#name@7:addItem#id@1690881098550#parent@#x@161#y@577
+append 
+a=[11,22,33]
+a.append(99)
+a
+[11, 22, 33, 99]
+----
+a=[11,22,33]
+a.append([1,2])
+a
+[11, 22, 33, [1, 2]]
+---
+a.insert(2,[2,3])
+a
+[11, 22, [2, 3], 33]
+
+#?#box#calculatedX@392#calculatedY@490#children@1694848088918,1694848122546#name@2:remove#id@1694847682128#parent@#x@313#y@532
+content
+
+#?#box#calculatedX@305#calculatedY@521#children@1694847836214,1694847889854#name@1:removeByValue#id@1694848088918#parent@#x@244#y@556
+content
+
+#?#box#calculatedX@338#calculatedY@550#children@#name@1:removeAllOccurence#id@1694847836214#parent@#x@270#y@580
+a=[22,11,22,33,22]
+a=[i for i in a if i!=22 ]
+a
+[11, 33]
+---
+[e for e in item_list if e not in ('item', 5)]
+
+#?#box#calculatedX@335#calculatedY@590#children@#name@2:removeFirstOccurence#id@1694847889854#parent@#x@268#y@612
+a=[22,11,22,33,22]
+a.remove(22) #removes first item
+[11, 22, 33, 22]
+
+#?#box#calculatedX@560#calculatedY@526#children@1694848148572,1694848170751,1694848456874#name@2:removeByPosition#id@1694848122546#parent@#x@448#y@560
+content
+
+#?#box#calculatedX@570#calculatedY@566#children@#name@1:removeOne#id@1694848148572#parent@#x@456#y@592
+a=[1,2,3]
+del(a[1])
+a
+[1, 3]
+
+a=[1,2,3]
+a.pop(1)
+2 #returns 2
+a
+[1, 3]
+
+#?#box#calculatedX@577#calculatedY@608#children@#name@2:removeRange#id@1694848170751#parent@#x@461#y@626
+a=[10,11,12,13,14]
+del(a[1:3])
+a
+[10, 13, 14]
+
+#?#box#calculatedX@581#calculatedY@656#children@#name@3:removeLastPos#id@1694848456874#parent@#x@464#y@664
+a=[11,22,33]
+a.pop()
+33 #returns 3
+a
+[11,22]
+
+#?#box#calculatedX@876#calculatedY@403#children@1685260502274#name@3:sort#id@1694957789130#parent@#x@700#y@462
+content
+
+#?#box#calculatedX@863#calculatedY@462#children@#name@5:sortAndSorted#id@1685260502274#parent@#x@690#y@509
+list.sort() - inplace,only list,faster,returns None
+sorted() - not inplace,any iterable,returns sorted object,incase of dict returns sorted keys
+
+#?#box#calculatedX@625#calculatedY@190#children@1685247052308,1685247436558,1690875175553,1690875571098#name@1:itersAndgenrs#id@1690875626919#parent@#x@500#y@292
+iterators dont bring all to memory, just iterates unlike list comprehensions which brings everything to memory,calculates and produces results 
+C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
+
+#?#box#calculatedX@760#calculatedY@30#children@#name@1:iterator#id@1685247052308#parent@#x@608#y@164
+iterator(giant wheel,shop back) is
+any object whose class has a  __iter__ method and __next__
+which returns self 
+even for loop internally calls iterable which calls iterator like java
+
+
+#?#box#calculatedX@760#calculatedY@85#children@#name@2:generator#id@1685247436558#parent@#x@608#y@208
+Every generator is an iterator, but not vice versa. 
+issubclass(types.GeneratorType, collections.Iterator)
+True
+
+A generator  function has one or more yield expressions
+def gensquares(N):
+    for i in range(N):
+        yield i ** 2
+
+x = gensquares(4) #x is a generator object
+x.__next__() or next(x)
+generators are their own iterators and dont need __iter__ call before calling next
+
+generator expression is a shorter form of generator function
+(i*i for i in range(a, b)) 
+(c * 4 for c in 'SPAM')
+
+generators are one time use 
+
+jonah jobs(next)
+bowl(rice)
+---------
+generator
+
+#?#box#calculatedX@760#calculatedY@140#children@#name@3:listcomprehension#id@1690875175553#parent@#x@608#y@252
+will bring all to memory
+[str(n) for n in range(10**100)]
+will crash
+
+a=[ i*i for i in a ]
+square numbers of even
+a=[ i*i for i in a if i%2==0 ]
+square numbers if even else dont
+ a=[ i*i if i%2==0 else i for i in a ]
+
+#?#box#calculatedX@760#calculatedY@190#children@#name@4:map#id@1690875571098#parent@#x@608#y@292
+map maps a function over an iterable
+map is lazy, iterates
+a=map(str, range(10**100));next(a) <--- WONT CRASH
+speed comparison - LIST COMPREHENSION > MAP > FOR LOOP
+*depends on pattern and usage
+map and list comprehensions run at C language speed
+for loop runs as bytecode within the PVM
+
+--get ascii
+list(map(ord,'abc'))
+[97, 98, 99]
+--int to str
+list(map(str,[1,2,3]))
+['1', '2', '3']
+--neg to pos
+list(map(abs, (-1, 0, 1)))
+
+#?#box#calculatedX@735#calculatedY@560#children@1685259919444,1685260059948#name@3:class#id@1685259800875#parent@#x@588#y@588
+content
+
+#?#box#calculatedX@740#calculatedY@620#children@#name@1:dataclass#id@1685259919444#parent@#x@592#y@636
+(a small tuition) C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\dataclass.ipynb
+
+#?#box#calculatedX@735#calculatedY@685#children@#name@2:property#id@1685260059948#parent@#x@588#y@688
+setter,deleter,getter variable access will go via property method
+variable name and property name should not be same
+eg use _name as variable and name as property
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@399
+root Node
+

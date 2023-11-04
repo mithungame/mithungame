@@ -1,0 +1,44 @@
+#?#box#calculatedX@380#calculatedY@267#children@45,1679033668989#name@0:seed#id@seed#parent@#x@380#y@267
+#?#topic@plan#tag@plan
+
+#?#box#calculatedX@302#calculatedY@337#children@#name@0:properties#id@45#parent@#x@302#y@337
+IT is the only way i can make money do whatever i want
+i dont seem to have business talent
+dont waste your time on anything else
+EVERYTHING IS A BYPRODUCT OF IT
+there is no time to do everything.
+
+#?#box#calculatedX@504#calculatedY@337#children@1679033718433,1679033800324#name@1:jobPlan#id@1679033668989#parent@#x@504#y@337
+#?#section@jobPlan#tag@jobPlan
+
+#?#box#calculatedX@418#calculatedY@408#children@#name@0:properties#id@1679033718433#parent@#x@418#y@408
+make money
+make money
+make money
+MONEY SOLVES MOST PROBLEMS THAT CAN BE SOLVED REST IS NOT UP TO US
+
+#?#box#calculatedX@561#calculatedY@408#children@1679033836558,1679033901170,1679033968609,1679034023481,1679034064740,1679034084267#name@1:JobsInDemand#id@1679033800324#parent@#x@561#y@408
+JobsInDemand
+
+#?#box#calculatedX@500#calculatedY@516#children@#name@0:Properties#id@1679033901170#parent@#x@500#y@516
+Dont waste time on front end
+GET GOOD IN PYTHON
+GET GOOD IT ETL/ELT
+ML is future slowly make a 5 year plan
+
+#?#box#calculatedX@642#calculatedY@523#children@#name@1:ApacheSparkAndHive#id@1679033836558#parent@#x@642#y@523
+working on it
+
+#?#box#calculatedX@795#calculatedY@521#children@#name@2:PYTHON#id@1679033968609#parent@#x@795#y@521
+GET REALLY GOOD AT PYTHON OVER NEXT 1 YEAR
+ADVANCED
+
+#?#box#calculatedX@931#calculatedY@525#children@#name@3:JavaAndMaven#id@1679034023481#parent@#x@931#y@525
+i have always been puzzled by this , dont dive deep just work on it and understand it totally , pom deployment dependencies and everything
+
+#?#box#calculatedX@1058#calculatedY@526#children@#name@4:ETLTools#id@1679034064740#parent@#x@1058#y@526
+SnapLogic,Talend,DataStage
+
+#?#box#calculatedX@1200#calculatedY@528#children@#name@5:ML#id@1679034084267#parent@#x@1200#y@528
+4 or 5 year plan
+

@@ -1,0 +1,325 @@
+name@0:seed
+australia
+
+name@0:pte
+#?#section@pte#tag@pte
+pte
+
+name@0:categories
+#?#section@categories#tag@categories
+categories
+
+name@0:Speaking
+Speaking 
+30 mins, Time management not needed as all task has a timer
+
+name@0:read aloud
+---
+35 sec to prepare - beep
+30 to 40 sec to speak , if done click next
+6 or 7 questions
+stay quiet for 3 sec mic off
+reading and speaking score
+25 points
+
+name@1:repeat sentence
+repeat sentence
+hear a sentence 3-9 seconds , 6 or 12 words 
+ repeat sentence as close as possible
+content pronounciation fluency gives points
+ 3 to 9 seconds, 6 or 12 words -NO BEEP-
+10 or 12 questions
+listening and speaking score
+
+name@2:describe image 
+describe image 
+
+name@0:properties
+------
+25 seconds to prepare BEEP YES
+40 seconds to introduce,describe and conclude image
+3 to 4 on test day
+
+name@1:types
+bar graph
+line chart 
+pie chart 
+map 
+photo
+table 
+process 
+combination of two graph
+
+name@2:difficult
+difficult version
+10 seconds 
+this <image/bar graph/process> represents <title> + <x axis>
+								across 
+								according to 
+								among 
+								by <x axis>
+								such as < read some contents > 
+								including < read some contents >
+								table - read the first column and first row
+20 seconds 
+key features
+	- easiest , highest , lowest , this was followed by , noticable 
+    - keep it simple 
+	- the reminder increased 
+	- in contrast 
+	- read eveerything there 
+	- ... accounted for highest 
+	
+	no hesitation no restart no um just speak words on screen 
+	
+5 seconds 
+	over all say noticable feature again use words increase or decrease
+
+name@3:unrelated
+this is a beautiful image 
+this image provides insightful information about various aspects
+and it is crucial to have a understanding of this
+and from this image we can deduce that it is a popular image
+and it requires immense efforts to calculate maximum and minimum
+
+name@4:meFinal
+This image/illustration represents/depicts/portrays a dog.
+This image provides (insightful information/valuable insights) about dog, tail and teeth.
+dog, tail and teeth can be observed/deduced from this image.
+This image also represents dog, tail and teeth.
+In conclusion, this image provides (crucial/imperative) information about dog.
+
+In conclusion, the picture provides important information about [title].
+
+name@5:i see
+i see #key words 
+i also see #key words#
+this is a informative image
+
+name@3:retell lecture 
+The main focus of the lecture was <topic>
+A number of advantages/disadvantages/causes/effects/affects of <topic> were discussed in the lecture 
+The first crucial aspect revealed in the discourse was -----
+Furthermore, another significant point mentioned in the lecture was -----
+Additionally, the lecture also exhibited important information about -----
+In conclusion, the lecture suggested that -----
+
+The lecture was about <topic>. 
+The first important point mentioned in the lecture was ----
+secondly, the speaker mentioned about ----
+Another important point mentioned in the lecture was ----
+overall, the lecture suggested that ----
+90 seconds lecture 10 sec prepare BEEP
+40 second to speak
+1 or 2 questions
+listening and speaking score
+can take notes
+
+name@4:answer short question
+answer short question
+5 or 6 questions
+vocabulary score
+listen to question and speak answer in 1 or two words
+ 3 to 9 sec question BEEP NO, answer immediately
+
+name@1:writing
+writing
+30 mins, no time management needed
+
+name@0:summarize written text
+4 to 5 points
+1 or 2 
+10 mins to read passage and summarize
+5 to 75 words though 40 to 50 is sweet spot
+read and writing points
+
+<pick a sentence>, and <pick a sentence>, furthermore, <pick a sentence>
+
+they did not add full stop at end
+dont use capital letter unless its a pronoun
+make sure the sentence which i pick dont have full stop
+10 mins
+5 to 75 words though 40 to 50 is sweet spot
+1 or 2 questions
+
+name@1:Essay
+Essay
+20 mins
+1 or 2 essay
+format - answer question , take sides . Essay will be argumentative or persuasive
+200-300 words
+20mins
+ 200 to 300 words , sweet spot ?
+
+name@2:reading
+Reading does not give separate timing per task we have to manage as a whole
+13 to 18 questions
+29 to 30 minutes
+30 mins
+
+name@1:fillIndropdown
+a.k.a reading writing fill in blanks
+fillIndropdown
+5 to 6
+scores for reading and writing
+4 dropdown
+spend 2 minutes
+5 to 6 * 2 mins ~ 12 mins
+
+name@2:multiplechoice
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+!!!NEGATIVE SCORE
+reading score only
+SQUARE BUTTON means multiple choice
+2 or 3 answers will be correct
+spend 2 to 3 minutes
+
+
+NOTE: THERE IS A SINGLE CHOICE FORMAT AS WELL, IT WILL HAVE CIRCLE INSTEAD OF SQUARE BOX
+2 or 3, 2 mins ~ 6 mins(Jay) NOT POSSIBLE SO 30 SECS 3 mins
+
+name@3:reorder paragraph
+reorder paragraph
+2 or 3 
+ only reading score 
+spend 1 or 2 mins
+2 or 3 * 2 mins ~ 6 mins
+
+name@4:fillInBlanks
+a.k.a drag and drop
+fillInBlanks
+4 0r 5
+reading alone
+fill one words per blanks
+1 or 2 minutes
+ 4 or 5  2 mins ~ 10 min
+
+name@3:Listening
+Listening
+12 - 20 questions and 30 to 40 minutes
+
+name@1:Summarize Spoken text
+Summarize Spoken text
+take notes of lecture
+listening and writing
+
+The talk was about topic. Firstly, the speaker said dash. Later, the speaker said dash. Furthermore, the speaker provided imperative information on dash. In the end, the speaker left an important note on dash.
+
+dont pick key words pick a few phrases and fill the dash
+10 mins no carry over
+1 or 2 items
+write summary 50 - 70 words. target 60
+
+name@2:MultipleChoice
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+1 or 2 questions
+just listening
+can be single or multiple choice
+manage own time after summarize spoken text
+
+name@3:FillInBlanks
+FillInBlanks
+10 to 12 points
+2 or 3
+listening and writing
+no options
+listen and fill
+write on erasable notebook or type directly
+recommend write notes
+
+name@4:HighLightCorrectSummary
+1 to 2 points
+listeing and reading score
+cant read and listen at same time
+take notes
+
+name@5:SelectMissingWord
+SelectMissingWord
+1 or 2
+only listening
+there will be a beep
+choose from option
+
+name@6:HighlightIncorrectWords
+10 to 12 points
+2 or 3
+listening
+move mouse as voice comes and click wrong word
+
+name@7:WriteFromDictation
+WriteFromDictation
+listening and writing
+type what is said
+
+order dont matter
+spelling matter
+if you dont know a spelling or word or singlar plural - add extra words 
+also add a an the - at end if you are not sure if you heard it
+3 or 4 questions
+spend 45 sec per question
+
+name@1:grammar
+content
+
+name@1:complexSentence
+In complex sentences, the independent clause usually comes first. In most cases, the clauses are not separated by a comma
+
+She could not come because she had informed us about her illness.
+While my mother was sleeping, my father came home.
+Though I had no money, I bought the dress from the market.
+Since you have completed your homework, you can take a break.
+He will be happy if he gets the job.
+You should do it because I told you to do so.
+Because he was ill, he left the office early.
+He would not have failed the examination if he had listened to me.
+She went with them because they asked her to come with them.
+The teacher explained the lesson again so that everyone could understand.
+Please feel free to share any questions with us if you have any questions.
+She couldn't attend the party because she was feeling unwell.
+I will go to the cinema only if it rains tomorrow.
+Unless you study harder, you cannot pass the examination next month.
+After I finish my work, I will meet my friends for dinner.
+After you have completed the painting, you should take a rest.
+When they entered, they saw that their friends had arrived.
+He will be promoted if he finishes this project.
+I closed my shop because I had to attend an interview.
+He was happy because he had solved a complex math problem.
+After completing my work, I came to my home quickly.
+She told her friend that she was ready for the examination.
+Though he thought his assignment was well written, His teacher gave him a poor mark.
+You should visit your sister-in-law when she needs you the most.
+Your friend approached me when I was speaking to the principal.
+She is a beautiful woman because she has no defects.
+If they promise to come, I'll invite my friends to celebrate my birthday.
+The cat ran away when it saw the dog approaching.
+They gave me a gift because I was their manager.
+Though they were ill at that time, they competed with others.
+Though it was raining heavily, he came to the office on time.
+The shop is closed on Sundays so I won't visit there.
+When you entered the school, the class had just finished.
+I passed the exam because I studied seriously.
+I waited for her because she was my best friend.
+Yesterday, I heard that he had given his time to another woman.
+I'll introduce you to my parents when you come to my house.
+When I was a child, I used to play football very well.
+It was like a miracle when their son survived the accident.
+Although he made the painting with much patience and effort, he got a poor rating.
+You should take responsibility for your parents because you are the only child.
+When I played football with my friends, we played on the field.
+They got their punishment because they committed a great sin.
+Although he is strong, he is polite towards his friends.
+If I were you, I would have done it differently.
+We walked to school because the weather was very nice.
+I'll lend you the book if you promise to return it to me soon.
+When she heard about the bad news, she burst into tears.
+Since he waited for his friend till midnight, he did not come.
+If I had enough money, I would have bought the entire building.
+
+name@2:compoundSentence
+content
+
+name@rootNode
+root Node
+

@@ -1,0 +1,108 @@
+#?#box#calculatedX@-34#calculatedY@60#children@45,1679375926472,1679467038402#name@0:seed#id@seed#parent@#x@52#y@48
+#?#topic@kubernetes#tag@kubernetes
+
+#?#box#calculatedX@-30#calculatedY@150#children@#name@0:properties#id@45#parent@#x@56#y@120
+todo
+
+#?#box#calculatedX@192#calculatedY@150#children@1679375814785#name@1:ControlPlane#id@1679375926472#parent@#x@233#y@120
+octopus
+what is control plane 
+bunch of server services running on one or more machines
+components
+kube-apiserver, kube-controller-manager, kube-scheduler, and etcd
+
+kube-apiserver is the --- for the Kubernetes API server.
+front end
+
+kube-controller-manager is a ?
+daemon that manages the Kubernetes control loop
+Logically, each controller is a ---, but to reduce complexity, they are all compiled into a single binary and run in a single process.
+separate process
+eg of few:
+--- : Responsible for noticing and responding when nodes go down.
+Node controller
+--- : Watches for Job objects that represent one-off tasks, then creates Pods to run those tasks to completion.
+Job controller
+
+kube-scheduler is a function that looks for --- that have no Nodes, and assigns them a Node based on a host of requirements
+newly created Pods
+
+---- is a highly available key-value store that provides the backend database for Kubernetes
+Etcd
+what is the use of Etcd
+stores and replicates the entirety of the Kubernetes cluster state.
+in what language is Etcd written 
+Its written in Go and uses the Raft protocol
+why Go and Raft protocol
+it maintains identical logs of state changing commands across nodes and coordinates the order in which these state changes occur.
+
+#?#box#calculatedX@195#calculatedY@235#children@66#name@1:node#id@1679375814785#parent@#x@236#y@188
+glassbox
+node is a 
+logical VM on which multiple pods run VK CARNATIC
+mandatory node components - 
+kube-proxy (Vasool raja mbbs crazy mohan proxy exam)- implementing part of the Kubernetes Service concept.
+Container runtime (whale)- interface with container technology such as docker 
+kubelet (icecube) - It makes sure that containers are running in a Pod.
+
+#?#box#calculatedX@196#calculatedY@285#children@1679466667599#name@1:pod#id@66#parent@#x@236#y@228
+VK
+smallest kubernetes unit
+pod
+pod usually has one container running inside it but it can contain more SHIP CONTAINER ON VK SHOULDER
+eg two container in a pod is known as 
+side car pattern - second pod captures logs 
+
+#?#box#calculatedX@200#calculatedY@341#children@#name@0:properties#id@1679466667599#parent@#x@240#y@272
+pod is an abstraction over 
+container 
+why it is abstracted because if not docker we can use some other container
+pod keeps crashing EXPLOSIONS IN GLASSBOX so it cant have 
+permanent ip address
+___ provides permanent ip address
+SERVICES
+pods communicate with each other using services
+
+#?#box#calculatedX@432#calculatedY@145#children@1681808561331,1681808586243,1681808607412,1681808629487,1681808647862#name@2:services#id@1679467038402#parent@#x@425#y@116
+service
+The idea of a Service is to group a set of Pod endpoints into a single resource
+A client sends a request to the stable IP address, and the request is routed to one of the Pods in the Service.
+
+#?#box#calculatedX@433#calculatedY@207#children@1681808765388#name@1:ClusterIP(default)#id@1681808561331#parent@#x@426#y@165
+Internal clients send requests to a stable internal IP address
+
+#?#box#calculatedX@436#calculatedY@275#children@#name@1:manifest#id@1681808765388#parent@#x@428#y@220
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-cip-service
+spec:
+  selector:
+    app: metrics
+    department: sales
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8080
+
+view ip address of clusterIP
+kubectl get service
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)
+my-cip-service   ClusterIP   10.11.247.213   none          80/TCP
+
+#?#box#calculatedX@561#calculatedY@203#children@#name@2:NodePort#id@1681808586243#parent@#x@528#y@162
+Clients send requests to the IP address of a node on one or more nodePort values that are specified by the Service.
+
+#?#box#calculatedX@682#calculatedY@205#children@#name@3:LoadBalancer#id@1681808607412#parent@#x@625#y@164
+Clients send requests to the IP address of a network load balancer.
+
+#?#box#calculatedX@801#calculatedY@207#children@#name@4:ExternalName#id@1681808629487#parent@#x@720#y@165
+Internal clients use the DNS name of a Service as an alias for an external DNS name
+
+#?#box#calculatedX@912#calculatedY@207#children@#name@5:Headless#id@1681808647862#parent@#x@809#y@165
+You can use a headless service when you want a Pod grouping, but don't need a stable IP address.
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@571#y@259
+root Node
+

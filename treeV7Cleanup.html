@@ -1,0 +1,1305 @@
+
+<html lang="en">
+<head>
+	<script src="./package/dist/d3.min.js"></script>
+</head>
+<style>
+.node {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+.context-menu{
+  position: absolute;
+  text-align: center;
+  background: black;
+  border: 1px solid black;
+  }
+  .context-menu ul{
+  padding: 0px;
+  margin: 0px;
+  min-width: 150px;
+  list-style: none;
+  border:1px solid black;
+  }
+  .context-menu ul lik a {
+  text-decoration: none;
+  color:black;
+  }
+  textarea {
+  width: 100%;
+  background: black;
+  color: white;
+  }
+  button {
+  background: grey;
+  color: white;  
+  }
+  .titleItem {
+  cursor: pointer;
+  }
+  body {
+  background: black;
+  color: white
+  }
+  .linepath,.triangle {
+  stroke: white
+  }  
+  #textAreaDiv {
+  position: absolute;
+  z-index: 200001;
+  left: 100px;
+  top: 150px;
+  width: 80%;
+  height: 70%;
+  background-color: #B04759;
+  font-size: 20px;
+  }
+  #textAreaPop{
+  width: 100%;
+  height: 90%;
+  font-size: 25px;
+  background-color: #8C4788;
+  }
+  .buttonGroup{
+  position: absolute;
+  top: 0px;
+  left:0px;
+  z-index: 10;
+  display: inline;
+  }
+</style>
+<body>
+
+<div id="contextMenu" class="context-menu" style="display:none">
+<div onclick="rightClickAction('delete')">delete</div>
+<div onclick="rightClickAction('changeAttribute')">changeAttribute</div>
+<div onclick="rightClickAction('link')">link</div>
+<div onclick="rightClickAction('unlink')">unlink</div>
+<div onclick="rightClickAction('modify')">modify</div>
+</div>
+<div class="buttonGroup">
+<input type="file" name="inputfile" id="inputfile">
+<button id="rbutton" onclick="(()=>moveMap('r'))()">right</button>
+<button id="lbutton" onclick="(()=>moveMap('l'))()">left</button>
+<button id="ubutton" onclick="(()=>moveMap('u'))()">Uppp</button>
+<button id="dbutton" onclick="(()=>moveMap('d'))()">down</button>
+<button onclick="((e)=>zoomMap(e,'zi'))()" >zi</button>
+<button onclick="((e)=>zoomMap(e,'zo'))()">zo</button>
+<button onclick="AllTreeColorChange()" id='AllTree' >AllTree</button>
+<button onclick="((e)=>zoomMap(e,'reset'))()">reset</button>
+<input id="centerId" />
+<button onclick="((e)=>postdata(g_masterData))()">post</button>
+<button onclick="walk()" id="walk" >walk</button>
+</div>
+<p id='c' style="position:absolute;top:10px;left:10px">a</p>
+<div id="textAreaDiv" style="visibility:hidden;z-index=200001;">
+<div>
+<button id="textAreaEditButton" onclick=editTextArea()>edit</button>
+<button id="textAreaUpdateButton" onclick=UpdateTextArea()>update</button>
+<p id="textAreaTitle" onclick=hideTextArea()>Hide</p>
+</div>
+<textarea id="textAreaPop" readonly></textarea>
+</div>
+<div id="root" style="position:relative">
+
+<script>
+
+graphConfig={
+    navigation: {
+    g_moveFactor: 25,
+    v_moveFactor: 25,
+    g_nodeTranslationFactor: 1,
+    g_sizeTranslationFactor: 1,
+    g_moveTranslationFactor: 1,
+    v_sizeTranslationFactor: 1,
+    v_moveTranslationFactor: 1,
+    v_nodeTranslationFactor: 1,
+    },
+    nodeLooks:{ //size and shape g_ values can never be modified only v_ can be changed
+    g_bubbleColor: 'orange',
+    g_divColor: 'white',
+    g_divFontSize: 14,
+    g_bubbleFontSize: 11,
+    g_pFontFamily: 'Verdana, Arial, Helvetica, sans-serif',
+    v_divFontSize: 14,
+    g_divWidth: 100,
+    v_divWidth: 100,
+    g_divHeight: 25,
+    v_divHeight: 25,
+    v_display: 'none',
+    },
+    zi: function(){ this.navigation.v_sizeTranslationFactor+=0.05;this.navigation.v_moveTranslationFactor+=0.05;this.navigation.v_nodeTranslationFactor+=0.05 },
+    zo: function(){ this.navigation.v_sizeTranslationFactor-=0.05;this.navigation.v_moveTranslationFactor-=0.05;this.navigation.v_nodeTranslationFactor-=0.05 },
+    reset: function() {this.navigation.v_sizeTranslationFactor=this.navigation.g_sizeTranslationFactor;this.navigation.v_moveTranslationFactor=this.navigation.g_moveTranslationFactor;this.navigation.v_nodeTranslationFactor=this.navigation.g_nodeTranslationFactor;},
+    sizeTranslation: function (){
+        this.nodeLooks.v_divFontSize = this.nodeLooks.g_divFontSize * this.navigation.v_sizeTranslationFactor
+        this.nodeLooks.v_divWidth    = this.nodeLooks.g_divWidth    * this.navigation.v_sizeTranslationFactor
+        this.nodeLooks.v_divHeight   = this.nodeLooks.g_divHeight   * this.navigation.v_sizeTranslationFactor
+        this.navigation.v_moveFactor = this.navigation.g_moveFactor * this.navigation.v_moveTranslationFactor
+    },
+}
+	
+
+
+
+v_masterData=[]
+g_masterData=[]
+v_triggerer=null
+
+
+const g_windowX=0
+const g_windowY=0
+const g_windWidth=window.screen.width - window.screen.width * .2
+const g_winHeight=window.screen.height - window.screen.height * .25
+document.getElementById("c").style.left=g_windWidth/2+"px";document.getElementById("c").style.top=g_winHeight/2+"px"
+const root_initial_posX=g_windWidth/2
+const root_initial_posY=g_winHeight/2
+const g_rootNode={"id":"root","x":root_initial_posX,"y":root_initial_posY,"calculatedX":root_initial_posX,"calculatedY":root_initial_posY,"data":{"name":"rootNode","desc":"root Node"},"parent":[],"children":[]}
+
+g_pixelRatio=window.devicePixelRatio
+
+
+
+
+
+
+function searchTitle(titleName,searchCase='name'){
+let results=[]
+titleName=titleName.toLowerCase()
+for(let i=0;i<g_masterData.length;i++){
+if (g_masterData[i].data[searchCase].toLowerCase().includes(titleName)){
+results.push([g_masterData[i].id,g_masterData[i].data.name])
+}
+}
+for(let i=0;i<results.length;i++){
+results[i].push(similarity(results[i][1],titleName))
+}
+results.sort(function(a, b) {return b[2] - a[2]})
+//console.log(results)
+return results
+}
+
+function shiftToNode(obj)
+{
+console.log("shiftToNode")
+let v_shiftedX=(root_initial_posX)-obj.calculatedX
+let v_shiftedY=(root_initial_posY)-obj.calculatedY
+console.log(v_shiftedX)
+for ( let i=0;i<g_masterData.length;i++){
+let currentItem=g_masterData[i]
+currentItem['calculatedX']+=v_shiftedX
+currentItem['calculatedY']+=v_shiftedY
+}
+console.log(g_masterData.filter(d=>d.id=="root")[0])
+if(obj.id=="root"){g_shiftedX=v_shiftedX;g_shiftedY=v_shiftedY}
+else{g_shiftedX+=v_shiftedX;g_shiftedY+=v_shiftedY;shifToCentre(g_rootNode)}
+console.log(g_masterData.filter(d=>d.id=="root")[0])
+
+}
+
+function nodeTranslation(translationFactor){
+console.log("nodeTranslation",translationFactor)
+for (let i=0;i<g_masterData.length;i++){
+let currentItem=g_masterData[i]
+currentItem.calculatedX = currentItem.x*translationFactor
+currentItem.calculatedY=currentItem.y*translationFactor
+}
+console.log(g_masterData.filter(d=>d.id=="root")[0])
+shiftToNode(g_rootNode)
+}
+
+//DATA FORMAT FUNCTION
+function InFormat(content){
+let masterData=[]
+let desc=''
+let text=content.split('\n')
+//console.log(text)
+//removing last empty line as it is adding a new line every time 
+if (text[text.length-1]==''){text.pop()}
+text=text.map(d=>{return d+'\n'})
+//console.log(text)
+for (let i=0;i<text.length;i++){
+let currentLine=text[i];//console.log(currentLine)
+if (currentLine.trim().substring(0,6)=='#?#box'){
+if (masterData.length>0){masterData[masterData.length-1]['data']['desc']=desc;desc=''}
+let boxdetails=currentLine.trim().substring(7,currentLine.length).split('#')
+let currentJSON={'data':{'name':'','desc':''}}
+for (let j=0;j<boxdetails.length;j++){
+let currentBox=boxdetails[j].split('@')
+if(['parent','children','styles'].includes(currentBox[0])){
+currentJSON[currentBox[0]]=currentBox[1].split(",").filter(d=>!d=='')
+}
+else if (currentBox[0]=='name'){currentJSON['data']['name']=currentBox[1]} 
+else{ currentJSON[currentBox[0]]=currentBox[1]}    
+//console.log(currentJSON)
+}
+masterData.push(currentJSON)
+}
+else{desc+=currentLine}
+}
+if (masterData.length>0){masterData[masterData.length-1]['data']['desc']=desc;desc=''}
+return(masterData)
+}
+
+//////////////////////////////////////////////////////function layout///////////////////////////////////////////////////////////////////////////
+function viewableNodes(){
+v_masterData=[]
+v_selectedIds=[]
+
+for(let i=0;i<g_masterData.length;i++){
+let currentItem=g_masterData[i]
+if (currentItem.id != "root" && currentItem.calculatedX >= g_windowX && currentItem.calculatedX <= g_windowX+g_windWidth && currentItem.calculatedY >= g_windowY && currentItem.calculatedY <= g_windowY+g_winHeight){
+v_masterData.push(currentItem)
+v_selectedIds.push(currentItem.id)
+}
+}
+//findFriends(v_selectedIds) no point calling it all links generated infact its a overload when all link is generated
+}
+
+function pixelTranslation(x,y,mode='toScreen'){
+if(mode=='toScreen'){return [parseInt(x*g_pixelRatio),parseInt(y*g_pixelRatio)] }else{return [parseInt(x/g_pixelRatio),parseInt(y/g_pixelRatio)]}
+}
+
+function recenterAtNode(id,actions){
+console.log('recenter',id)
+let currentObj=nodeDataSearch([{"id":id}])
+console.log(currentObj)
+if (currentObj.length==0||currentObj==null){alert("No such id");return}
+shiftToNode(currentObj[0])
+viewableNodes()
+generateLink()
+refresh()
+}
+//////////////////////////////////////////////////////function layout///////////////////////////////////////////////////////////////////////////
+
+
+g_fileName=null
+var data = document.getElementById('inputfile').addEventListener('change',function(){
+var fr=new FileReader();
+fr.addEventListener("load",function(){
+let content=fr.result
+if (content.split('\n')[0].trim().substring(0,8)=='{"data":'){fileData=JSON.parse(fr.result);g_masterData=fileData.data.nodeData}
+else{fileData=InFormat(fr.result);g_masterData=fileData}
+console.log(fileData)
+g_masterData.forEach(i=>{[i['x'],i['y']]=pixelTranslation(parseInt(i.x),parseInt(i.y));[i['calculatedX'],i['calculatedY']]=[i['x'],i['y']]})
+//root node must be added after pixelTranslation
+let checkIfRootExists=g_masterData.map(d=>d.id).indexOf("root")
+console.log(checkIfRootExists)
+if(checkIfRootExists>-1){g_masterData.splice(checkIfRootExists,1)}
+//console.log(g_masterData)
+g_masterData.push(g_rootNode)
+viewableNodes()
+generateLink()
+refresh()
+},false)
+e=this.files[0]
+g_fileName=e.name
+text=fr.readAsText(e);
+})
+
+offset=[0,0]
+mouseMoveEndingOffset=[]
+isDown=false
+isnodeitemMove=false
+mouseDownObject=null
+mouseDownObjectClassName=null
+mouseUpObject=null
+
+function deactivateAll(e){
+g_startLink=false 
+isDown=false 
+isnodeitemMove=false 
+if ( g_startLink || isDown || isnodeitemMove )
+{refresh()}
+else 
+{console.log(e.clientX,e.clientY)}
+}
+
+
+////////////////////////////////////////////function mouse key ///////////////////////////////////////////////////////////////////////
+g_detectKey=''
+g_ctrlKeyPressed=false
+document.onkeydown = checkKey;
+function checkKey(e) {
+    
+    event = e || window.event;
+	if (event.keyCode==17){g_ctrlKeyPressed=true;return}
+    if (event.target.id=='centerId' && event.key=='Enter'){ recenterAtNode(event.target.value) }
+	else { handleKeyPress(g_detectKey,event.keyCode)  }
+	g_ctrlKeyPressed=false
+}
+
+
+function handleKeyPress(name,code)
+{
+//go top down 
+let keymap={'37':'l','38':'u','39':'r','40':'d'}
+if (name=='moveTreeBfs'){
+	if ( code == '38' || code == '40' || code == '37' || code == '39' ) { moveTreeBfs(code) } 
+	if ( code == '27' ) { hideTextArea();walk() }
+}
+else if (g_showTextArea){ 
+    if ( code == '27' ) { hideTextArea();}
+}
+
+else if (name=='' || name=='disable'){
+	if ( code == '38' || code == '40' || code == '37' || code == '39')  { moveMap(keymap[code]) } 
+}
+}
+
+
+function mouseUp(e){
+
+if (isDown && isnodeitemMove && mouseDownObjectClassName=="nodeitem"){
+let actualPos=deriveActualPosition(mouseMoveEndingOffset[0],mouseMoveEndingOffset[1])
+let node=nodeDataSearch([{"id":mouseDownObject.id}])[0]
+let totalNode=[]
+totalNode.push({"id":mouseDownObject.id,"calculatedX":mouseMoveEndingOffset[0],"calculatedY":mouseMoveEndingOffset[1],"x":actualPos[0],"y":actualPos[1]})
+
+if (g_wholeTree==true){
+AllTreeColorChange()
+let totalShift=[actualPos[0]-node.x,actualPos[1]-node.y,mouseMoveEndingOffset[0]-node.calculatedX,mouseMoveEndingOffset[1]-node.calculatedY]
+let children=getAllChildren(node)
+console.log(children,totalShift)
+for (let i=0;i<children.length;i++){   
+totalNode.push({"id":children[i].id,"x":children[i].x+totalShift[0],"y":children[i].y+totalShift[1],"calculatedX":children[i].calculatedX+totalShift[2],"calculatedY":children[i].calculatedY+totalShift[3]})
+}
+}
+
+nodeDataChanges("findAndUpdate",totalNode)
+}
+
+if(g_startLink){
+if ( nodeDataSearch( [{"id":v_triggerer.id}] )[0].type == "bubble" && nodeDataSearch( [{"id":mouseDownObject.id}] )[0].type != "bubble" ) 
+{ alert('bubble cannot have node child') }
+else if ( v_triggerer.id == mouseDownObject.id )
+{ alert('node cannot have a link to itself') }
+else
+{nodeDataChanges("childrenUpdate",[{"id":v_triggerer.id,"children":mouseDownObject.id}]) ; }
+g_startLink=false 
+
+}
+isDown=false 
+isnodeitemMove=false 
+g_startLink=false
+}
+
+function mouseMove(event){
+event.preventDefault()
+if ( isDown && mouseDownObjectClassName=="nodeitem"){
+isnodeitemMove = true 
+mousePosition = {
+	x: event.clientX,
+	y: event.clientY
+	};
+	mouseDownObject.style.left = (mousePosition.x + offset[0]) + 'px' ; 
+	mouseDownObject.style.top = (mousePosition.y + offset[1] ) + "px"
+	mouseMoveEndingOffset=[(mousePosition.x + offset[0] ), (mousePosition.y + offset[1]) ]
+	//console.log(mousePosition.x , offset[0] , mousePosition.y , offset[1])
+	}
+}
+
+function mouseDown(e){
+console.log('mouseDown')
+if (e.buttons ==1 ) { isDown = true }
+mouseDownObject=e.currentTarget.parentNode 
+//console.log('mousedown',mouseDownObject)
+mouseDownObjectClassName=mouseDownObject.className 
+offset = [
+mouseDownObject.offsetLeft - e.clientX , 
+mouseDownObject.offsetTop - e.clientY 
+]
+//console.log(e.currentTarget.parentNode ,mouseDownObject.offsetLeft , e.clientX ,mouseDownObject.offsetTop , e.clientY )
+}
+
+
+
+////////////////////////////////////////////mouse key ///////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////function utils///////////////////////////////////////////////////////////////////////
+//function to get nested property example obj={ 'world': {india: "tamilnadu"} } ; f(obj,['world','india']) -> tamilnadu ; f(obj,['world','india','tamilnadu']) -> undefined
+f_getNestedProperty=function( obj,a ){val= a.splice(0,1)[0];cond=obj.hasOwnProperty(val);if ( a.length >0 && cond  ){ return f(obj[val],a)} else { return(obj[val]) } }
+
+//this function is a click and hold function that takes a function as parameter and repeats it, used this for moving fast click and hold right left top button but now i use keyboard so not needed any more 
+var timeout
+function holdit(e,direction,action,start,speedup){
+var repeat=function(){action(e,direction);if (start!=0){timeout=setTimeout(repeat,start)};start=start/speedup}
+//all below are different events so each of these needs to be handled to prevent even bubble
+e.onmousedown=function(e){start=1000;e.stopPropagation();if (timeout){/*nothing*/}else{repeat()}}
+e.onmouseup=e.onmouseout=function(e){e.stopPropagation();clearTimeout(timeout);timeout=null}
+e.onclick=function(e){e.stopPropagation();}
+}
+
+function editDistance(s1, s2) {
+  s1 = s1.toLowerCase();
+  s2 = s2.toLowerCase();
+
+  var costs = new Array();
+  for (var i = 0; i <= s1.length; i++) {
+    var lastValue = i;
+    for (var j = 0; j <= s2.length; j++) {
+      if (i == 0)
+        costs[j] = j;
+      else {
+        if (j > 0) {
+          var newValue = costs[j - 1];
+          if (s1.charAt(i - 1) != s2.charAt(j - 1))
+            newValue = Math.min(Math.min(newValue, lastValue),
+              costs[j]) + 1;
+          costs[j - 1] = lastValue;
+          lastValue = newValue;
+        }
+      }
+    }
+    if (i > 0)
+      costs[s2.length] = lastValue;
+  }
+  return costs[s2.length];
+}
+
+function similarity(s1, s2) {
+  var longer = s1;
+  var shorter = s2;
+  if (s1.length < s2.length) {
+    longer = s2;
+    shorter = s1;
+  }
+  var longerLength = longer.length;
+  if (longerLength == 0) {
+    return 1.0;
+  }
+  return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+
+
+g_uniqueLinkId=[]
+function makeid(length){
+var result = ''
+var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'
+var charactersLength =characters.length 
+for(let i=0;i<length;i++)
+{
+result+=characters.charAt(Math.floor(Math.random()*charactersLength))
+}
+if (g_uniqueLinkId.includes(result)){result=makeid(length)}
+return result
+}
+
+function hasDuplicates(array) {
+    return (new Set(array)).size !== array.length;
+}
+
+////////////////////////////////////////////utils///////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////function data derivation and validation///////////////////////////////////////////////////////
+g_turnOffMultipleTopLevelParents=true
+function validateMasterData(data){
+let nodeId=[]
+data.forEach(d=>nodeId.push(d.id))
+if (hasDuplicates(nodeId)){alert('duplicate nodes')}
+if (getNoParentNodes(data).length>1 && g_turnOffMultipleTopLevelParents){alert('multiple top level parents,g_turnOffMultipleTopLevelParents=false to turn off')}
+if (getMultipleParents(data)){alert('multiple parents for a child')}
+if (checkSeed(data)==0){alert('No seed')}else if(checkSeed(data)>1){alert('Multiple seed')}
+if(checkIfBubbleHasNodeAsChild()){alert('bubble cannot have a node child')}
+dfs(data)
+checkDataFormat(data)
+}
+
+function checkSeed(data){
+let res=[]
+res=data.filter(i=>i.id=='seed')
+return res.length
+}
+
+function checkIfBubbleHasNodeAsChild()
+{
+console.log('fewfae')
+return g_masterData.map(
+d => { 
+    child= nodeDataSearch ( d.children.map( e=> { return {"id":e} } ) )
+    child_types = child.filter(f=>f.type!="bubble")
+    console.log(d.id,d.type,child_types.length)
+    return  d.type=="bubble" && child_types.length>0
+}
+).includes(true)
+}
+
+function getMultipleParents(data){
+let childList=[]
+g_masterData.forEach(d=>childList=childList.concat(d.children))
+return hasDuplicates(childList)
+}
+
+function checkDataFormat(data){
+//console.log(data)
+for (let i=0;i<data.length;i++)
+{
+let currentElement=data[i]
+let currentElementName=currentElement.data.name
+//console.log(currentElementName,!(currentElementName.includes(':') && !isNaN(currentElementName.split(':')[0]) && !isNaN(parseFloat(currentElementName.split(':')[0]))))
+ //works only for 43543 or 464.464 , isNaN of string is true , parseFloat givess true for 3242trhtrs
+if (currentElement.id!="root" && !(currentElementName.includes(':') && !isNaN(currentElementName.split(':')[0]) && !isNaN(parseFloat(currentElementName.split(':')[0])))){
+alert('title is not correct:'+currentElementName);
+return
+}
+}
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////function convenience//////////////////////////////////////////////
+function printCommonFunctions(){
+console.log(JSON.stringify("getChildren(nodeDataSearch([{'id':0}])[0])"))
+console.log(JSON.stringify("getchildnames->getChildren(nodeDataSearch([{'id':2}])[0]).map(d=>d.data.name)"))
+console.log(JSON.stringify("nonASCIIbox->g_masterData.map(d=>{return [d.id,JSON.stringify(d)]}).map(d=>{console.log(d[0],/^[\u0000-\u007f]*$/.test(d))})"))
+console.log(JSON.stringify("nonASCIIcharacter->JSON.stringify(nodeDataSearch([{'id':1680957493676}])[0]).split('').map(d=>{if(!(/^[\u0000-\u007f]*$/.test(d))){console.log(d,/^[\u0000-\u007f]*$/.test(d))}})"))
+}
+//////////////////////////////////////////////function convenience//////////////////////////////////////////////
+
+
+//////////////////////////////////////////////////////////////////////////////////function graph////////////////////////////////////////////////////////////////////////////
+childrens_of_v_master=[]
+parents_of_v_master=[]
+function findFriends(v_selectedIds){
+console.log("find friends")
+childrens_of_v_master=[]
+parents_of_v_master=[]
+//get all children items of v_master data 
+for(let i=0;i<v_masterData.length;i++){ //go through each one and see if its children is in master data
+    for(let j=0;j<g_masterData.length;j++){
+        if(v_masterData[i].children.includes(g_masterData[j].id) && !(v_selectedIds.includes(g_masterData[j].id)) ){
+            childrens_of_v_master.push(g_masterData[j]);v_selectedIds.push(g_masterData[j].id) }}}
+
+//check if any item in g_master data's children v_masterData
+for(let i=0;i<g_masterData.length;i++){ // for each master data check if its children includes selected data
+    for(let j=0;j<v_masterData.length;j++){
+        if(g_masterData[i].children.includes(v_masterData[j].id) && !(v_selectedIds.includes(g_masterData[i].id)) ){
+            parents_of_v_master.push(g_masterData[i]);v_selectedIds.push(g_masterData[i].id) }}}
+console.log(childrens_of_v_master)
+console.log(parents_of_v_master)
+v_masterData=v_masterData.concat(childrens_of_v_master)
+v_masterData=v_masterData.concat(parents_of_v_master)
+console.log(v_masterData)
+}
+
+
+function nodeDataSearch(objectList){
+nodes=g_masterData
+let selectedNodes=[] 
+for ( let i=0;i<nodes.length;i++)
+{
+for(let j=0;j<objectList.length;j++)
+{
+if (nodes[i].id == objectList[j].id ) { selectedNodes.push([nodes[i],objectList[j]]);break}
+}
+}
+let result=selectedNodes.map(d=>d[0])
+return result 
+}
+
+
+function getAllChildren(currentElement){
+let children=getChildren(currentElement)
+for (let i=0;i<children.length;i++){
+children=children.concat(getChildren(children[i]))
+}
+return children
+}
+
+function getChildren(currentElement){
+if (currentElement==null){return null}
+let childrens=nodeDataSearch(currentElement.children.map(i=>{return {'id':i}}) )
+let bubble=childrens.filter(d=>d.type=="bubble")
+let node=childrens.filter(d=>d.type!="bubble")
+let sortedBubble = bubble.map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+let sortedNode = node.map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+return sortedBubble.concat(sortedNode)
+}
+
+function getParent(currentElement){
+if (currentElement==null){return null}
+for(let i=0;i<g_masterData.length;i++)
+{
+if ( g_masterData[i].children.includes(currentElement.id) ) { return g_masterData[i];break }
+}
+}
+
+function getNoParentNodes(data,returnType='id'){
+//console.log(data)
+let nodes=[]
+let links=[]
+data.forEach(d=>nodes.push(d.id)) 
+data.forEach(d=>links.push(d.children))
+links=links.flat()
+let topNodeIds=(nodes.filter(n => !links.includes(n) && n!="root"))
+if (returnType=='id') {
+//console.log(topNodeIds);
+return topNodeIds}
+if (returnType=='node') { let tempRes=[] ; for (let i=0;i<data.length;i++){ if ( topNodeIds.includes(data[i].id)){tempRes.push(data[i])} }; return tempRes }
+}
+
+function dfs(data){
+let totalItems=[]
+let items=[]
+let orderedItems=[]
+totalItems=totalItems.concat(data.filter(i=>i.id=='seed'))
+let visiteditems=['seed']
+while (totalItems.length>0)
+{
+//items.push(totalItems)
+let currentElement=totalItems.shift()
+orderedItems.push(currentElement)
+//get master data , sort by title number and return 
+let childList=getChildren(currentElement)
+//console.log(currentElement,childList)
+if (hasDuplicates(childList.map(d=>{return d.data.name}).map(d=>{return d.split(':')[0]}))) {alert('duplicate child topic number for '+currentElement.data.name);return}
+totalItems=childList.concat(totalItems)
+//console.log(childList.map(d=>d.id))
+visiteditems=visiteditems.concat(childList.map(d=>d.id))
+if (hasDuplicates(visiteditems)){ alert('Cycle detected'); console.log('possible duplicates',childList); return null }
+}
+return(orderedItems)
+//console.log(items)
+}
+
+function getNoTreeData(data,orderedItems) //fetch nodes which is not part of tree
+{
+let i=0
+let orderedIds=[]
+let noTreeItems=[]
+orderedItems.forEach(d=>{ if (d.id!='root'){ orderedIds.push(d.id)}})
+for(let i=0;i<data.length;i++){
+if ( ! ( orderedIds.includes( data[i].id ) ) ) {
+noTreeItems.push( data[i] )
+}
+}
+return noTreeItems
+}
+
+function nodeDataChanges(action,objectList){
+console.log("nodeDataChanges",action,objectList)
+selectedNodes=[]
+nodes=g_masterData
+for (let i=0; i<nodes.length;i++)
+{
+for (let j=0; j<objectList.length;j++){
+if (nodes[i].id == objectList[j].id ){selectedNodes.push([ nodes[i] , objectList[j]]);break}
+}
+}
+if (action == 'findAndRemove'){
+for (let i=0; i<nodes.length;i++)
+{
+for (let j=0; j<selectedNodes.length;j++){
+console.log(nodes[i],selectedNodes[j])
+console.log(nodes[i].parent.filter(x => x!= selectedNodes[j][0].id))
+nodes[i].parent = nodes[i].parent.filter(x => x!= selectedNodes[j][0].id)
+nodes[i].children = nodes[i].children.filter(x => x !=  selectedNodes[j][0].id)
+console.log(nodes[i],selectedNodes[j])
+}}
+for (let i=0; i<selectedNodes.length;i++)
+{
+index = nodes.indexOf(selectedNodes[i][0])
+if (index > -1 ){nodes.splice(index , 1 )}
+}
+}
+
+if(action=='findAndUpdate'){
+for( let i=0;i<selectedNodes.length;i++){
+index=nodes.indexOf(selectedNodes[i][0])
+if (index >  -1 ){ Object.assign(nodes[index],selectedNodes[i][1])}
+}
+}
+
+if (action=='childrenUpdate'){
+for( let i=0;i<selectedNodes.length;i++){
+index=nodes.indexOf(selectedNodes[i][0])
+if (index >  -1 ){ 
+if (!(nodes[index].children.includes(selectedNodes[i][1].children )))
+{
+nodes[index].children.push(selectedNodes[i][1].children)
+}
+}
+}
+}
+
+if (action=="add"){
+nodes.push(objectList)
+}
+//console.log(nodes)
+//console.log(g_linkData)
+//console.log(g_masterData)
+validateMasterData(g_masterData)
+viewableNodes()
+generateLink()
+refresh()
+}
+//////////////////////////////////////////////////////////////////////////////////graph////////////////////////////////////////////////////////////////////////////
+
+g_moveTreeBfsPayLoad={'id':'seed','changeState':true,'currSiblilng':null,'firstCall':true}
+function moveTreeBfs(code){
+console.log('moving tree',g_moveTreeBfsPayLoad)
+hideTextArea()
+let siblings=[]
+if ( g_moveTreeBfsPayLoad['changeState'] == true ) 
+{ 
+    id=g_moveTreeBfsPayLoad['id']
+    g_moveTreeBfsPayLoad['currMember']=nodeDataSearch([{'id':id}])[0]
+    g_moveTreeBfsPayLoad['parent']= g_moveTreeBfsPayLoad['currMember'] ? getParent( g_moveTreeBfsPayLoad['currMember'] ) : null
+    g_moveTreeBfsPayLoad['siblings']= g_moveTreeBfsPayLoad['parent'] ? getChildren( g_moveTreeBfsPayLoad['parent'] ) : []
+    g_moveTreeBfsPayLoad['currSiblilng']=g_moveTreeBfsPayLoad['siblings'].indexOf( g_moveTreeBfsPayLoad['currMember'] )
+	console.log(g_moveTreeBfsPayLoad)
+}
+
+let data=''
+siblings=g_moveTreeBfsPayLoad['siblings']
+	if ( g_moveTreeBfsPayLoad['firstCall'] || g_moveTreeBfsPayLoad['changeState'] ) {
+	console.log('first call or change state')
+	g_moveTreeBfsPayLoad['firstCall'] = false 
+	g_moveTreeBfsPayLoad['changeState'] = false
+	}
+	else if (code == '38') {
+        // up arrow
+		console.log('up arrow')
+		if ( g_moveTreeBfsPayLoad['parent'] != null ) {
+		g_moveTreeBfsPayLoad['changeState'] = true
+		g_moveTreeBfsPayLoad['id']=g_moveTreeBfsPayLoad['parent'].id;moveTreeBfs(0);return
+		}
+    }
+    else if (code == '40') {
+        // down arrow
+		console.log('down arrow')
+		let childrens=getChildren(g_moveTreeBfsPayLoad['currMember'])
+		console.log('--childrens',childrens)
+		if ( childrens.length >0 ) {
+		g_moveTreeBfsPayLoad['changeState'] = true
+		g_moveTreeBfsPayLoad['id']=childrens[0].id;moveTreeBfs(0);return
+		}
+    } 
+    else if (code == '37') {
+	   //left arrow 
+	   console.log('left arrow')
+	   if(siblings.length>0){
+	   g_moveTreeBfsPayLoad['currSiblilng']-=1
+	   if(g_moveTreeBfsPayLoad['currSiblilng']<0){g_moveTreeBfsPayLoad['currSiblilng']=siblings.length-1}
+	   //else if(g_moveTreeBfsPayLoad['currSiblilng']>siblings.length-1){g_moveTreeBfsPayLoad['currSiblilng']=0}
+	   g_moveTreeBfsPayLoad['currMember'] =siblings[g_moveTreeBfsPayLoad['currSiblilng']]
+	   g_moveTreeBfsPayLoad['changeState'] = false
+	   }
+
+    }
+    else if (code == '39') {
+       // right arrow
+	   console.log('right arrow',g_moveTreeBfsPayLoad['currSiblilng'])
+	   if(siblings.length>0){
+	   g_moveTreeBfsPayLoad['currSiblilng']+=1
+	   //if(g_moveTreeBfsPayLoad['currSiblilng']<0){g_moveTreeBfsPayLoad['currSiblilng']=siblings.length-1}
+	   if(g_moveTreeBfsPayLoad['currSiblilng']>siblings.length-1){g_moveTreeBfsPayLoad['currSiblilng']=0}	   
+	   g_moveTreeBfsPayLoad['currMember'] =siblings[g_moveTreeBfsPayLoad['currSiblilng']]}
+	   g_moveTreeBfsPayLoad['changeState'] = false
+    }
+console.log(g_moveTreeBfsPayLoad['currMember'] )
+data=g_moveTreeBfsPayLoad['currMember'] 
+hasChildren = getChildren( data ).length ? true : false  
+let title=''
+title=hasChildren ? data.data.name + ' v' : data.data.name
+finalData={}
+if(data=='' || data==null){desc='No data'}else{desc=data.data.desc}
+finalData={'title':title,data:desc}
+showTextArea(finalData)
+}
+
+
+
+function OutFormat(data,type='text')
+{
+	let orderedItems=dfs(data)
+    if ( orderedItems == null ){alert('post failed');throw new Error('post failed')}
+	orderedItems=orderedItems.concat(getNoTreeData(data,orderedItems))
+    
+if (type=='text'){
+	let totalItems=''
+	for (let i=0;i<orderedItems.length;i++){
+	obj=orderedItems[i]
+	let newOriginalPos=pixelTranslation(obj.x,obj.y,'toActual')
+	let currData='#?#box'
+	let data_desc=''
+	let property=[]
+	for (var prop in obj) {if (Object.prototype.hasOwnProperty.call(obj, prop)){property.push(prop)}}
+	property.sort()
+	for (let i=0;i<property.length;i++) {
+	if(property[i]=='data'){
+	currData+='#'+'name'+'@'+obj[property[i]]['name']
+	data_desc=obj[property[i]]['desc']
+	//if (!(data_desc.substr(data_desc.length-1).includes("\n"))){data_desc+='\n'}
+	//writing new logic always strip new line and add two new line , why two new because we want a space to separate from box as it is very difficult to view . why this way , hard to check if one or two new line is there 
+	data_desc=data_desc.replace(/[\n]+$/,'')+'\n'
+	}
+	else if (property[i]=='x'){currData+='#'+property[i]+'@'+newOriginalPos[0]}
+	else if (property[i]=='y'){currData+='#'+property[i]+'@'+newOriginalPos[1]}
+	else{currData+='#'+property[i]+'@'+obj[property[i]]}
+	}
+	totalItems+=currData+'\n'+data_desc
+	}
+	return totalItems
+	}
+else {
+	data='{"data":{"nodeData":'+JSON.stringify(g_masterData)+'}}'.replaceAll("\\n","\n")
+	data=data.replaceAll(",,,br,,,","\n")
+	return data
+	}
+}
+
+
+function modifyNodeData(id,i_name=null,i_desc=null) {
+let idToBeModified=id 
+let idFound=nodeDataSearch([{"id": idToBeModified}])[0]
+let name = desc = null
+name = i_name ? i_name : idFound.data.name
+desc = i_desc ? i_desc : idFound.data.desc
+console.log(id,idFound.data.name,desc)
+
+let p_name=p_desc=null
+if (!(i_name)){ p_name=prompt("title",idFound.data.name) ; }
+if (!(i_desc)){ p_desc=prompt("data",idFound.data.desc)  ; }
+name = p_name ? p_name : name
+desc = p_desc ? p_desc : desc
+
+if (name==idFound.data.name && desc==idFound.data.desc) { alert('No changes to data');return }
+desc=desc.replaceAll(',,,br,,,','\n')
+
+result={id:id , data: {'name':name , 'desc':desc} }
+nodeDataChanges("findAndUpdate",[result])
+}
+
+function hideMenu(){document.getElementById("contextMenu").style.display="none"}
+
+function rightClick(e){
+e.preventDefault()
+v_triggerer=e.currentTarget
+if ( document.getElementById("contextMenu").style.display == "block" ) { hideMenu()}
+else {
+var menu = document.getElementById("contextMenu")
+menu.style.position="absolute";menu.style.zIndex=1000000;menu.style.display='block';menu.style.left = e.pageX + "px" ; menu.style.top = e.pageY + "px"
+} 
+}
+
+g_startLink=false 
+function rightClickAction(option){
+if ( option == "changeAttribute" ) {
+inputValues={'1:t_color':['1_blue','99_<custom>'],
+             '2:d_visibility':['1_visible','2_hidden'],
+             '3:type':['1_bubble'],
+             '99:custom':['99_<custom>']
+            }
+inputkeys=Object.keys(inputValues)//get keys 1:t_color
+let name=prompt(inputkeys.toString().replaceAll(",","\n"))
+//3 is special so it will ask for key
+chosenInputKey=null
+if (name==null || name==''){alert('Attribute change cancelled');return}
+//user enters 1, match it with 1:t_color
+else{chosenInputKey=Object.keys(inputValues).filter(d=>{if (d.startsWith(name)){return d}})[0]}
+if (chosenInputKey==null ){alert('Attribute is not correct ');return}
+if ( chosenInputKey=="99:custom" ) {name=prompt('Enter Key')} else { name=chosenInputKey.split(':')[1] }
+//same for values 
+console.log(chosenInputKey,Object.keys(inputValues[chosenInputKey]))
+valueKeys=inputValues[chosenInputKey]//get values for chosen key 
+let value=prompt(valueKeys.toString().replace(",","\n"))
+//check needed in this place as well as below
+if (value==null || value=='' ){alert('unacceptable value '+value);return}
+if (value.startsWith('99_')){/*do nothing*/}
+else{value=valueKeys.filter(d=>{if (d.startsWith(value)){return d}})[0]}
+console.log(value)
+//check needed in this place as well as above
+if (value == null || value.replace(' ','') == '' || !(value.includes('_')) || value.split('_')[1]=='' ){alert('unacceptable value '+value);return}
+else {value=value.split('_')[1]}
+resultAll=[{id:v_triggerer.id  }]
+if (g_wholeTree) //apply for whole tree
+{
+AllTreeColorChange()
+resultAll=nodeDataSearch(resultAll)
+children=getAllChildren(resultAll[0])
+console.log(children)
+resultAll=resultAll.concat(children)
+}
+resultAll.forEach(d=>d[name]=value)
+//result[name]=value //{id:v_triggerer.id , name: value } it puts name as name no interpolation
+//console.log(resultAll)
+nodeDataChanges("findAndUpdate",resultAll)
+}
+if ( option == "delete" ) {
+nodeDataChanges("findAndRemove",[{"id":v_triggerer.id}])
+}
+if (option == "modify")
+{
+let idToBeModified=v_triggerer.id 
+modifyNodeData(idToBeModified)
+}
+if (option == "link")
+{
+g_startLink=true 
+}
+if (option=="unlink")
+{
+g_startunLink=true
+let triggerId=v_triggerer.id 
+let data=nodeDataSearch([{"id": triggerId}])[0]
+console.log("trigger id",data)
+let childrens=[]
+for ( let k=0;k<data.children.length;k++)
+{childrens.push({"id":data.children[k]})}
+//console.log(childrens)
+let childrenData=nodeDataSearch(childrens)
+//console.log(childrenData)
+let childrenPair=childrenData.map(d=>[d.id,d.data.name])
+//console.log(childrenPair)
+let linkName=prompt("enter title",childrenPair.map(d=>d[1]).join(";"))
+//console.log(childrenPair)
+let newChildrens=[]
+let triggerUpdate=false
+	if ( linkName && linkName.replace(' ','')!=''  ){
+		linkName = linkName.split(';')
+		//console.log(linkName)
+		for (let k=0;k<childrenPair.length;k++){
+			let matchFound=false
+			for (let b=0;b<linkName.length;b++) {
+			if (childrenPair[k][1]==linkName[b]){matchFound=true;triggerUpdate=true}
+			}
+			if (!(matchFound))
+			{newChildrens.push(childrenPair[k][0]) } 
+			else { console.log('unlink ',childrenPair[k][1] )}
+			}
+			
+		if(triggerUpdate){ nodeDataChanges("findAndUpdate",[{"id":triggerId,"children":newChildrens}])  }
+		}
+	}
+hideMenu()
+}
+
+function deriveActualPosition(x,y){
+let newX=(x-g_shiftedX)/graphConfig.navigation.v_nodeTranslationFactor
+let newY=(y-g_shiftedY)/graphConfig.navigation.v_nodeTranslationFactor
+return ([newX,newY])
+
+}
+
+function addNewNode(event)
+{
+
+if (event.target.id == "drawarea")
+{
+var name=prompt("title","title")
+var desc=prompt("data","content")
+if (name==null || name=='title' || name=='') { alert('Box creation cancelled');return }
+x=event.clientX
+y=event.clientY
+let actualPos=deriveActualPosition(x,y)
+desc=desc.replaceAll(',,,br,,,','\n')
+result={id:Date.now().toString() , calculatedX:x , calculatedY: y , x:actualPos[0] , y: actualPos[1],data: {'name':name , 'desc':desc} , parent: [] , children: [] }
+nodeDataChanges("add",result)
+}
+}
+
+function postdata(data,format='text'){
+
+data=OutFormat(data,format)
+inputValues={'1:data':'core,data','2:privateData':'privateData'}
+inputkeys=Object.keys(inputValues)
+let name=prompt(inputkeys.toString().replace(",","\n"))
+let chosenInputKey=Object.keys(inputValues).filter(d=>{if (d.startsWith(name)){return d}})[0]
+data={'data':data,'fileName':g_fileName,'location':inputValues[chosenInputKey]}
+console.log(data)
+url=window.location.href
+url='http://localhost:5000/post_json'
+var xhr = new XMLHttpRequest();
+console.log(url,data)
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-Type", "application/json");
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        var ret = JSON.parse(xhr.responseText);
+        alert(JSON.stringify(ret));
+        //window.location.reload()
+        
+    }
+};
+xhr.send(JSON.stringify(data));
+}
+
+g_linkData=[]
+//Note: this generates links for all nodes NOTE IT MUST BE GENERATE FOR ALL NODES DUE TO SCENARIOS listed in generateLinkSelectedNodes
+function generateLink(){
+g_linkData=[]
+let nodes=g_masterData
+if ( nodes.length==0){console.log("no selected nodes ")}
+for ( let i=0;i<nodes.length;i++){
+//console.log('generating children for',nodes[i])
+for ( let j=0;j<nodes[i].children.length;j++){
+let childrenNode=nodeDataSearch([{"id":nodes[i].children[j]}])[0]
+g_linkData.push({"id":makeid(6) , "parentId":childrenNode.id , "childId":nodes[i].id , "source":[childrenNode.calculatedX,childrenNode.calculatedY], "target": [nodes[i].calculatedX , nodes[i].calculatedY]})
+}
+}
+//console.log(g_linkData)
+}
+
+//Note: This function works and it operates only on selected nodes but lets say there are two nodes both not in selected node one on far left one on far right still not connected it wont work so not using this function and generating all links
+function generateLinkSelectedNodes(){
+g_linkData=[]
+if ( v_masterData.length==0){console.log("no selected nodes ")}
+for(let i=0;i<v_masterData.length;i++){ 
+    for(let j=0;j<v_masterData[i].children.length;j++) {
+        parent = v_masterData[i] ; child = v_masterData[i].children[j]
+        if( v_selectedIds.includes(child)  ) {
+            child_obj = nodeDataSearch([{"id":child}])[0]
+            g_linkData.push({"id":makeid(6) , "parentId":child_obj.id , "childId":parent.id , "source":[child_obj.calculatedX,child_obj.calculatedY], "target": [parent.calculatedX , parent.calculatedY]})
+        }
+} }
+//console.log(g_linkData)
+}
+
+g_shiftedX=0
+g_shiftedY=0
+////////////////////////////////////////////////function actions//////////////////////////////////////////////////////////////////////////
+
+
+function walk(){
+e=document.getElementById('walk')
+console.log(e)
+let id=document.getElementById('centerId').value
+id = id == '' ? 'seed' : id
+console.log(id,g_detectKey)
+if ( g_detectKey == 'moveTreeBfs' ) { 
+g_detectKey = '' 
+e.style.color='white'
+} else { 
+g_detectKey = 'moveTreeBfs' 
+g_moveTreeBfsPayLoad={'id':id,'changeState':true,'currSiblilng':null,'firstCall':true}
+e.style.color='red'
+}
+}
+
+function moveMap(data){
+if ( data == "l"){g_shiftedX+=  graphConfig.navigation.v_moveFactor}
+if ( data == "r"){g_shiftedX+=(-graphConfig.navigation.v_moveFactor)}
+if ( data == "u"){g_shiftedY+=  graphConfig.navigation.v_moveFactor}
+if ( data == "d"){g_shiftedY+=(-graphConfig.navigation.v_moveFactor)}
+for ( let i=0;i<g_masterData.length;i++)
+{
+let currentItem=g_masterData[i]
+if ( data == "l"){currentItem.calculatedX+=  graphConfig.navigation.v_moveFactor}
+if ( data == "r"){currentItem.calculatedX+=(-graphConfig.navigation.v_moveFactor)}
+if ( data == "u"){currentItem.calculatedY+=  graphConfig.navigation.v_moveFactor}
+if ( data == "d"){currentItem.calculatedY+=(-graphConfig.navigation.v_moveFactor)}
+}
+shifToCentre(g_rootNode)
+viewableNodes()
+generateLink()
+refresh()
+}
+
+function shifToCentre(node){
+node.calculatedX=root_initial_posX
+node.calculatedY=root_initial_posY
+let tempResult=deriveActualPosition(node.calculatedX,node.calculatedY)
+node.x=tempResult[0]
+node.y=tempResult[1]
+
+}
+function zoomMap(e,data){
+if (data=="zi"){ graphConfig.zi() }
+if (data=="zo"){ graphConfig.zo() }
+if (data=="reset"){ graphConfig.reset() ;g_rootNode.x=root_initial_posX;g_rootNode.y=root_initial_posY}
+graphConfig.sizeTranslation()
+nodeTranslation(graphConfig.navigation.v_nodeTranslationFactor)
+viewableNodes()
+generateLink()
+refresh()
+}
+
+
+
+
+
+function isStylePresent(prop,data)
+{
+if ( data.hasOwnProperty('type') && data['type']=='bubble' )
+{
+if (prop=="t_color"){return graphConfig.nodeLooks.g_bubbleColor}
+}
+
+if ( data.hasOwnProperty(prop) ) {
+return data[prop]
+}
+}
+
+function refresh(){
+update(v_masterData,g_linkData)
+}
+
+
+g_showTextArea=false
+function showTextArea(displayData) {
+g_showTextArea=true
+let ele=document.getElementById('textAreaPop')
+console.log(displayData)
+ele.value=displayData.data // shows title  + data because i cannot copy title for bubble because title has double click actions
+document.getElementById('textAreaTitle').innerHTML=displayData.title
+document.getElementById('textAreaDiv').style.visibility="visible";
+ele.focus()
+}
+
+function editTextArea(){
+document.getElementById("textAreaPop").readOnly = false;
+}
+
+function UpdateTextArea() {
+g_showTextArea=false
+document.getElementById('textAreaDiv').style.visibility="hidden";
+document.getElementById("textAreaPop").readOnly = true;
+modifiedText = document.getElementById("textAreaPop").value;
+console.log(modifiedText)
+modifyNodeData(g_currId_clicked,null,modifiedText)
+}
+
+function hideTextArea() {
+g_showTextArea=false
+document.getElementById('textAreaDiv').style.visibility="hidden";
+document.getElementById("textAreaPop").readOnly = true;
+
+}
+
+function divPop(id){
+data=nodeDataSearch([{"id": id}])[0]
+if(data=='' || data==null){title='No title',data='No data'}else{title=data.data.name;desc=data.data.desc}
+finalData={'title':title,'data':desc}
+showTextArea(finalData)
+}
+
+function AllTreeColorChange(){
+g_wholeTree=!(g_wholeTree)
+if (g_wholeTree){document.getElementById('AllTree').style.color="green"}
+else {document.getElementById('AllTree').style.color="red"}
+}
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////function d3 code////////////////////////////////////////////////////////
+function d3InitSetup(){
+d3.select("#root").style("margin","0px").style("position","absolute").style("top","0px").style("left","0px").style("width",g_windWidth+"px").style("height",g_winHeight+"px").style("overflow","hidden")
+const svg=d3.select("#root").append("svg").attr("viewBox",[0,0,g_windWidth,g_winHeight]).on("click",(event)=>{console.log(event.clientX,event.clientY)}).style("z-index",-1).style("position","absolute").style("top","0px").style("left","0px").style("width",g_windWidth+"px").style("height",g_winHeight+"px")
+svg.append("svg:defs").append("svg:marker").attr("id","triangle").attr("refX",4.5).attr("refY",4.5).attr("markerWidth",10).attr("markerHeight",10).attr("orient","auto").append("path").attr("d","M 0 0 9 4.5 0 9 3 4.5").attr("class","triangle")
+
+diagonal=d3.linkHorizontal().x(d=>d[0]).y(d=>d[1])
+
+drawGroup=d3.select("#root").append("g").style("width",g_windWidth+"px").style("height",g_winHeight+"px").style("top","0px").style("left","0px").style("position","absolute").attr("id","drawarea").on("dblclick",addNewNode).on("click",deactivateAll).style("z-index",0)
+divGroup=drawGroup.append("g")
+linkGroup=svg.append("g").attr("fill","none").attr("stroke","black").attr("stroke-opacity",0.4).attr("stroke-width",1.5)
+buttonGroup=drawGroup.append("g")
+
+g_wholeTree=false
+
+}
+
+d3InitSetup()
+function update(nodeData,linkData)
+{
+//node structure has to be inside update dont move it outside why? the v_divHeight which are getting recalculated are not refreshed if its outside , it gets binded at start
+nodeStructure = [
+      {
+        selectAll: [ "div" ], // this will never be applied its just for reference , its the root divs,
+        layerName: "container",
+        style: { 'position': 'absolute', "top": d=>d.calculatedY+"px" , "left": d=>d.calculatedX+"px" , "width": graphConfig.nodeLooks.v_divWidth+"px" , "height": graphConfig.nodeLooks.v_divHeight+"px" , "border": "1px solid black"},
+        attr: { 'class': 'nodeitem', "id": d=>d.id}
+      },
+      { selectAll: [ "p" ] , 
+        layerName: "title",
+        text: [ (d=>d.data.name) ] , 
+        style: { "font-size" : (d=>{return isStylePresent('type',d)=="bubble"?graphConfig.nodeLooks.g_bubbleFontSize+"px":graphConfig.nodeLooks.g_divFontSize+"px" }), //hard code value for constant size at zoomMap
+        "color": (d=>{return isStylePresent('t_color',d)?isStylePresent('t_color',d):graphConfig.nodeLooks.g_divColor}) , "font-family": graphConfig.nodeLooks.g_pFontFamily, "margin":"0px" } ,
+        attr: { 'id': 'title', 'class': 'titleItem'}
+      },
+      { selectAll: [ "textarea" ] ,
+        layerName: "description",
+        text: [ (d=>d.data.desc) ] , 
+        style: { "font-size": graphConfig.nodeLooks.v_divFontSize+"px" , "visibility": (d=>{return isStylePresent('d_visibility',d)}) ,  'color': 'white', 'display': graphConfig.nodeLooks.v_display },
+      }
+    ]
+
+g_currId_clicked=null
+nodeStack={ 'selectAll' : {} , 'append' : {} } // add divs p textarea for reference so it can be used later
+function buildStack(root, nodeStructure, mode='selectAll')
+{
+for(let i=0;i<nodeStructure.length;i++) {
+  keys = Object.keys(nodeStructure[i])
+  name = nodeStructure[i]['layerName']
+  component_type = nodeStructure[i]['selectAll']
+  keys = keys.filter( d => !(['layerName','selectAll'].includes(d)) ) // we dont want to loop over these so removing them
+  
+  if ( name == "container" ) // this is special point it to divs 
+    {temp = root}
+  else
+    { temp=root[mode](...component_type) } // add component type as selectAll or append based on mode
+  nodeStack[mode][name] = temp
+  for ( j=0; j<keys.length; j++ )
+  {
+    key = keys[j]
+	value = nodeStructure[i][key] //value must be an array or object and object is just key value pair dont over complicate to handle object like this {'a':[]}
+	if ( typeof(value) == "string" ){ temp[key](value) }
+	if ( Array.isArray(value) ) { temp[key](...value) } //handle array
+	if ( value.constructor === {}.constructor ){ //if value is object
+	  for (var item in value){ 
+	    if(value.hasOwnProperty(item)) {
+	      temp[key]( item , value[item] )
+		}
+	  } //handle object
+    }
+  }
+}
+}
+
+//for update 
+divs = divGroup.selectAll('div').data(nodeData,d=>d.id)
+buildStack(divs, nodeStructure)
+
+//for Enter 
+divsEnter=divs.enter().append("div")
+buildStack(divsEnter, nodeStructure, 'append')
+
+g_divzIndex=100
+nodeStack['append']['container'].on("click",(e)=>hideMenu(e)).on("contextmenu",(e)=>rightClick(e)).style("z-index",g_divzIndex).on("click",(e,d)=>{console.log("texxt area stop propagation");
+g_currId_clicked=d.id
+if (e.detail==2) {divPop(d.id)};//if its a double click
+if (e.detail==1) {console.log(d.id);document.getElementById("centerId").value=d.id;getChildren(d).map(j=>console.log("-"+j.id+" "+j.data.name+"-"));g_divzIndex+=1;e.target.parentNode.style.zIndex=g_divzIndex;e.stopPropagation()};//if its a single click
+e.stopPropagation()});
+
+nodeStack['append']['title'].on("mousedown",mouseDown,true).on("mouseup",mouseUp,true).on("mousemove",mouseMove,true)
+nodeStack['append']['description'].on("click",(e,d)=>{console.log("texxt area stop propagation");
+if (e.detail==2) {divPop(d.id)};//if its a double click
+e.stopPropagation()})
+
+divs.exit().remove()
+
+const links=linkGroup.selectAll("path").data(linkData).attr("marker-end","url(#triangle)").attr("stroke-opacity",0.4).attr("stroke-width",1.5).attr("d",d=>{
+t=diagonal({source:d.target,target:d.source})
+return(t)
+})
+
+links.enter().append("path").attr("marker-end","url(#triangle)").attr("stroke-opacity",0.4).attr("stroke-width",1.5).attr("d",d=>{
+t=diagonal({source:d.target,target:d.source})
+return(t)
+}).attr("class","linepath")
+
+links.exit().remove()
+}
+////////////////////////////////////////////////////////d3 code////////////////////////////////////////////////////////
+</script>
+</body>
+</html>

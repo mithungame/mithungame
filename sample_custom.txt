@@ -1,0 +1,16 @@
+#?#box#calculatedX@110#calculatedY@101#children@45#name@0:seed#id@seed#parent@#x@110#y@101
+#?#topic
+#?#box#calculatedX@120#calculatedY@166#children@66#name@0:sectionName#id@45#parent@#x@120#y@166
+#?#listofcountries#tag@list
+#?#box#calculatedX@137#calculatedY@221#children@0#name@0:trip#id@66#parent@#x@137#y@221
+list of places to see
+#?#box#calculatedX@141#calculatedY@288#children@2,1671785020105#name@0:india#id@0#parent@#x@141#y@288
+places and resorts
+#?#box#calculatedX@481#calculatedY@372#children@1671784454215#name@0:Rajasthan#id@2#parent@#x@481#y@372
+high priority
+#?#box#calculatedX@523#calculatedY@429#children@#name@0:city palace#id@1671784454215#parent@#x@523#y@429
+water castle , hawa mahaal , neemarana fort palace
+#?#box#calculatedX@131#calculatedY@420#children@#name@1:pondicherry#id@1671785020105#parent@#x@131#y@420
+Auroville must be prebooked , 
+ bus is there for elders to reach golden globe spot
+

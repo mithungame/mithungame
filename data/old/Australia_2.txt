@@ -1,0 +1,225 @@
+#?#box#calculatedX@620.84#calculatedY@31.900000000000034#children@45#name@0:seed#id@seed#parent@#tag@australia#x@316#y@216
+australia
+#?#box#calculatedX@655.34#calculatedY@72.15000000000003#children@66#name@0:pte#id@45#parent@#x@340#y@244
+#?#section@pte#tag@pte
+pte
+#?#box#calculatedX@678.34#calculatedY@123.90000000000003#children@67,1678178657684,1678253893594,1678255381269#name@0:categories#id@66#parent@#x@356#y@280
+#?#section@categories#tag@categories
+categories
+#?#box#calculatedX@310.34000000000003#calculatedY@169.90000000000003#children@68,69,70,71,72#name@0:Speaking#id@67#parent@66#x@100#y@312
+Speaking 
+#?#box#calculatedX@132.08999999999997#calculatedY@267.6500000000001#children@1698288343143,1698288420959,1698288566416,1698288780184,1698289570482,1698289665572#name@0:read aloud#id@68#parent@67#t_color@red#x@-24#y@380
+---
+#?#box#calculatedX@137.83999999999997#calculatedY@302.1500000000001#children@#name@1:35 sec to prepare - beep or red#id@1698288343143#parent@#type@bubble#x@-20#y@404
+content
+#?#box#calculatedX@135.53999999999996#calculatedY@357.35#children@#name@2:30 to 40 sec to speak , if done click next#id@1698288420959#parent@#type@bubble#x@-21#y@442
+content
+#?#box#calculatedX@137.83999999999997#calculatedY@426.35#children@#name@3:6 or 7 questions#id@1698288566416#parent@#type@bubble#x@-20#y@490
+content
+#?#box#calculatedX@135.53999999999996#calculatedY@476.95000000000005#children@#name@4:stay quiet for 3 sec mic off#id@1698288780184#parent@#type@bubble#x@-21#y@525
+content
+#?#box#calculatedX@137.83999999999997#calculatedY@520.6500000000001#children@#name@5:reading and speaking score#id@1698289570482#parent@#type@bubble#x@-20#y@556
+content
+#?#box#calculatedX@134.39#calculatedY@570.1#children@#name@6:25 points#id@1698289665572#parent@#type@bubble#x@-22#y@590
+content
+#?#box#calculatedX@319.53999999999996#calculatedY@259.6#children@1698289819663,1698289780939,1698289793427#name@1:repeat sentence#id@69#parent@67#x@106#y@374
+repeat sentence
+hear a sentence 3-9 seconds , 6 or 12 words 
+ repeat sentence as close as possible
+content pronounciation fluency gives points
+#?#box#calculatedX@312.64#calculatedY@325.1500000000001#children@#name@1: 3 to 9 seconds, 6 or 12 words#id@1698289819663#parent@#type@bubble#x@101#y@420
+content
+#?#box#calculatedX@310.34000000000003#calculatedY@406.80000000000007#children@#name@3:10 or 12 questions#id@1698289780939#parent@#type@bubble#x@100#y@476
+content
+#?#box#calculatedX@316.09000000000003#calculatedY@476.95000000000005#children@#name@5:listening and speaking score#id@1698289793427#parent@#type@bubble#x@104#y@525
+content
+#?#box#calculatedX@505.84000000000003#calculatedY@215.90000000000003#children@1678176272944,1678696982928,1678697092150,1678697709086,1678697877854,1678697976291#name@2:describe image #id@70#parent@67#x@236#y@344
+describe image 
+#?#box#calculatedX@446.04#calculatedY@290.6500000000001#children@1698290603274,1698290616056,1698290579036#name@0:properties#id@1678176272944#parent@#x@194#y@396
+------
+#?#box#calculatedX@448.34000000000003#calculatedY@334.35#children@#name@1:25 seconds to prepare#id@1698290603274#parent@#type@bubble#x@196#y@426
+content
+#?#box#calculatedX@450.64#calculatedY@388.4000000000001#children@#name@2:40 seconds to introduce,describe and conclude image#id@1698290616056#parent@#type@bubble#x@197#y@464
+content
+#?#box#calculatedX@450.64#calculatedY@468.9000000000001#children@#name@3:3 to 4 on test day#id@1698290579036#parent@#type@bubble#x@197#y@520
+content
+#?#box#calculatedX@592.09#calculatedY@353.9000000000001#children@#name@1:types#id@1678696982928#parent@#x@296#y@440
+bar graph
+line chart 
+pie chart 
+map 
+photo
+table 
+process 
+combination of two graph
+#?#box#calculatedX@594.3900000000001#calculatedY@387.25#children@#name@2:difficult#id@1678697092150#parent@#x@297#y@463
+difficult version
+10 seconds 
+this <image/bar graph/process> represents <title> + <x axis>
+								across 
+								according to 
+								among 
+								by <x axis>
+								such as < read some contents > 
+								including < read some contents >
+								table - read the first column and first row
+20 seconds 
+key features
+	- easiest , highest , lowest , this was followed by , noticable 
+    - keep it simple 
+	- the reminder increased 
+	- in contrast 
+	- read eveerything there 
+	- ... accounted for highest 
+	
+	no hesitation no restart no um just speak words on screen 
+	
+5 seconds 
+	over all say noticable feature again use words increase or decrease
+#?#box#calculatedX@594.3900000000001#calculatedY@418.30000000000007#children@#name@3:unrelated#id@1678697709086#parent@#x@297#y@484
+this is a beautiful image 
+this image provides insightful information about various aspects
+and it is crucial to have a understanding of this
+and from this image we can deduce that it is a popular image
+and it requires immense efforts to calculate maximum and minimum
+#?#box#calculatedX@590.94#calculatedY@453.95000000000005#children@#name@4:meFinal#id@1678697877854#parent@#x@295#y@509
+--if it has heading this image shows <title> if possible x axis 
+
+The image displays various things such as [word1], [word2], and [word3].
+or
+this mainly provides details on different categories including #keywords
+
+--if its a graph with high low value 
+A has the maximum value and B has the minimum value 
+ 
+Similarly, [word4], [word5], and [word6] can be observed in the image.
+I can notice [word7], [word8], and [word9].
+The illustration also highlights [word10], [word11], and [word12].
+In conclusion, the picture provides important information about [title].
+#?#box#calculatedX@595.54#calculatedY@486.1500000000001#children@#name@5:i see#id@1678697976291#parent@#x@298#y@532
+i see #key words 
+i also see #key words#
+this is a informative image
+#?#box#calculatedX@731#calculatedY@346#children@1698292613970,1698292650434,1698292685356,1698292797578,1698292846702#name@3:retell lecture #id@71#parent@67#x@392#y@434
+The main focus of the lecture was <topic>
+A number of advantages/disadvantages/causes/effects/affects of <topic> were discussed in the lecture 
+The first crucial aspect revealed in the discourse was -----
+Furthermore, another significant point mentioned in the lecture was -----
+Additionally, the lecture also exhibited important information about -----
+In conclusion, the lecture suggested that -----
+
+The lecture was about <topic>. 
+The first important point mentioned in the lecture was ----
+secondly, the speaker mentioned about ----
+Another important point mentioned in the lecture was ----
+overall, the lecture suggested that ----
+
+#?#box#calculatedX@741.5900000000001#calculatedY@430.95000000000005#children@#name@1:90 seconds lecture#id@1698292613970#parent@#type@bubble#x@400#y@493
+content
+#?#box#calculatedX@743.8900000000001#calculatedY@475.80000000000007#children@#name@2:40 second to speak#id@1698292650434#parent@#type@bubble#x@401#y@524
+content
+#?#box#calculatedX@747.3400000000001#calculatedY@518.35#children@#name@3:1 or 2 questions#id@1698292685356#parent@#type@bubble#x@404#y@554
+content
+#?#box#calculatedX@742.74#calculatedY@565.5000000000001#children@#name@5:listening and speaking score#id@1698292797578#parent@#type@bubble#x@400#y@587
+content
+#?#box#calculatedX@741.5900000000001#calculatedY@619.5500000000001#children@#name@6:can take notes#id@1698292846702#parent@#type@bubble#x@400#y@624
+content
+#?#box#calculatedX@827.8400000000001#calculatedY@344.70000000000005#children@#name@4:answer short question#id@72#parent@67#t_color@green#x@460#y@433
+answer short question
+5 or 6 questions
+vocabulary score
+listen to question and speak answer in 1 or two words
+#?#box#calculatedX@1078.5400000000002#calculatedY@351.6#children@1678178873969,1678179250057#name@1:writing#id@1678178657684#parent@#x@634#y@438
+writing
+#?#box#calculatedX@1084.2900000000002#calculatedY@380.35#children@#name@0:summarize written text#id@1678178873969#parent@#t_color@yellow#x@638#y@458
+4 to 5 points
+1 or 2 
+10 mins to read passage and summarize
+5 to 75 words though 40 to 50 is sweet spot
+read and writing points
+#?#box#calculatedX@1217.69#calculatedY@376.9000000000001#children@#name@1:Essay#id@1678179250057#parent@#x@731#y@456
+Essay
+20 mins
+1 or 2 essay
+format - answer question , take sides . Essay will be argumentative or persuasive
+200-300 words
+#?#box#calculatedX@919.8400000000001#calculatedY@-2.599999999999966#children@1678254182597,1678253940667,1678254344531,1678255152320#name@2:reading#id@1678253893594#parent@#x@524#y@192
+Reading does not give separate timing per task we have to manage as a whole
+13 to 18 questions
+29 to 30 minutes
+#?#box#calculatedX@937.0900000000001#calculatedY@54.900000000000034#children@#name@1:fillIndropdown#id@1678253940667#parent@#t_color@red#x@536#y@232
+fillIndropdown
+5 to 6
+scores for reading and writing
+4 dropdown
+spend 2 minutes
+#?#box#calculatedX@937.0900000000001#calculatedY@89.40000000000003#children@#name@2:multiplechoice#id@1678254182597#parent@#t_color@green#x@536#y@256
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+!!!NEGATIVE SCORE
+reading score only
+SQUARE BUTTON means multiple choice
+2 or 3 answers will be correct
+spend 2 to 3 minutes
+
+
+NOTE: THERE IS A SINGLE CHOICE FORMAT AS WELL, IT WILL HAVE CIRCLE INSTEAD OF SQUARE BOX
+#?#box#calculatedX@948.5900000000001#calculatedY@112.40000000000003#children@#name@3:reorder paragraph#id@1678254344531#parent@#t_color@yellow#x@544#y@272
+reorder paragraph
+2 or 3 
+ only reading score 
+spend 1 or 2 mins
+#?#box#calculatedX@948.5900000000001#calculatedY@169.90000000000003#children@#name@4:fillInBlanks#id@1678255152320#parent@#t_color@red#x@544#y@312
+fillInBlanks
+4 0r 5
+reading alone
+fill one words per blanks
+1 or 2 minutes
+#?#box#calculatedX@1172.8400000000001#calculatedY@-83.1#children@1678255633712,1678255654682,1678255687138,1678255720334,1678255781326,1678255804360,1678255836644#name@3:Listening#id@1678255381269#parent@#x@700#y@136
+Listening
+12 - 20 questions and 30 to 40 minutes
+#?#box#calculatedX@1172.8400000000001#calculatedY@-48.599999999999994#children@#name@1:Summarize Spoken text#id@1678255633712#parent@#x@700#y@160
+Summarize Spoken text
+take notes of lecture
+write summary 50 - 70 words
+10 mins
+1 or 2 items
+listening and writing
+#?#box#calculatedX@1178.5900000000001#calculatedY@-2.599999999999966#children@#name@2:MultipleChoice#id@1678255654682#parent@#t_color@green#x@704#y@192
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+1 or 2 questions
+just listening
+can be single or multiple choice
+manage own time after summarize spoken text
+#?#box#calculatedX@1172.8400000000001#calculatedY@26.150000000000034#children@#name@3:FillInBlanks#id@1678255687138#parent@#x@700#y@212
+FillInBlanks
+10 to 12 points
+2 or 3
+listening and writing
+no options
+listen and fill
+write on erasable notebook or type directly
+recommend write notes
+#?#box#calculatedX@1167.0900000000001#calculatedY@49.150000000000034#children@#name@4:HighLightCorrectSummary#id@1678255720334#parent@#t_color@green#x@696#y@228
+1 to 2 points
+listeing and reading score
+cant read and listen at same time
+take notes
+#?#box#calculatedX@1167.0900000000001#calculatedY@83.65000000000003#children@#name@5:SelectMissingWord#id@1678255781326#parent@#x@696#y@252
+SelectMissingWord
+1 or 2
+only listening
+there will be a beep
+choose from option
+#?#box#calculatedX@1178.5900000000001#calculatedY@112.40000000000003#children@#name@6:HighlightIncorrectWords#id@1678255804360#parent@#t_color@red#x@704#y@272
+10 to 12 points
+2 or 3
+listening
+move mouse as voice comes and click wrong word
+#?#box#calculatedX@1184.3400000000001#calculatedY@146.90000000000003#children@#name@7:WriteFromDictation#id@1678255836644#parent@#x@708#y@296
+WriteFromDictation
+listening and writing
+type what is said
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@311#y@419
+root Node

@@ -1,0 +1,274 @@
+#?#box#calculatedX@95#calculatedY@-350#children@45,1690875626919,1685259800875,1698726635873#name@0:seed#id@seed#parent@#tag@python#x@336#y@220
+pythonbasics
+#?#box#calculatedX@70#calculatedY@-125#children@1694957722984,1694847682128,1694957789130,1694959856281#name@0:basicOperation#id@45#parent@#tag@hi#x@316#y@400
+basicOperation
+#?#box#calculatedX@-73#calculatedY@-80#children@1685259883148,1685260199442,1685283245145,1690881098550#name@1:add#id@1694957722984#parent@#tag@hello#x@201#y@436
+C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
+#?#box#calculatedX@-125#calculatedY@-45#children@#name@3:+=#id@1685259883148#parent@#x@160#y@464
+list+=list , tuple+=tuple , list+=tuple
+tuple+=list WONT WORK
+if __iadd__ present inplace upgrade,else use __add__ and do reassignment
+can only access immediate local variable
+a=[11,22,33]
+a+=(1,2,3,4)
+a
+[11, 22, 33, 1, 2, 3, 4]
+---
+a=[11,22,33]
+a+=([1,2,3,4]) <--- not the list
+a
+[11, 22, 33, 1, 2, 3, 4]
+---
+[1,2]+(4, ) single element tuple needs comma at end
+#?#box#calculatedX@-125#calculatedY@35#children@#name@4:extends#id@1685260199442#parent@#x@160#y@528
+a property of list,argument is any iterable(can be tuple)
+same as += except it  always tries inplace change does not fallback to reassignment
+can access local and global variable
+faster that for loop
+
+a=[11,22,33]
+a.extend([99,100])
+a
+[11, 22, 33, 99, 100]
+#?#box#calculatedX@-245#calculatedY@-50#children@#name@6:plus +#id@1685283245145#parent@#x@64#y@460
+not in place,a property of list , argument must be a list 
+
+[1]+[1,2]=[1,1,2]
+[1,2]+[454]
+#?#box#calculatedX@-125#calculatedY@95#children@#name@7:addItem#id@1690881098550#parent@#x@160#y@576
+append 
+a=[11,22,33]
+a.append(99)
+a
+[11, 22, 33, 99]
+----
+a=[11,22,33]
+a.append([1,2])
+a
+[11, 22, 33, [1, 2]]
+---
+a.insert(2,[2,3])
+a
+[11, 22, [2, 3], 33]
+#?#box#calculatedX@65#calculatedY@40#children@1694848088918,1694848122546#name@2:remove#id@1694847682128#parent@#x@312#y@532
+content
+#?#box#calculatedX@-20#calculatedY@70#children@1694847836214,1694847889854#name@1:removeByValue#id@1694848088918#parent@#x@244#y@556
+content
+#?#box#calculatedX@11#calculatedY@100#children@#name@1:removeAllOccurence#id@1694847836214#parent@#x@268#y@580
+a=[22,11,22,33,22]
+a=[i for i in a if i!=22 ]
+a
+[11, 33]
+---
+[e for e in item_list if e not in ('item', 5)]
+#?#box#calculatedX@10#calculatedY@140#children@#name@2:removeFirstOccurence#id@1694847889854#parent@#x@268#y@612
+a=[22,11,22,33,22]
+a.remove(22) #removes first item
+[11, 22, 33, 22]
+#?#box#calculatedX@235#calculatedY@75#children@1694848148572,1694848170751,1694848456874#name@2:removeByPosition#id@1694848122546#parent@#x@448#y@560
+content
+#?#box#calculatedX@245#calculatedY@115#children@#name@1:removeOne#id@1694848148572#parent@#x@456#y@592
+a=[1,2,3]
+del(a[1])
+a
+[1, 3]
+
+a=[1,2,3]
+a.pop(1)
+2 #returns 2
+a
+[1, 3]
+#?#box#calculatedX@250#calculatedY@156#children@#name@2:removeRange#id@1694848170751#parent@#x@460#y@624
+a=[10,11,12,13,14]
+del(a[1:3])
+a
+[10, 13, 14]
+#?#box#calculatedX@255#calculatedY@205#children@#name@3:removeLastPos#id@1694848456874#parent@#x@464#y@664
+a=[11,22,33]
+a.pop()
+33 #returns 3
+a
+[11,22]
+#?#box#calculatedX@550#calculatedY@-49#children@1685260502274#name@3:sort#id@1694957789130#parent@#x@700#y@460
+content
+#?#box#calculatedX@536#calculatedY@10#children@#name@5:sortAndSorted#id@1685260502274#parent@#x@688#y@508
+list.sort() - inplace,only list,faster,returns None
+sorted() - not inplace,any iterable,returns sorted object,incase of dict returns sorted keys
+#?#box#calculatedX@863#calculatedY@-43#children@1694959878390#name@4:file#id@1694959856281#parent@#x@950#y@465
+content
+#?#box#calculatedX@845#calculatedY@66#children@1694959914172#name@1:writeToFile#id@1694959878390#parent@#x@936#y@552
+content
+#?#box#calculatedX@823#calculatedY@132#children@#name@1:newline#id@1694959914172#parent@#x@918#y@605
+write to file with new line
+  - option-1 f.write('hello'+'\n')
+  - option 2 - print('text',file=f) NOTE:This will not print to stdout and f is file handle
+#?#box#calculatedX@300#calculatedY@-260#children@1685247052308,1685247436558,1690875175553,1690875571098#name@1:itersAndgenrs#id@1690875626919#parent@#x@500#y@292
+iterators dont bring all to memory, just iterates unlike list comprehensions which brings everything to memory,calculates and produces results 
+C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
+#?#box#calculatedX@435#calculatedY@-420#children@#name@1:iterator#id@1685247052308#parent@#x@608#y@164
+iterator(giant wheel,shop back) is
+any object whose class has a  __iter__ method and __next__
+which returns self 
+even for loop internally calls iterable which calls iterator like java
+#?#box#calculatedX@435#calculatedY@-365#children@#name@2:generator#id@1685247436558#parent@#x@608#y@208
+Every generator is an iterator, but not vice versa. 
+issubclass(types.GeneratorType, collections.Iterator)
+True
+
+A generator  function has one or more yield expressions
+def gensquares(N):
+    for i in range(N):
+        yield i ** 2
+
+x = gensquares(4) #x is a generator object
+x.__next__() or next(x)
+generators are their own iterators and dont need __iter__ call before calling next
+
+generator expression is a shorter form of generator function
+(i*i for i in range(a, b)) 
+(c * 4 for c in 'SPAM')
+
+generators are one time use 
+
+jonah jobs(next)
+bowl(rice)
+---------
+generator
+#?#box#calculatedX@435#calculatedY@-310#children@#name@3:listcomprehension#id@1690875175553#parent@#x@608#y@252
+will bring all to memory
+[str(n) for n in range(10**100)]
+will crash
+
+a=[ i*i for i in a ]
+square numbers of even
+a=[ i*i for i in a if i%2==0 ]
+square numbers if even else dont
+ a=[ i*i if i%2==0 else i for i in a ]
+#?#box#calculatedX@435#calculatedY@-260#children@#name@4:map#id@1690875571098#parent@#x@608#y@292
+map maps a function over an iterable
+map is lazy, iterates
+a=map(str, range(10**100));next(a) <--- WONT CRASH
+speed comparison - LIST COMPREHENSION > MAP > FOR LOOP
+*depends on pattern and usage
+map and list comprehensions run at C language speed
+for loop runs as bytecode within the PVM
+
+--get ascii
+list(map(ord,'abc'))
+[97, 98, 99]
+--int to str
+list(map(str,[1,2,3]))
+['1', '2', '3']
+--neg to pos
+list(map(abs, (-1, 0, 1)))
+#?#box#calculatedX@398#calculatedY@387#children@1698726653443,1698726980289,1698727216288#name@2:connector#id@1698726635873#parent@#x@578#y@809
+content
+#?#box#calculatedX@325#calculatedY@458#children@1698726666719,1698727851852#name@1:module#id@1698726653443#parent@#x@520#y@866
+---
+#?#box#calculatedX@412#calculatedY@493#children@#name@51: a .py file#id@1698726666719#parent@#type@bubble#x@589#y@894
+content
+#?#box#calculatedX@334#calculatedY@533#children@#name@1:__name__#id@1698727851852#parent@#x@527#y@926
+if __name__ == "__main__":
+    main() #always use this pattern else code will run on import
+#?#box#calculatedX@563#calculatedY@465#children@#name@2:docstrings#id@1698726980289#parent@#x@710#y@872
+class, function, or method header
+first line following the colon
+indented the same as the following code.
+' " '''
+PEP8 line length 80 characters
+
+def move(self, x, y):
+    "Move the point to a new location in 2D space."
+#?#box#calculatedX@8#calculatedY@387#children@1698727225598,1698727337083,1698727518794,1698727625526#name@3:package#id@1698727216288#parent@#x@266#y@809
+content
+#?#box#calculatedX@28#calculatedY@415#children@1698727655813#name@51: __init__.py makes a directory a package#id@1698727625526#parent@#type@bubble#x@282#y@832
+content
+#?#box#calculatedX@30#calculatedY@464#children@#name@52: keep __init__.py empty#id@1698727655813#parent@#type@bubble#x@284#y@871
+content
+#?#box#calculatedX@-132#calculatedY@531#children@#name@1:SampleStructure#id@1698727225598#parent@#x@154#y@924
+parent_directory/
+  main.py
+  ecommerce/
+    __init__.py
+    database.py
+    products.py
+    payments/
+        __init__.py
+        square.py
+        stripe.py
+#?#box#calculatedX@-203#calculatedY@607#children@1698727430700#name@2:absoluteImport#id@1698727337083#parent@#x@97#y@985
+import ecommerce.products
+product = ecommerce.products.Product()
+
+from ecommerce.products import Product
+product = Product()
+
+from ecommerce import products
+product = products.Product()
+#?#box#calculatedX@-211#calculatedY@646#children@#name@51:import will work from any module#id@1698727430700#parent@#type@bubble#x@91#y@1016
+content
+#?#box#calculatedX@24#calculatedY@617#children@#name@3:relativeImport#id@1698727518794#parent@#x@279#y@993
+products.py - from .database import Database
+
+package folder - from ..database import Database
+
+from ..contact.email import send_mail
+#?#box#calculatedX@578#calculatedY@145#children@1685259919444,1685260059948,1698726102709,1698726470064,1698726504158,1698726870505,1698727713673,1698727932947#name@3:class#id@1685259800875#parent@#x@722#y@616
+class Point:
+    def __init__(self, x=0, y=0):
+        self.move(x, y)
+    def move(self, x, y):
+        self.x = x
+        self.y = y
+    def reset(self):
+        self.move(0, 0)
+
+point = Point(3, 5)
+print(point.x, point.y)
+#?#box#calculatedX@609#calculatedY@165#children@#name@51: MyFirstClass#id@1698726102709#parent@#type@bubble#x@747#y@632
+content
+#?#box#calculatedX@614#calculatedY@191#children@#name@52: __init__ is initializer#id@1698726470064#parent@#type@bubble#x@751#y@652
+content
+#?#box#calculatedX@617#calculatedY@226#children@#name@53: __new__ is constructor rarely used#id@1698726504158#parent@#type@bubble#x@753#y@680
+content
+#?#box#calculatedX@610#calculatedY@269#children@#name@54:class can be inside object, philiposc2p45#id@1698727932947#parent@#type@bubble#x@748#y@715
+content
+#?#box#calculatedX@415#calculatedY@170#children@#name@1:dataclass#id@1685259919444#parent@#x@592#y@636
+(a small tuition) C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\dataclass.ipynb
+#?#box#calculatedX@410#calculatedY@235#children@#name@2:property#id@1685260059948#parent@#x@588#y@688
+setter,deleter,getter variable access will go via property method
+variable name and property name should not be same
+eg use _name as variable and name as property
+#?#box#calculatedX@600#calculatedY@351#children@1698726894192#name@3:method#id@1698726870505#parent@#x@740#y@780
+content
+#?#box#calculatedX@627#calculatedY@381#children@#name@51: self is object method#id@1698726894192#parent@#type@bubble#x@761#y@804
+content
+#?#box#calculatedX@755#calculatedY@323#children@1698727725678,1698727967889#name@4:variables#id@1698727713673#parent@#x@864#y@758
+content
+#?#box#calculatedX@769#calculatedY@379#children@#name@1:global#id@1698727725678#parent@#x@875#y@803
+database = None
+
+def initialize_database():
+    global database # dont need definition for use , only during assignment
+    database = Database()
+#?#box#calculatedX@894#calculatedY@389#children@1698727984744#name@2:private#id@1698727967889#parent@#x@975#y@811
+_ or __
+_ can be directly accessed
+__ can be directly accessed only from with in class
+  outside class print(<object name>._<class name>__<var name>)
+
+class SecretString:
+    '''A not-at-all secure way to store a secret string.'''
+    def __init__(self, plain_string, pass_phrase):
+        self.__plain_string = plain_string
+        self.__pass_phrase = pass_phrase
+    def decrypt(self, pass_phrase):
+        '''Only show the string if the pass_phrase is correct.'''
+        if pass_phrase == self.__pass_phrase:
+            return self.__plain_string   #<----------- self.__
+        else:
+            return ''
+#?#box#calculatedX@900#calculatedY@440#children@#name@1:no REAL privacy#id@1698727984744#parent@#type@bubble#x@980#y@852
+content
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@751#y@759
+root Node

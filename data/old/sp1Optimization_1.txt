@@ -1,0 +1,101 @@
+#?#box#calculatedX@83#calculatedY@75#children@45,1682394298071,1682394982727#name@0:seed#id@seed#parent@#x@66#y@60
+#?#topic@sp1optimization#tag@sp1optimization
+
+#?#box#calculatedX@95#calculatedY@147#children@1682394016240,1682394103525,1682394145300#name@1:config#id@45#parent@#x@76#y@117
+content
+
+#?#box#calculatedX@107#calculatedY@262#children@#name@1:whereToSet#id@1682394103525#parent@#x@85#y@209
+OPTION 1
+$SPARK_HOME directory (where you installed Spark)
+conf/spark-defaults.conf.template
+conf/log4j.properties.template
+conf/spark-env.sh.template
+
+option 2 command line 
+spark-submit --conf spark.sql.shuffle.partitions=5 --conf
+"spark.executor.memory=2g" --class main.scala.chapter7.SparkConfig_7_1 jars/mainscala-
+chapter7_2.12-1.0.jar
+
+
+
+option 3 spark app
+--when creating spark session
+val spark = SparkSession.builder
+.config("spark.sql.shuffle.partitions", 5)
+.config("spark.executor.memory", "2g")
+.master("local[*]")
+.appName("SparkConfig")
+.getOrCreate()
+
+--using spark conf 
+spark.conf.set("spark.sql.shuffle.partitions",
+spark.sparkContext.defaultParallelism)
+
+option 4 REPL
+scala> spark.conf.get("spark.sql.shuffle.partitions")
+res26: String = 200
+scala> spark.conf.set("spark.sql.shuffle.partitions", 5)
+scala> spark.conf.get("spark.sql.shuffle.partitions")
+res28: String = 5
+
+#?#box#calculatedX@106#calculatedY@313#children@#name@2:viewingConfig#id@1682394145300#parent@#x@84#y@250
+option 1 
+
+session.conf.getAll
+for (k <- mconf.keySet) { println(s"${k} -> ${mconf(k)}\n") }
+
+view only the Spark SQL–specific Spark configs
+// In Scala
+spark.sql("SET -v").select("key", "value").show(5, false)
+# In Python
+spark.sql("SET -v").select("key", "value").show(n=5, truncate=False)
+
+option 2 
+Spark UI’s Environment tab
+
+#?#box#calculatedX@105#calculatedY@210#children@#name@98:gotcha#id@1682394016240#parent@#x@84#y@168
+To set or modify an existing configuration programmatically, first check if the property is modifiable. spark.conf.isModifiable("<config_name>") will return true or false.
+
+ORDER OF PRECEDENCE
+spark app 
+spark submit command line 
+spark-defaults.conf
+
+#?#box#calculatedX@236#calculatedY@149#children@#name@2:dynamicAllocation#id@1682394298071#parent@#x@188#y@119
+default spark.dynamicAllocation.enabled is set to false
+Some of these configs cannot be set inside a Spark REPL do programmatically
+
+spark.dynamicAllocation.enabled true
+spark.dynamicAllocation.minExecutors 2
+spark.dynamicAllocation.schedulerBacklogTimeout 1m 
+  (As the task queue backlog increases, new executors 
+   will be requested each time
+   the backlog timeout is exceeded)
+spark.dynamicAllocation.maxExecutors 20
+spark.dynamicAllocation.executorIdleTimeout 2min
+
+#?#box#calculatedX@360#calculatedY@150#children@#name@3:MemoryUsage#id@1682394982727#parent@#x@288#y@120
+spark memory usage
+M - execution E + storage
+R - minimum fraction of M used for storage
+    ( applicable for caching )
+	when no caching R=0
+If storage > R and E needs space it can 
+evict storage > R not storage <= R
+
+spark.memory.fraction 
+  (default 0.6 )
+  % of heap space = M
+rest 0.4 - internal usage
+best practice 
+  - make sure the value fits inside 
+  old generation alone in JVM excluding
+  new generation
+
+spark.memory.storageFraction 
+  ( default of 0.5 ) 
+  % of M = R
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node
+

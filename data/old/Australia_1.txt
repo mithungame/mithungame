@@ -1,0 +1,207 @@
+#?#box#calculatedX@671#calculatedY@20#children@45#name@0:seed#id@seed#parent@#tag@australia#x@316#y@216
+australia
+#?#box#calculatedX@700#calculatedY@55#children@66#name@0:pte#id@45#parent@#x@340#y@244
+#?#section@pte#tag@pte
+pte
+#?#box#calculatedX@720#calculatedY@100#children@67,1678178657684,1678253893594,1678255381269#name@0:categories#id@66#parent@#x@356#y@280
+#?#section@categories#tag@categories
+categories
+#?#box#calculatedX@401#calculatedY@140#children@68,69,70,71,72#name@0:Speaking#id@67#parent@66#x@100#y@312
+Speaking 
+#?#box#calculatedX@245#calculatedY@225#children@1698288343143,1698288420959,1698288566416,1698288780184,1698289570482,1698289665572#name@0:read aloud#id@68#parent@67#t_color@red#x@-24#y@380
+---
+#?#box#calculatedX@250#calculatedY@256#children@#name@1:35 sec to prepare - beep or red#id@1698288343143#parent@#type@bubble#x@-20#y@404
+content
+#?#box#calculatedX@247#calculatedY@304#children@#name@2:30 to 40 sec to speak , if done click next#id@1698288420959#parent@#type@bubble#x@-22#y@443
+content
+#?#box#calculatedX@249#calculatedY@364#children@#name@3:6 or 7 questions#id@1698288566416#parent@#type@bubble#x@-20#y@491
+content
+#?#box#calculatedX@247#calculatedY@408#children@#name@4:stay quiet for 3 sec mic off#id@1698288780184#parent@#type@bubble#x@-22#y@526
+content
+#?#box#calculatedX@249#calculatedY@446#children@#name@5:reading and speaking score#id@1698289570482#parent@#type@bubble#x@-20#y@556
+content
+#?#box#calculatedX@246#calculatedY@489#children@#name@6:25 points#id@1698289665572#parent@#type@bubble#x@-23#y@591
+content
+#?#box#calculatedX@409#calculatedY@219#children@1698289819663,1698289780939,1698289793427#name@1:repeat sentence#id@69#parent@67#x@107#y@375
+repeat sentence
+hear a sentence 3-9 seconds , 6 or 12 words 
+ repeat sentence as close as possible
+content pronounciation fluency gives points
+#?#box#calculatedX@403#calculatedY@275#children@#name@1: 3 to 9 seconds, 6 or 12 words#id@1698289819663#parent@#type@bubble#x@102#y@420
+content
+#?#box#calculatedX@401#calculatedY@347#children@#name@3:10 or 12 questions#id@1698289780939#parent@#type@bubble#x@100#y@477
+content
+#?#box#calculatedX@405#calculatedY@408#children@#name@5:listening and speaking score#id@1698289793427#parent@#type@bubble#x@104#y@526
+content
+#?#box#calculatedX@571#calculatedY@180#children@1678176272944,1678696982928,1678697092150,1678697709086,1678697877854,1678697976291#name@2:describe image #id@70#parent@67#x@236#y@344
+describe image 
+#?#box#calculatedX@586#calculatedY@250#children@#name@0:properties#id@1678176272944#parent@#x@248#y@400
+3 to 4 on test day
+chart or map or graph
+25 seconds to prepare
+40 seconds to introduce,describe and conclude image
+#?#box#calculatedX@586#calculatedY@290#children@#name@1:types#id@1678696982928#parent@#x@248#y@432
+bar graph
+line chart 
+pie chart 
+map 
+photo
+table 
+process 
+combination of two graph
+#?#box#calculatedX@586#calculatedY@330#children@#name@2:difficult#id@1678697092150#parent@#x@248#y@464
+difficult version
+10 seconds 
+this <image/bar graph/process> represents <title> + <x axis>
+								across 
+								according to 
+								among 
+								by <x axis>
+								such as < read some contents > 
+								including < read some contents >
+								table - read the first column and first row
+20 seconds 
+key features
+	- easiest , highest , lowest , this was followed by , noticable 
+    - keep it simple 
+	- the reminder increased 
+	- in contrast 
+	- read eveerything there 
+	- ... accounted for highest 
+	
+	no hesitation no restart no um just speak words on screen 
+	
+5 seconds 
+	over all say noticable feature again use words increase or decrease
+#?#box#calculatedX@590#calculatedY@365#children@#name@3:unrelated#id@1678697709086#parent@#x@252#y@492
+this is a beautiful image 
+this image provides insightful information about various aspects
+and it is crucial to have a understanding of this
+and from this image we can deduce that it is a popular image
+and it requires immense efforts to calculate maximum and minimum
+#?#box#calculatedX@591#calculatedY@410#children@#name@4:meFinal#id@1678697877854#parent@#x@252#y@528
+--if it has heading this image shows <title> if possible x axis 
+
+The image displays various things such as [word1], [word2], and [word3].
+or
+this mainly provides details on different categories including #keywords
+
+--if its a graph with high low value 
+A has the maximum value and B has the minimum value 
+ 
+Similarly, [word4], [word5], and [word6] can be observed in the image.
+I can notice [word7], [word8], and [word9].
+The illustration also highlights [word10], [word11], and [word12].
+In conclusion, the picture provides important information about [title].
+#?#box#calculatedX@591#calculatedY@445#children@#name@5:i see#id@1678697976291#parent@#x@252#y@556
+i see #key words 
+i also see #key words#
+this is a informative image
+#?#box#calculatedX@695#calculatedY@176#children@#name@3:retell lecture #id@71#parent@67#x@336#y@340
+retell lecture
+1 or 2 tasks
+listening and speaking points
+few seconds to see image and lecture for 90 seconds
+can take notes in this task
+identify topic,theme,ideas
+10 seconds to prepare
+40 seconds to speak
+#?#box#calculatedX@766#calculatedY@170#children@#name@4:answer short question#id@72#parent@67#t_color@green#x@392#y@336
+answer short question
+5 or 6 questions
+vocabulary score
+listen to question and speak answer in 1 or two words
+#?#box#calculatedX@930#calculatedY@180#children@1678178873969,1678179250057#name@1:writing#id@1678178657684#parent@#x@524#y@344
+writing
+#?#box#calculatedX@936#calculatedY@205#children@#name@0:summarize written text#id@1678178873969#parent@#t_color@yellow#x@528#y@364
+4 to 5 points
+1 or 2 
+10 mins to read passage and summarize
+5 to 75 words though 40 to 50 is sweet spot
+read and writing points
+#?#box#calculatedX@936#calculatedY@250#children@#name@1:Essay#id@1678179250057#parent@#x@528#y@400
+Essay
+20 mins
+1 or 2 essay
+format - answer question , take sides . Essay will be argumentative or persuasive
+200-300 words
+#?#box#calculatedX@930#calculatedY@-10#children@1678254182597,1678253940667,1678254344531,1678255152320#name@2:reading#id@1678253893594#parent@#x@524#y@192
+Reading does not give separate timing per task we have to manage as a whole
+13 to 18 questions
+29 to 30 minutes
+#?#box#calculatedX@945#calculatedY@40#children@#name@1:fillIndropdown#id@1678253940667#parent@#t_color@red#x@536#y@232
+fillIndropdown
+5 to 6
+scores for reading and writing
+4 dropdown
+spend 2 minutes
+#?#box#calculatedX@945#calculatedY@70#children@#name@2:multiplechoice#id@1678254182597#parent@#t_color@green#x@536#y@256
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+!!!NEGATIVE SCORE
+reading score only
+SQUARE BUTTON means multiple choice
+2 or 3 answers will be correct
+spend 2 to 3 minutes
+
+
+NOTE: THERE IS A SINGLE CHOICE FORMAT AS WELL, IT WILL HAVE CIRCLE INSTEAD OF SQUARE BOX
+#?#box#calculatedX@955#calculatedY@91#children@#name@3:reorder paragraph#id@1678254344531#parent@#t_color@yellow#x@544#y@272
+reorder paragraph
+2 or 3 
+ only reading score 
+spend 1 or 2 mins
+#?#box#calculatedX@955#calculatedY@140#children@#name@4:fillInBlanks#id@1678255152320#parent@#t_color@red#x@544#y@312
+fillInBlanks
+4 0r 5
+reading alone
+fill one words per blanks
+1 or 2 minutes
+#?#box#calculatedX@1150#calculatedY@-80#children@1678255633712,1678255654682,1678255687138,1678255720334,1678255781326,1678255804360,1678255836644#name@3:Listening#id@1678255381269#parent@#x@700#y@136
+Listening
+12 - 20 questions and 30 to 40 minutes
+#?#box#calculatedX@1150#calculatedY@-50#children@#name@1:Summarize Spoken text#id@1678255633712#parent@#x@700#y@160
+Summarize Spoken text
+take notes of lecture
+write summary 50 - 70 words
+10 mins
+1 or 2 items
+listening and writing
+#?#box#calculatedX@1155#calculatedY@-9#children@#name@2:MultipleChoice#id@1678255654682#parent@#t_color@green#x@704#y@192
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+1 or 2 questions
+just listening
+can be single or multiple choice
+manage own time after summarize spoken text
+#?#box#calculatedX@1150#calculatedY@15#children@#name@3:FillInBlanks#id@1678255687138#parent@#x@700#y@212
+FillInBlanks
+10 to 12 points
+2 or 3
+listening and writing
+no options
+listen and fill
+write on erasable notebook or type directly
+recommend write notes
+#?#box#calculatedX@1145#calculatedY@35#children@#name@4:HighLightCorrectSummary#id@1678255720334#parent@#t_color@green#x@696#y@228
+1 to 2 points
+listeing and reading score
+cant read and listen at same time
+take notes
+#?#box#calculatedX@1146#calculatedY@65#children@#name@5:SelectMissingWord#id@1678255781326#parent@#x@696#y@252
+SelectMissingWord
+1 or 2
+only listening
+there will be a beep
+choose from option
+#?#box#calculatedX@1155#calculatedY@90#children@#name@6:HighlightIncorrectWords#id@1678255804360#parent@#t_color@red#x@704#y@272
+10 to 12 points
+2 or 3
+listening
+move mouse as voice comes and click wrong word
+#?#box#calculatedX@1161#calculatedY@120#children@#name@7:WriteFromDictation#id@1678255836644#parent@#x@708#y@296
+WriteFromDictation
+listening and writing
+type what is said
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@271#y@459
+root Node

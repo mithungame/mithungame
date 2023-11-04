@@ -1,0 +1,233 @@
+name@0:seed
+australia
+
+name@0:pte
+#?#section@pte#tag@pte
+pte
+
+name@0:categories
+#?#section@categories#tag@categories
+categories
+
+name@0:Speaking
+Speaking 
+
+name@0:read aloud
+---
+35 sec to prepare - beep or red
+30 to 40 sec to speak , if done click next
+6 or 7 questions
+stay quiet for 3 sec mic off
+reading and speaking score
+25 points
+
+name@1:repeat sentence
+repeat sentence
+hear a sentence 3-9 seconds , 6 or 12 words 
+ repeat sentence as close as possible
+content pronounciation fluency gives points
+ 3 to 9 seconds, 6 or 12 words
+10 or 12 questions
+listening and speaking score
+
+name@2:describe image 
+describe image 
+
+name@0:properties
+------
+25 seconds to prepare
+40 seconds to introduce,describe and conclude image
+3 to 4 on test day
+
+name@1:types
+bar graph
+line chart 
+pie chart 
+map 
+photo
+table 
+process 
+combination of two graph
+
+name@2:difficult
+difficult version
+10 seconds 
+this <image/bar graph/process> represents <title> + <x axis>
+								across 
+								according to 
+								among 
+								by <x axis>
+								such as < read some contents > 
+								including < read some contents >
+								table - read the first column and first row
+20 seconds 
+key features
+	- easiest , highest , lowest , this was followed by , noticable 
+    - keep it simple 
+	- the reminder increased 
+	- in contrast 
+	- read eveerything there 
+	- ... accounted for highest 
+	
+	no hesitation no restart no um just speak words on screen 
+	
+5 seconds 
+	over all say noticable feature again use words increase or decrease
+
+name@3:unrelated
+this is a beautiful image 
+this image provides insightful information about various aspects
+and it is crucial to have a understanding of this
+and from this image we can deduce that it is a popular image
+and it requires immense efforts to calculate maximum and minimum
+
+name@4:meFinal
+--if it has heading this image shows <title> if possible x axis 
+
+The image displays various things such as [word1], [word2], and [word3].
+or
+this mainly provides details on different categories including #keywords
+
+--if its a graph with high low value 
+A has the maximum value and B has the minimum value 
+ 
+Similarly, [word4], [word5], and [word6] can be observed in the image.
+I can notice [word7], [word8], and [word9].
+The illustration also highlights [word10], [word11], and [word12].
+In conclusion, the picture provides important information about [title].
+
+name@5:i see
+i see #key words 
+i also see #key words#
+this is a informative image
+
+name@3:retell lecture 
+The main focus of the lecture was <topic>
+A number of advantages/disadvantages/causes/effects/affects of <topic> were discussed in the lecture 
+The first crucial aspect revealed in the discourse was -----
+Furthermore, another significant point mentioned in the lecture was -----
+Additionally, the lecture also exhibited important information about -----
+In conclusion, the lecture suggested that -----
+90 seconds lecture
+40 second to speak
+1 or 2 questions
+listening and speaking score
+can take notes
+
+name@4:answer short question
+answer short question
+5 or 6 questions
+vocabulary score
+listen to question and speak answer in 1 or two words
+
+name@1:writing
+writing
+
+name@0:summarize written text
+4 to 5 points
+1 or 2 
+10 mins to read passage and summarize
+5 to 75 words though 40 to 50 is sweet spot
+read and writing points
+
+name@1:Essay
+Essay
+20 mins
+1 or 2 essay
+format - answer question , take sides . Essay will be argumentative or persuasive
+200-300 words
+
+name@2:reading
+Reading does not give separate timing per task we have to manage as a whole
+13 to 18 questions
+29 to 30 minutes
+
+name@1:fillIndropdown
+fillIndropdown
+5 to 6
+scores for reading and writing
+4 dropdown
+spend 2 minutes
+
+name@2:multiplechoice
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+!!!NEGATIVE SCORE
+reading score only
+SQUARE BUTTON means multiple choice
+2 or 3 answers will be correct
+spend 2 to 3 minutes
+
+
+NOTE: THERE IS A SINGLE CHOICE FORMAT AS WELL, IT WILL HAVE CIRCLE INSTEAD OF SQUARE BOX
+
+name@3:reorder paragraph
+reorder paragraph
+2 or 3 
+ only reading score 
+spend 1 or 2 mins
+
+name@4:fillInBlanks
+fillInBlanks
+4 0r 5
+reading alone
+fill one words per blanks
+1 or 2 minutes
+
+name@3:Listening
+Listening
+12 - 20 questions and 30 to 40 minutes
+
+name@1:Summarize Spoken text
+Summarize Spoken text
+take notes of lecture
+write summary 50 - 70 words
+10 mins
+1 or 2 items
+listening and writing
+
+name@2:MultipleChoice
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+1 or 2 questions
+just listening
+can be single or multiple choice
+manage own time after summarize spoken text
+
+name@3:FillInBlanks
+FillInBlanks
+10 to 12 points
+2 or 3
+listening and writing
+no options
+listen and fill
+write on erasable notebook or type directly
+recommend write notes
+
+name@4:HighLightCorrectSummary
+1 to 2 points
+listeing and reading score
+cant read and listen at same time
+take notes
+
+name@5:SelectMissingWord
+SelectMissingWord
+1 or 2
+only listening
+there will be a beep
+choose from option
+
+name@6:HighlightIncorrectWords
+10 to 12 points
+2 or 3
+listening
+move mouse as voice comes and click wrong word
+
+name@7:WriteFromDictation
+WriteFromDictation
+listening and writing
+type what is said
+
+name@rootNode
+root Node
+

@@ -1,0 +1,429 @@
+#?#box#calculatedX@65#calculatedY@-215#children@45,1676431871861,1679645006414,1679648103098,1679715279208,1679715432763,1676347029482,1679668538902#d_visibility@visible#name@0:seed#id@seed#parent@#t_color@red#x@52#y@68
+spark
+
+#?#box#calculatedX@70#calculatedY@-65#children@#name@1:folders#id@45#parent@#x@56#y@188
+--bin
+pyspark stalin 
+spark-shell eats shell 
+sparkR yeppam
+spark-sql comb 
+spark-submit adimai
+-- sbin - adminstrative scripts
+kubernetes
+-- data
+.txt input files for 
+MLlib
+Spark structured streaming 
+GraphX
+--example
+
+#?#box#calculatedX@175#calculatedY@-145#children@#name@1.1:unified20#id@1679648103098#parent@#x@140#y@124
+spark 2.0 unification
+___ operators such as ____ were introduced , helps optimization
+DSL(vin diesel),filter select
+Spark 2.0 unified the --- and --- APIs asStructured APIs with similar interfaces
+dataframe and dataset ( aasari and guy with lot of book bunched by vin diesel)
+what was there earlier before spark session
+SparkContext
+StreamingContext
+SQLContext
+HiveContext
+SparkConf
+StreamingContext
+!!in spark 2.0 you can create a spark session per JVM!!
+
+#?#box#calculatedX@180#calculatedY@-65#children@1681718527687#name@1.2:libraries#id@1676347029482#parent@#x@144#y@188
+sparkSQL and DataFrames   Spark Streaming   MLlib   GraphX <=api/library
+and Datasets
+===========================================================
+Spark Core and Spark SQL Engine 
+Scala SQL python Java R <= language
+===========================================================
+
+apis are separate from ____ engine
+fault tolerant spark core
+
+spark SQL is 
+sql is ansi 2003 compliant
+it treats data in ____ so that it can be interacted with as dataset, dataframe or SQL
+
+what are errors are captured by each app library 
+SQL library 
+Syntax , analysis error  both run time 
+DataFrame 
+Syntax - compile time  , Analysis error - Run time 
+DataSets 
+Syntax and Analysis error at compile time
+tabular format 
+
+#?#box#calculatedX@190#calculatedY@-10#children@#name@1:SparkSQLEngine#id@1681718527687#parent@#x@152#y@232
+1 allows to issue SQL-like queries on your data
+2 Unifies Spark components and permits abstraction to DataFrames/Datasets in Java, Scala, Python, and R, which simplifies working with structured data sets.
+3 Connects to the Apache Hive metastore and tables
+4 Reads and writes structured data with a specific schema from structured file formats (JSON, CSV, Text, Avro, Parquet, ORC, etc.) and converts data into temporary tables.
+5 Generates optimized query plans and compact code for the JVM, for final execution.
+6 Provides a bridge to (and from) external tools via standard database JDBC/ ODBC connectors
+
+#?#box#calculatedX@310#calculatedY@-60#children@1676347637938,1676352734706,1676353056943,1679648260869,1679715125394,1681797034179#name@2:jobsubmitprocess#id@1679645006414#parent@#x@248#y@192
+jobsubmitprocess
+
+#?#box#calculatedX@405#calculatedY@5#children@#name@6:sparksession#id@1676347637938#parent@#x@324#y@244
+The driver accesses the distributed components in the cluster the ___ and ____ through a ___.
+Spark executors and cluster manager, SparkSession
+
+#?#box#calculatedX@515#calculatedY@0#children@#name@7:JobSubmitProcess#id@1676352734706#parent@#x@412#y@240
+SparkApp contains SparkDriver to create SparkSession
+SparkDriver creates SparkSession
+communicates with cluster manager asking for resources
+after resources are allocated spark driver has freedom for what
+directly talk to spark executors 
+SparkJob - stage - task 
+each task maps to a and 
+partition and works on a single core of data
+task is the fundamental unit that interacts with local hardware
+
+#?#box#calculatedX@620#calculatedY@0#children@1676431950479#name@8:TransformationsAndActions#id@1676353056943#parent@#x@496#y@240
+Transformation creates a new data frame
+immutable 
+example select() or filter() wont touch original dataframe
+lazy
+maintains lineage
+can be replayed
+since transformation is lazy it can be optimized
+Action
+=======
+triggeres transformation example show , collect
+
+#?#box#calculatedX@625#calculatedY@50#children@#name@0:TransformationTypes#id@1676431950479#parent@#x@500#y@280
+narrow dependencies or wide dependencies
+narrow 
+filter() and contains()
+they can operate on a single partition and produce the resulting output partition without any exchange of data
+wide
+groupBy() or orderBy()
+where data from other partitions is read in, combined, and written to disk
+
+#?#box#calculatedX@775#calculatedY@0#children@#name@9:codeGeneration#id@1679715125394#parent@#x@620#y@240
+At the core of the Spark SQL engine are the 
+Catalyst optimizer and Project Tungsten
+The Catalyst optimizer does what 
+takes a computational query and converts it into an execution plan.
+4 phases of catalyst optimizer
+Analysis
+Logical plan 
+optimized logical plan 
+Physical planning
+cost model 
+selected physical model 
+Code generation - RDDs
+
+how to check stages of a dataframe
+count_mnm_df.explain(True)
+
+--analysis phase 
+abstract syntax tree (AST) for the SQL or DataFrame query
+any columns or table names will be resolved by consulting an internal Catalog
+--Logical optimization
+generates multiple plan and uses its cost-based optimizer (CBO)
+for example, the process of constant folding, predicate pushdown, projection pruning, Boolean expression simplification
+--Physical planning
+Spark SQL generates an optimal physical plan for the selected logical plan, using physical operators
+--Code generation
+generating efficient Java bytecode to run on each machine.
+collapses whole query to a single function , employing cpu register for intermediate data basically an act of compilation 
+___ plays a major role in code generation
+The second-generation Tungsten engine, introduced in Spark 2.0, uses this approach to generate compact lowlevel RDD code for final execution
+
+#?#box#calculatedX@565#calculatedY@145#children@1681797058735#name@10:clusterManager#id@1679648260869#parent@#x@452#y@356
+cluster manager types
+stand alone
+apache YARN
+apache mesos
+kubernetes
+
+#?#box#calculatedX@680#calculatedY@145#children@#name@99:ll#id@1681797058735#parent@#x@544#y@356
+content
+
+#?#box#calculatedX@430#calculatedY@-60#children@#name@99:Gag#id@1681797034179#parent@#x@344#y@192
+content
+
+#?#box#calculatedX@1705#calculatedY@-65#children@1676432075548#name@3:pyspark#id@1676431871861#parent@#x@1364#y@188
+pyspark
+
+#?#box#calculatedX@1635#calculatedY@0#children@1676432125573,1676432171907,1676433106072,1676433295723#name@0:CodeSnippet#id@1676432075548#parent@#x@1308#y@240
+codeSnippet
+
+#?#box#calculatedX@1600#calculatedY@100#children@#name@0:SparkSession#id@1676432125573#parent@#x@1280#y@320
+how to create spark session
+from pyspark.sql import SparkSession
+spark = (SparkSession
+.builder
+.appName
+"PythonMnMCount")
+.getOrCreate())
+to stop spark session
+spark.stop()
+
+#?#box#calculatedX@1800#calculatedY@100#children@1676432194392#name@1:readFiles#id@1676432171907#parent@#x@1440#y@320
+readFiles
+
+#?#box#calculatedX@1820#calculatedY@195#children@#name@0:readCSV#id@1676432194392#parent@#x@1456#y@396
+mnm_df = (spark.read.format("csv")
+.option("header", "true")
+.option("inferSchema", "true")
+.load(mnm_file))
+
+#?#box#calculatedX@1995#calculatedY@95#children@1676433168763,1676435278895#name@2:DFfunctions#id@1676433106072#parent@#x@1596#y@316
+DFfunctions
+
+#?#box#calculatedX@2000#calculatedY@180#children@#name@0:example#id@1676433168763#parent@#x@1600#y@384
+from pyspark.sql.functions import count
+ca_count_mnm_df = (mnm_df
+.select("State", "Color", "Count")
+.where(mnm_df.State == "CA")
+.groupBy("State", "Color")
+.agg(count("Count").alias("Total"))
+.orderBy("Total", ascending=False))
+ca_count_mnm_df.show(n=10, truncate=False)
+
+#?#box#calculatedX@2160#calculatedY@170#children@#name@1:run#id@1676435278895#parent@#x@1728#y@376
+SPARK_HOME/bin/spark-submit mnmcount.py data/mnm_dataset.csv
+
+#?#box#calculatedX@2165#calculatedY@90#children@#name@3:run#id@1676433295723#parent@#x@1732#y@312
+SPARK_HOME/bin/spark-submit mnmcount.py data/mnm_dataset.csv
+
+#?#box#calculatedX@90#calculatedY@115#children@1679714961480,1679714979674,1679715016785#name@4:RDDDfDS#id@1679668538902#parent@#x@72#y@332
+rddDfDs
+
+#?#box#calculatedX@95#calculatedY@165#children@#name@1:rdd#id@1679714961480#parent@#x@76#y@372
+The RDD is the most basic abstraction in Spark. There are three vital characteristics
+associated with an RDD:
+Dependencies
+Partitions (with some locality information)
+Compute function: Partition => Iterator[T]
+
+disadvantage
+Iterator[T] data type is also opaque for Python RDDs
+compute function is opaque to Spark,it does not know the operation filter or group by
+so no change of optimization
+
+#?#box#calculatedX@205#calculatedY@165#children@#name@2:dataframe#id@1679714979674#parent@#x@164#y@372
+A DataFrame is simply a 
+Dataset[Row]
+row is a 
+generic untyped JVM object that may hold different types of fields
+used in 
+Python and R 
+Python and R are not
+compile-time type-safe
+types are 
+dynamically inferred or assigned during execution,not during compile time
+use DataFrames when 
+your processing dictates relational transformations similar to SQL-like queries
+unification, code optimization, and simplification of APIs across Spark components, use DataFrames.
+If you are an R user
+If you are a Python user, use DataFrames and drop down to RDDs if you need more control.
+If you want space and speed efficiency, use DataFrames.
+
+#?#box#calculatedX@315#calculatedY@160#children@#name@3:dataset#id@1679715016785#parent@#x@252#y@368
+Datasets take on two characteristics
+typed and untyped APIs( DataFrame )
+A Dataset, by contrast, is a collection of 
+Dataset[T] where T is a typed field
+strongly typed JVM objects in Scala or a class in Java
+used in
+Java and Scala
+when creating a Dataset you have to
+know the schema.
+DataSet summary 
+it is like RDD but  with better control and high level language 
+use Datasets when 
+If you want strict compile-time type safety and dont mind creating multiple case classes for a specific Dataset[T]
+benefit from Tungstens efficient serialization with Encoders
+
+#?#box#calculatedX@640#calculatedY@330#children@1679715514690,1679715381542,1681967597550,1681977845841,1682349908366,1682395749323#name@5:linkage#id@1679715279208#parent@#x@512#y@504
+link
+
+#?#box#calculatedX@790#calculatedY@260#children@#name@1:sparkCatalog#id@1682349908366#parent@#x@632#y@448
+spark catalog
+inmemory - tables only available in sparksession
+hive - persistent tables using hive metastore
+default external catalog implementation property
+spark.sql.catalogImplementation=hive/in-memory
+
+external hive(metastore_db) is configured with hive-site.xml
+if external hive is not configured spark uses derby 
+not good for production , only 1 spark session can access it at a time
+
+with external hive
+allow multiple spark application(session) to connect concurrently
+use table statistics without running "ANALYZE TABLE" every time
+
+in same hive store multiple catalog can co exist
+starting 3.1 hive and spark catalog are now separate in a metastore
+property
+metastore.catalog.default=hive/spark
+
+data is stored at location specified by spark.sql.warehouse.dir 
+it actually points to hive.metastore.warehouse.dir 
+
+spark shell creates a -- aware session
+hive
+
+note:spark write is different from spark save as table and has nothing 
+to do with metastore
+
+#?#box#calculatedX@907#calculatedY@258#children@1679715531944,1679715651217,1679715658244,1679718715196#name@1.1:sparkViewsAndTables#id@1679715514690#parent@#x@725#y@446
+sparkViews
+
+#?#box#calculatedX@1047#calculatedY@338#children@#name@1:SparkViews#id@1679715651217#parent@#x@837#y@510
+Views can be 
+global (visible across all SparkSessions on a given cluster) or 
+- lives till application is alive 
+session-scoped (visible only to a single SparkSession), 
+- lives for session 
+and they are temporary: they disappear after your Spark application terminates.
+
+
+Temporary views versus global temporary views
+A temporary view is tied
+to a single SparkSession within a Spark application
+a global temporary view is visible across 
+multiple SparkSessions within a Spark application
+!!Yes, you can create multiple SparkSessions within a single Spark application
+example 
+two spark session dont have same hive metastore configuration
+in this case create two session and read data, then create two global view , which can then be combined 
+
+Spark manages the metadata associated with each managed or unmanaged table. This is captured in the 
+Catalog
+
+#?#box#calculatedX@1093#calculatedY@278#children@1681966954175,1681967266767#name@2:sparkTables#id@1679715658244#parent@#x@874#y@462
+There are no temporary tables in spark only temporary views all tables are permanent
+
+#?#box#calculatedX@1248#calculatedY@263#children@#name@1:managed table#id@1681966954175#parent@#x@998#y@450
+data and metadata managed by spark
+in spark 2.1 if LOCATION is specified it implicitly becomes external table
+in spark 2.2 if path() is speificed it implicitly means external table
+managed tables example as per learning spark book
+example:  local filesystem, HDFS, or an object store such as Amazon S3 or Azure Blob
+probably wrong
+
+DROP TABLE table_name
+spark deletes both the metadata and the data
+
+!!note:mostly people use hive managed tables as per my google search,because it can then be picked up by any tool PIG
+
+#?#box#calculatedX@1217#calculatedY@333#children@#name@2:unmanaged table#id@1681967266767#parent@#x@973#y@506
+unmanaged table, Spark only manages the 
+metadata, while you manage the data
+example : external data source such as Cassandra.
+
+drop table
+delete only the metadata, not the actual data
+
+#?#box#calculatedX@1093#calculatedY@225#children@#name@3:UDF#id@1679718715196#parent@#x@874#y@420
+Spark SQL UDFs
+UDFs operate per
+session 
+and they will not be 
+persisted in the underlying metastore
+how to use udf
+create udf , register , call 
+
+Spark SQL (this includes SQL, the DataFrame API, and the Dataset API) 
+does not guarantee the order of evaluation of subexpressions
+the following query does not guarantee that the s is NOT NULL clause is executed prior to the strlen(s) > 1 clause
+sark.sql("SELECT s FROM test1 WHERE s IS NOT NULL AND strlen(s) > 1")
+
+to perform proper null checking, it is recommended that
+Make the UDF itself null-aware and do null checking inside the UDF.
+Use IF or CASE WHEN expressions to do the null check and invoke the UDF in a conditional branch.
+-----------------udf is too much for me now so i am skipping it and moving to spark sql shell 
+
+#?#box#calculatedX@871#calculatedY@337#children@#name@99:playArea#id@1679715531944#parent@#x@696#y@509
+content
+
+#?#box#calculatedX@995#calculatedY@435#children@1679715474400,1681716791137,1681716976777#name@2:sparkJoin#id@1679715381542#parent@#x@796#y@588
+Spark has five distinct join strategies
+
+#?#box#calculatedX@1030#calculatedY@500#children@#name@0:properties#id@1681716791137#parent@#x@824#y@640
+Spark has five distinct join strategies
+broadcast hash join (BHJ) 
+shuffle hash join (SHJ),
+shuffle sort merge join (SMJ)
+broadcast nested loop join (BNLJ)
+shuffle-and-replicated nested loop join (a.k.a. Cartesian product join).
+BHJ and SMJ are most commonly used
+
+#?#box#calculatedX@1120#calculatedY@500#children@#name@1:BroadcastHashJoin#id@1681716976777#parent@#x@896#y@640
+aka map-side-only join
+situation 
+one small dataset(fitting in the drivers and executors memory) and another large enough to ideally be spared from movement
+default Spark will use a broadcast join if the smaller data set is 
+less than 10 MB
+property variable 
+spark.sql.autoBroadcastJoinThreshold
+Specifying a value of -1 in spark.sql.autoBroadcastJoinThreshold will cause Spark to always resort to a shuffle sort merge join
+
+#?#box#calculatedX@890#calculatedY@470#children@#name@99:roofTopaboveOfficeRoom#id@1679715474400#parent@#x@712#y@616
+content
+
+#?#box#calculatedX@640#calculatedY@438#children@1681967580919,1681977292723,1681977725322,1681978581370,1682395587803#name@3:partition#id@1681967597550#parent@#x@512#y@590
+content
+
+#?#box#calculatedX@570#calculatedY@508#children@#name@1:repartition#id@1681967580919#parent@#x@456#y@646
+initiates full shuffle
+increase or deacrease partition
+internally calls coalesce with shuffle=true
+all key will end up in same partition
+a partition may have more than one key
+if data is skewed some partition may be empty
+spark can be repartitioned based on one or MULTIPLE columns
+ default value - spark.sql.shuffle.partitions
+
+#?#box#calculatedX@567#calculatedY@563#children@#name@2:coalesce#id@1681977292723#parent@#x@453#y@690
+avoids full shuffle by retaining most existing partition
+it is good for deacreasing partition
+it can only deacrease partition<CONTRADICTORY INFO>
+may result in unequal sized partition
+
+#?#box#calculatedX@685#calculatedY@514#children@#name@3:partitionBy#id@1681977725322#parent@#x@548#y@651
+no shuffle
+no of directories=number of unique column values
+no of files=no of partition*no of distinct value in each partition
+a data with 7 days in week dir=7 , files=no of partition*no of unique day in each partition
+can use multiple col
+not good for high cardinality columns 
+
+#?#box#calculatedX@690#calculatedY@568#children@#name@4:bucketing#id@1681978581370#parent@#x@552#y@694
+specify no of bucket.all same hash goes to one bucket
+--uncertain i think its file - unlike hive,total bucket=no of bucket*no of partition
+bucketing is enabled by default
+sorting is optional to do sort use .sortBY specifically
+good for high cardinality situations
+
+#?#box#calculatedX@691#calculatedY@402#children@#name@99:officeRoom#id@1682395587803#parent@#x@552#y@561
+content
+
+#?#box#calculatedX@376#calculatedY@400#children@#name@4:parquet#id@1682395749323#parent@#x@300#y@560
+--- is the default and preferred data source for Spark because
+Parquet 
+it's efficient, uses columnar storage, and employs a fast compression algorithm.
+Parquet is also the default table open format for 
+Delta Lake
+In general, no schema is needed when reading from a ------- data source
+static Parquet
+the Parquet metadata -----------, so its inferred. 
+usually contains the schema <--- note USUALLY
+However, for streaming data sources you will have to provide a schema.
+
+#?#box#calculatedX@377#calculatedY@349#children@#name@99:bus parking#id@1681977845841#parent@#x@301#y@519
+content
+
+#?#box#calculatedX@70#calculatedY@-145#children@#name@99:entrance#id@1679715432763#parent@#x@56#y@124
+achyuta
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@499
+root Node
+

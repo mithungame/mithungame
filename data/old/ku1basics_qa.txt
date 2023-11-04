@@ -1,0 +1,154 @@
+id@1679375926472
+octopus
+what is control plane 
+bunch of server services
+where does it run
+one or more machines
+components
+kube-apiserver, kube-controller-manager, kube-scheduler, and etcd
+kube-apiserver is the.
+front end
+kube-controller-manager is a
+daemon process 
+kube-controller-manager manages
+Kubernetes control loop
+Logically, each controller is a ---
+separate process
+notice and respond when nodes go down.
+Node controller
+create pod for one-off job
+Job controller
+assign node for new pod
+kube-scheduler 
+key-value store name
+Etcd
+use of Etcd
+stores and replicates entire cluster state.
+in what language is Etcd written 
+Go and Raft protocol
+why Go and Raft protocol
+maintains identical logs of state changing commands across nodes and coordinates the order in which these state changes occur.
+kubelet is reposible for 
+communication between the Kubernetes control plane and the Node
+kubelet manages the 
+Pods and the containers running on a machine.
+
+id@1679375814785
+node is a 
+logical VM
+what is inside a node
+multiple pods
+mandatory node components - 
+kubelet kube-proxy container runtime
+icecube vasool raja whale
+kube proxy implements
+Kubernetes Service concept.
+Container runtime
+docker or other container technology
+kubelet
+monitor containers in pod
+
+id@66
+smallest kubernetes unit
+pod
+pod usually has 
+one container running
+sometimes two container
+exampel side car pattern
+what is side car pattern 
+second pod captures logs 
+
+id@1679466667599
+pod is an abstraction over 
+container 
+why it is abstracted 
+if not docker some other container
+pod dont have 
+permanent ip address
+___ provides permanent ip address
+SERVICES
+pods communicate with each other using 
+services
+
+id@1679467038402
+The idea of a Service is to 
+group a set of Pods
+example of service 
+load balancer 
+
+id@1681808765388
+pods communicate internally via
+cluster ip 
+cluster ip is ___ ip
+permanent
+view ip address of clusterIP
+kubectl get service
+
+id@1681809835565
+The NodePort Service is an extension of
+ClusterIP Service type
+nodePort value in the - range
+30000--32767 range
+should you assign ip 
+let kubernetes do it 
+why 
+to avoid collision
+
+id@1681809880031
+see output as yaml 
+kubectl get service -o yaml
+
+id@1681809972394
+how external client calls node port 
+ip ->nodePort ->pod 8080
+203.0.113.2-> 32675 -> 8080
+how internal clients have two ways to call the Service
+clusterIP:port.
+nodeIP:nodePort
+
+id@1681808629487
+external name
+Internal clients use DNS name of Service
+internal dns name is 
+alias for an external DNS name
+
+id@1681810681994
+ExternalName is classified as a 
+service 
+but its not exactly a 
+service
+ExternalName is not associated with 
+a set of Pods
+ExternalName does not have 
+a stable IP address
+ExternalName is a mapping from
+internal to external DNS name.
+
+id@1681808647862
+You can use a headless service when 
+need Pod grouping don't need stable IP address.
+
+id@misc
+if pod1 gets created first and pod2 gets created second which gets destroyed first 
+no ordering guarantee
+what is aws eks 
+Amazon EKS is a 
+managed orchestration service
+Amazon EKS is integrated with many AWS services like IAM , Cloud Trail , VPC yess or no
+yes
+Amazon EKS provisions and scales the Kubernetes
+yes
+it detects replaces patches
+unhealthy control plane nodes
+What is the advantage of eks over ecs
+eks based on kubernetes open source
+what is fully managed , semi managed and self managed 
+Nodes are takend care by Fargate , Nodegroup , EC2 ( full control )
+Nodegroup 
+create and manage EC2 instance with additional control
+can we use a combination of management strategy 
+yes eg EC2 and Farget 
+what is ecr 
+elastic container registry
+ecr is like docker hub
+integrates with aws services

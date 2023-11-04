@@ -1,0 +1,74 @@
+#?#box#calculatedX@311#calculatedY@229#children@#name@0:seed#id@seed#parent@#x@189#y@63#tag@aws
+aws
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:networking#id@1696053129490#parent@#x@210#y@90
+order of items 
+inside vpc - AZ , Subnet , Instance(EC2)
+VPC-HOME
+AZ-FLOOR
+SUBNET-ROOM
+FRIDGE-EC2
+SECURITY AT EACH FLOOR IS ROUTE TABLE
+SECURITY AT VPC IS INTERNET GATEWAY
+SECURITY AT FRIDGE IS SECURITY GROUP
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:vpc#id@1696053129491#parent@#x@210#y@90
+Virtual Private Cloud
+Can a VPC span multiple Region
+no
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:az#id@1696053129492#parent@#x@210#y@90
+can an availability zone have multiple subnets
+Yes
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:subnet#id@1696053129493#parent@#x@210#y@90
+subnet use 
+provide Internal IP for EC2,RDS.. with in the vpc
+
+
+can ec2 get a public IP address
+yes
+same for RDS 
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:internetGateway#id@1696053129494#parent@#x@210#y@90
+Internet Gateway
+control all access to outside world
+If i block internet only way to reach VPC is via VPC connection
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:vpc#id@1696053129495#parent@#x@210#y@90
+Security Group
+I work on a per instance level , eg for EC2 , RDS
+if you attach me to VPC , RDS EC2 inherit those
+basically i act as a fire wall within network
+you still need to open the firewall port on the actual machine itself, SG just is a control mechanism
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:nacl#id@1696053129496#parent@#x@210#y@90
+NACL
+Network control access list
+works at subnet level
+but no one uses   , they just use security group as it is more granular
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:routeTable#id@1696053129497#parent@#x@210#y@90
+Route table
+control Outgoing access
+can block outgoing traffic at subnet  level
+which in turn means VPC level
+wont let you reach internet gateway
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:types#id@1696053129498#parent@#x@210#y@90
+public Subnet
+Router allows out going traffic
+
+Private Subnet
+Router blocked from reaching out to gateway
+not allowed any public IP address
+ 
+
+#?#box#calculatedX@338#calculatedY@263#children@#name@0:NAT#id@1696053129499#parent@#x@210#y@90
+NAT gateway
+I can forward your traffic but you still dont get public IP
+Why do i need this ? say you are a database and you are in private
+        and you want to access internet for a patch
+but still outside world cannot access the database
+Hey Route table , I am a database , though i dont need public to reach me , i need to reach internet for patching
+I will point you to NAT - Network address translator

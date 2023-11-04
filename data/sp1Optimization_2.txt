@@ -1,0 +1,152 @@
+#?#box#calculatedX@82#calculatedY@75#children@45,1682394298071,1682394982727#name@0:seed#id@seed#parent@#x@65#y@60
+sp1optimization
+
+#?#box#calculatedX@95#calculatedY@146#children@1682394016240,1682394103525,1682394145300#name@1:config#id@45#parent@#x@76#y@116
+content
+
+#?#box#calculatedX@106#calculatedY@261#children@#name@1:whereToSet#id@1682394103525#parent@#x@84#y@208
+OPTION 1
+$SPARK_HOME directory (where you installed Spark)
+conf/spark-defaults.conf.template
+conf/log4j.properties.template
+conf/spark-env.sh.template
+
+option 2 command line 
+spark-submit --conf spark.sql.shuffle.partitions=5 --conf
+"spark.executor.memory=2g" --class main.scala.chapter7.SparkConfig_7_1 jars/mainscala-
+chapter7_2.12-1.0.jar
+
+
+
+option 3 spark app
+--when creating spark session
+val spark = SparkSession.builder
+.config("spark.sql.shuffle.partitions", 5)
+.config("spark.executor.memory", "2g")
+.master("local[*]") 
+.appName("SparkConfig")
+.getOrCreate()
+
+master(local[*])<-- master is url of distributed cluster , in this case local . 
+local[1] run with one thread
+local[*] Run Spark locally with as many worker threads as logical cores on your machine.
+
+--using spark conf 
+spark.conf.set("spark.sql.shuffle.partitions",
+spark.sparkContext.defaultParallelism)
+
+option 4 REPL
+scala> spark.conf.get("spark.sql.shuffle.partitions")
+res26: String = 200
+scala> spark.conf.set("spark.sql.shuffle.partitions", 5)
+scala> spark.conf.get("spark.sql.shuffle.partitions")
+res28: String = 5
+
+#?#box#calculatedX@105#calculatedY@312#children@#name@2:viewingConfig#id@1682394145300#parent@#x@84#y@249
+option 1 
+
+session.conf.getAll
+for (k <- mconf.keySet) { println(s"${k} -> ${mconf(k)}\n") }
+
+view only the Spark SQL specific Spark configs
+// In Scala
+spark.sql("SET -v").select("key", "value").show(5, false)
+# In Python
+spark.sql("SET -v").select("key", "value").show(n=5, truncate=False)
+
+option 2 
+Spark UIs Environment tab
+
+#?#box#calculatedX@105#calculatedY@210#children@#name@98:gotcha#id@1682394016240#parent@#x@84#y@168
+To set or modify an existing configuration programmatically, first check if the property is modifiable. spark.conf.isModifiable("<config_name>") will return true or false.
+
+ORDER OF PRECEDENCE
+spark app 
+spark submit command line 
+spark-defaults.conf
+
+#?#box#calculatedX@235#calculatedY@148#children@#name@2:dynamicAllocation#id@1682394298071#parent@#x@188#y@118
+default spark.dynamicAllocation.enabled is set to false
+Some of these configs cannot be set inside a Spark REPL do programmatically
+
+spark.dynamicAllocation.enabled true
+spark.dynamicAllocation.minExecutors 2
+spark.dynamicAllocation.schedulerBacklogTimeout 1m 
+  (As the task queue backlog increases, new executors 
+   will be requested each time
+   the backlog timeout is exceeded)
+spark.dynamicAllocation.maxExecutors 20
+spark.dynamicAllocation.executorIdleTimeout 2min
+
+#?#box#calculatedX@360#calculatedY@150#children@1682478385846,1682481595828,1682481729052#name@3:MemoryUsage#id@1682394982727#parent@#x@288#y@120
+MemoryUsage
+
+#?#box#calculatedX@367#calculatedY@220#children@#name@1:offHeap#id@1682478385846#parent@#x@293#y@176
+off heap is outside jvm 
+spark uses it for storage using tungsten
+java uses it for JVM overheads
+
+A spark.executor.memoryOverhead - 10% of executor mem or 384 MB ( min )
+B spark.memory.offHeap.size - dataframe offheap storage 
+spark.memory.offHeap.use true for activating above
+
+from spark 3.0 offheap memory = A+B
+earlier B was a part of A
+
+TODO:seems too advanced at this point
+spark.executor.pyspark.memory
+spark.python.worker.memory
+
+#?#box#calculatedX@380#calculatedY@277#children@#name@1.1:MemoryAllocation#id@1682481729052#parent@#x@304#y@221
+spark memory usage
+M - execution E + storage
+R - minimum fraction of M used for storage
+    ( applicable for caching )
+	when no caching R=0
+If storage > R and E needs space it can 
+evict storage > R not storage <= R
+
+spark.memory.fraction 
+  (default 0.6 )
+  % of heap space = M
+rest 0.4 - internal usage
+best practice 
+  - make sure the value fits inside 
+  old generation alone in JVM excluding
+  new generation
+
+spark.memory.storageFraction 
+  ( default of 0.5 ) 
+  % of M = R
+
+#?#box#calculatedX@382#calculatedY@329#children@#name@2:cacheandpersist#id@1682481595828#parent@#x@305#y@263
+cache and persist are same,persist provides more option
+
+cache() will store as many of the partitions read in memory across Spark executors
+as memory allows , rest are recalculated . 
+cache will not store partial partitions if it wont fit memory 
+
+df.cache()
+df.count() //cache triggered only on action 
+
+df.cache()
+df.take(1) //cache stores only one partition as for take 1 only 1 parition is needed 
+
+example
+When data is stored in disk it is always SERIALIZED
+MEMORY_ONLY as objects ,only in memory.
+MEMORY_ONLY_SER serialized as compact byte array representation ,only in memory. To use it, it has to be deserialized at a cost.
+MEMORY_AND_DISK stored as objects in memory, spill stored on disk.
+DISK_ONLY Data stored on disk.
+OFF_HEAP Off-heap memory is used in Spark for storage and query execution - TUNGSTEN
+MEMORY_AND_DISK_SER Like MEMORY_AND_DISK but serialized
+
+df.persist(StorageLevel.DISK_ONLY)
+df.count()
+
+spark.sql("CACHE TABLE dfTable")
+spark.sql("SELECT count(*) FROM dfTable").show()
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node
+

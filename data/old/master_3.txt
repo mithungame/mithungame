@@ -1,0 +1,27 @@
+#?#box#calculatedX@275#calculatedY@132#children@45,1694955509753,1694955515040,1694955522302,1694955531436#name@0:seed#id@seed#parent@#x@160#y@105
+#?#topic@plan#tag@plan
+
+#?#box#calculatedX@176#calculatedY@220#children@1694955595828#name@1:todo#id@45#parent@#x@80#y@176
+content
+
+#?#box#calculatedX@116#calculatedY@295#children@#name@1:C:\Users\mithu\Desktop\d3\privateData#id@1694955595828#parent@#x@32#y@236
+content
+
+#?#box#calculatedX@414#calculatedY@190#children@#name@2:guitar#id@1694955509753#parent@#x@271#y@152
+content
+
+#?#box#calculatedX@550#calculatedY@187#children@1694955637715#name@3:hindi#id@1694955515040#parent@#x@380#y@149
+content
+
+#?#box#calculatedX@584#calculatedY@327#children@#name@1:C:\Users\mithu\Downloads\track\jarvis\tech#id@1694955637715#parent@#x@407#y@261
+content
+
+#?#box#calculatedX@925#calculatedY@173#children@#name@4:python#id@1694955522302#parent@#x@680#y@138
+content
+
+#?#box#calculatedX@1116#calculatedY@165#children@#name@5:AIML#id@1694955531436#parent@#x@832#y@132
+content
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@431#y@259
+root Node
+

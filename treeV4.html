@@ -1,0 +1,970 @@
+<html lang="en">
+<head>
+	<script src="./package/dist/d3.min.js"></script>
+</head>
+<style>
+.node {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+.context-menu{
+  position: absolute;
+  text-align: center;
+  background: black;
+  border: 1px solid black;
+  }
+  .context-menu ul{
+  padding: 0px;
+  margin: 0px;
+  min-width: 150px;
+  list-style: none;
+  border:1px solid black;
+  }
+  .context-menu ul lik a {
+  text-decoration: none;
+  color:black;
+  }
+  textarea {
+  width: 100%;
+  background: black;
+  color: white;
+  }
+  button {
+  background: grey;
+  color: white;  
+  }
+  .titleItem {
+  cursor: pointer;
+  }
+  body {
+  background: black;
+  color: white
+  }
+  .linepath,.triangle {
+  stroke: white
+  }  
+  #textAreaDiv {
+  position: absolute;
+  z-index: 200001;
+  left: 100px;
+  top: 150px;
+  width: 500px;
+  height: 500px;
+  background-color: coral;
+  }
+  #textAreaPop{
+  width: 100%;
+  height: 100%;
+  background-color: #8C4788;
+  }
+
+</style>
+<body>
+<input type="file" name="inputfile" id="inputfile">
+<div id="contextMenu" class="context-menu" style="display:none">
+<div onclick="rightClickAction('delete')">delete</div>
+<div onclick="rightClickAction('link')">link</div>
+<div onclick="rightClickAction('unlink')">unlink</div>
+<div onclick="rightClickAction('modify')">modify</div>
+
+</div>
+<div id="textAreaDiv" style="visibility:hidden;z-index=200001;">
+<p onclick=hideTextArea()>Hide</p>
+<textarea id="textAreaPop"></textarea>
+</div>
+<div id="root" style="position:relative">
+
+<script>
+
+
+v_masterData=[]
+g_masterData=[]
+v_triggerer=null
+const g_nodeTranslationFactor=1
+const g_sizeTranslationFactor=g_nodeTranslationFactor
+const g_moveTranslationFactor=g_nodeTranslationFactor
+const g_windowX=0
+const g_windowY=0
+const g_windWidth=1200
+const g_winHeight=700
+const g_rootNode={"id":"root","x":g_windWidth/2,"y":g_winHeight/2,"data":{"name":"rootNode","desc":"root Node"},"parent":[],"children":[]}
+const g_divFontSize=10
+const g_pFontFamily='Verdana, Arial, Helvetica, sans-serif'
+
+const g_moveFactor=25
+v_moveFactor=25
+v_divFontSize=0
+const g_divWidth=100
+v_divWidth=0
+const g_divHeight=25
+v_divHeight=0
+v_sizeTranslationFactor=g_nodeTranslationFactor
+v_moveTranslationFactor=g_moveTranslationFactor
+v_nodeTranslationFactor=g_nodeTranslationFactor
+
+function recenterAtNode(id,actions){
+console.log('recenter',id)
+let currentObj=nodeDataSearch([{"id":id}])
+console.log(currentObj)
+if (currentObj.length==0||currentObj==null){alert("No such id");return}
+shiftToNode(currentObj[0])
+postActivity(["viewableNodes","generateLink","refresh"])
+}
+
+function searchTitle(titleName,searchCase='name'){
+let results=[]
+titleName=titleName.toLowerCase()
+for(let i=0;i<g_masterData.length;i++){
+if (g_masterData[i].data[searchCase].toLowerCase().includes(titleName)){
+results.push([g_masterData[i].id,g_masterData[i].data.name])
+}
+}
+for(let i=0;i<results.length;i++){
+results[i].push(similarity(results[i][1],titleName))
+}
+results.sort(function(a, b) {return b[2] - a[2]})
+//console.log(results)
+return results
+}
+
+function shiftToNode(obj)
+{
+console.log("shiftToNode")
+let v_shiftedX=(g_windWidth/2)-obj.calculatedX
+let v_shiftedY=(g_winHeight/2)-obj.calculatedY
+for ( let i=0;i<g_masterData.length;i++){
+let currentItem=g_masterData[i]
+currentItem['calculatedX']+=v_shiftedX
+currentItem['calculatedY']+=v_shiftedY
+}
+if(obj.id=="root"){g_shiftedX=v_shiftedX;g_shiftedY=v_shiftedY}
+else{g_shiftedX+=v_shiftedX;g_shiftedY+=v_shiftedY;shifToCentre(g_rootNode)}
+
+
+}
+
+function nodeTranslation(translationFactor){
+console.log("nodeTranslation",translationFactor)
+for (let i=0;i<g_masterData.length;i++){
+let currentItem=g_masterData[i]
+currentItem.calculatedX = currentItem.x*translationFactor
+currentItem.calculatedY=currentItem.y*translationFactor
+}
+shiftToNode(g_rootNode)
+}
+
+function postActivity(actions){
+if(actions.indexOf("viewableNodes")>-1){viewableNodes()}
+if(actions.indexOf("generateLink")>-1){generateLink()}
+if(actions.indexOf("refresh")>-1){refresh()}
+}
+
+function sizeTranslation(sizeTranslationFactor , moveTranslationFactor){
+v_divFontSize=g_divFontSize*sizeTranslationFactor
+v_divWidth=g_divWidth*sizeTranslationFactor
+v_divHeight=g_divHeight*sizeTranslationFactor
+v_moveFactor=g_moveFactor*moveTranslationFactor
+}
+sizeTranslation(v_sizeTranslationFactor,v_moveTranslationFactor)
+
+function findFriends(v_selectedIds){
+console.log("find friends")
+for (let i=0;i<v_masterData.length;i++)
+{
+let currentItem=v_masterData[i]
+for (let j=0;j<g_masterData.length;j++)
+{
+if (( currentItem.id in g_masterData[j].parent || currentItem.id in g_masterData[j].children ) && ( !(g_masterData[j].id in v_selectedIds) )){
+v_masterData.push(g_masterData[j])
+}
+}
+}
+}
+
+function InFormat(content){
+let masterData=[]
+let desc=''
+let text=content.split('\n')
+//console.log(text)
+//removing last empty line as it is adding a new line every time 
+if (text[text.length-1]==''){text.pop()}
+text=text.map(d=>{return d+'\n'})
+//console.log(text)
+for (let i=0;i<text.length;i++){
+let currentLine=text[i];//console.log(currentLine)
+if (currentLine.trim().substring(0,6)=='#?#box'){
+if (masterData.length>0){masterData[masterData.length-1]['data']['desc']=desc;desc=''}
+let boxdetails=currentLine.trim().substring(7,currentLine.length).split('#')
+let currentJSON={'data':{'name':'','desc':''}}
+for (let j=0;j<boxdetails.length;j++){
+let currentBox=boxdetails[j].split('@')
+if(['parent','children','styles'].includes(currentBox[0])){
+currentJSON[currentBox[0]]=currentBox[1].split(",").filter(d=>!d=='')
+}
+else if (currentBox[0]=='name'){currentJSON['data']['name']=currentBox[1]} 
+else{ currentJSON[currentBox[0]]=currentBox[1]}    
+//console.log(currentJSON)
+}
+masterData.push(currentJSON)
+}
+else{desc+=currentLine}
+}
+if (masterData.length>0){masterData[masterData.length-1]['data']['desc']=desc;desc=''}
+return(masterData)
+}
+
+
+function viewableNodes(){
+v_masterData=[]
+v_selectedIds=[]
+
+for(let i=0;i<g_masterData.length;i++){
+let currentItem=g_masterData[i]
+if (currentItem.id != "root" && currentItem.calculatedX >= g_windowX && currentItem.calculatedX <= g_windowX+g_windWidth && currentItem.calculatedY >= g_windowY && currentItem.calculatedY <= g_windowY+g_winHeight){
+v_masterData.push(currentItem)
+v_selectedIds.push(currentItem.id)
+}
+}
+}
+
+
+
+g_fileName=null
+var data = document.getElementById('inputfile').addEventListener('change',function(){
+var fr=new FileReader();
+fr.addEventListener("load",function(){
+let content=fr.result
+if (content.split('\n')[0].trim().substring(0,8)=='{"data":'){fileData=JSON.parse(fr.result);g_masterData=fileData.data.nodeData}
+else{fileData=InFormat(fr.result);g_masterData=fileData}
+console.log(fileData)
+let checkIfRootExists=g_masterData.map(d=>d.id).indexOf("root")
+console.log(checkIfRootExists)
+if(checkIfRootExists>-1){g_masterData.splice(checkIfRootExists,1)}
+//console.log(g_masterData)
+g_masterData.push(g_rootNode)
+g_masterData.forEach(i=>{i['x']=parseInt(i.x);i['y']=parseInt(i['y']);i['calculatedX']=parseInt(i.x);i['calculatedY']=parseInt(i.y)})
+viewableNodes()
+generateLink()
+refresh()
+},false)
+e=this.files[0]
+g_fileName=e.name
+text=fr.readAsText(e);
+})
+
+offset=[0,0]
+mouseMoveEndingOffset=[]
+isDown=false
+isnodeitemMove=false
+mouseDownObject=null
+mouseDownObjectClassName=null
+mouseUpObject=null
+
+function deactivateAll(e){
+g_startLink=false 
+isDown=false 
+isnodeitemMove=false 
+if ( g_startLink || isDown || isnodeitemMove )
+{refresh()}
+else 
+{console.log(e.clientX,e.clientY)}
+}
+
+function mouseUp(e){
+
+if (isDown && isnodeitemMove && mouseDownObjectClassName=="nodeitem"){
+let actualPos=deriveActualPosition(mouseMoveEndingOffset[0],mouseMoveEndingOffset[1])
+let node=nodeDataSearch([{"id":mouseDownObject.id}])[0]
+let totalNode=[]
+totalNode.push({"id":mouseDownObject.id,"calculatedX":mouseMoveEndingOffset[0],"calculatedY":mouseMoveEndingOffset[1],"x":actualPos[0],"y":actualPos[1]})
+
+if (g_moveWithChild==true){
+g_moveWithChild=false
+let totalShift=[actualPos[0]-node.x,actualPos[1]-node.y,mouseMoveEndingOffset[0]-node.calculatedX,mouseMoveEndingOffset[1]-node.calculatedY]
+let children=getChildren(node)
+for (let i=0;i<children.length;i++){
+children=children.concat(getChildren(children[i]))
+}
+console.log(children,totalShift)
+for (let i=0;i<children.length;i++){   
+totalNode.push({"id":children[i].id,"x":children[i].x+totalShift[0],"y":children[i].y+totalShift[1],"calculatedX":children[i].calculatedX+totalShift[2],"calculatedY":children[i].calculatedY+totalShift[3]})
+}
+}
+
+nodeDataChanges("findAndUpdate",totalNode)
+}
+
+if(g_startLink){nodeDataChanges("childrenUpdate",[{"id":v_triggerer.id,"children":mouseDownObject.id}]) ; g_startLink=false }
+isDown=false 
+isnodeitemMove=false 
+g_startLink=false
+}
+
+function mouseMove(event){
+event.preventDefault()
+if ( isDown && mouseDownObjectClassName=="nodeitem"){
+isnodeitemMove = true 
+mousePosition = {
+	x: event.clientX,
+	y: event.clientY
+	};
+	mouseDownObject.style.left = (mousePosition.x + offset[0]) + 'px' ; 
+	mouseDownObject.style.top = (mousePosition.y + offset[1] ) + "px"
+	mouseMoveEndingOffset=[(mousePosition.x + offset[0] ), (mousePosition.y + offset[1]) ]
+	//console.log(mousePosition.x , offset[0] , mousePosition.y , offset[1])
+	}
+}
+
+function mouseDown(e){
+if (e.buttons ==1 ) { isDown = true }
+mouseDownObject=e.currentTarget.parentNode 
+//console.log('mousedown',mouseDownObject)
+mouseDownObjectClassName=mouseDownObject.className 
+offset = [
+mouseDownObject.offsetLeft - e.clientX , 
+mouseDownObject.offsetTop - e.clientY 
+]
+//console.log(e.currentTarget.parentNode ,mouseDownObject.offsetLeft , e.clientX ,mouseDownObject.offsetTop , e.clientY )
+}
+
+
+////////////////////////////////////////////got these from web
+
+function editDistance(s1, s2) {
+  s1 = s1.toLowerCase();
+  s2 = s2.toLowerCase();
+
+  var costs = new Array();
+  for (var i = 0; i <= s1.length; i++) {
+    var lastValue = i;
+    for (var j = 0; j <= s2.length; j++) {
+      if (i == 0)
+        costs[j] = j;
+      else {
+        if (j > 0) {
+          var newValue = costs[j - 1];
+          if (s1.charAt(i - 1) != s2.charAt(j - 1))
+            newValue = Math.min(Math.min(newValue, lastValue),
+              costs[j]) + 1;
+          costs[j - 1] = lastValue;
+          lastValue = newValue;
+        }
+      }
+    }
+    if (i > 0)
+      costs[s2.length] = lastValue;
+  }
+  return costs[s2.length];
+}
+
+function similarity(s1, s2) {
+  var longer = s1;
+  var shorter = s2;
+  if (s1.length < s2.length) {
+    longer = s2;
+    shorter = s1;
+  }
+  var longerLength = longer.length;
+  if (longerLength == 0) {
+    return 1.0;
+  }
+  return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+}
+
+g_uniqueLinkId=[]
+function makeid(length){
+var result = ''
+var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz'
+var charactersLength =characters.length 
+for(let i=0;i<length;i++)
+{
+result+=characters.charAt(Math.floor(Math.random()*charactersLength))
+}
+if (g_uniqueLinkId.includes(result)){result=makeid(length)}
+}
+
+function nodeDataSearch(objectList){
+nodes=g_masterData
+let selectedNodes=[] 
+for ( let i=0;i<nodes.length;i++)
+{
+for(let j=0;j<objectList.length;j++)
+{
+if (nodes[i].id == objectList[j].id ) { selectedNodes.push([nodes[i],objectList[j]]);break}
+}
+}
+let result=selectedNodes.map(d=>d[0])
+return result 
+}
+
+g_turnOffMultipleTopLevelParents=true
+function validateMasterData(data){
+let nodeId=[]
+data.forEach(d=>nodeId.push(d.id))
+if (hasDuplicates(nodeId)){alert('duplicate nodes')}
+if (getNoParentNodes(data).length>1 && g_turnOffMultipleTopLevelParents){alert('multiple top level parents,g_turnOffMultipleTopLevelParents=false to turn off')}
+if (getMultipleParents(data)){alert('multiple parents for a child')}
+if (checkSeed(data)==0){alert('No seed')}else if(checkSeed(data)>1){alert('Multiple seed')}
+checkDataFormat(data)
+}
+function checkSeed(data){
+let res=[]
+res=data.filter(i=>i.id=='seed')
+return res.length
+}
+function getMultipleParents(data){
+let childList=[]
+g_masterData.forEach(d=>childList=childList.concat(d.children))
+return hasDuplicates(childList)
+}
+function getNoParentNodes(data,returnType='id'){
+//console.log(data)
+let nodes=[]
+let links=[]
+data.forEach(d=>nodes.push(d.id)) 
+data.forEach(d=>links.push(d.children))
+links=links.flat()
+let topNodeIds=(nodes.filter(n => !links.includes(n) && n!="root"))
+if (returnType=='id') {
+//console.log(topNodeIds);
+return topNodeIds}
+if (returnType=='node') { let tempRes=[] ; for (let i=0;i<data.length;i++){ if ( topNodeIds.includes(data[i].id)){tempRes.push(data[i])} }; return tempRes }
+}
+function checkDataFormat(data){
+//console.log(data)
+for (let i=0;i<data.length;i++)
+{
+let currentElement=data[i]
+let currentElementName=currentElement.data.name
+//console.log(currentElementName,!(currentElementName.includes(':') && !isNaN(currentElementName.split(':')[0]) && !isNaN(parseFloat(currentElementName.split(':')[0]))))
+ //works only for 43543 or 464.464 , isNaN of string is true , parseFloat givess true for 3242trhtrs
+if (currentElement.id!="root" && !(currentElementName.includes(':') && !isNaN(currentElementName.split(':')[0]) && !isNaN(parseFloat(currentElementName.split(':')[0])))){
+alert('title is not correct:'+currentElementName);
+return
+}
+}
+}
+function printCommonFunctions(){
+console.log("getChildren(nodeDataSearch([{'id':0}])[0])")
+console.log("getchildnames->getChildren(nodeDataSearch([{'id':2}])[0]).map(d=>d.data.name)")
+console.log("")
+}
+function getChildren(currentElement){
+if (currentElement==null){return null}
+return nodeDataSearch(currentElement.children.map(i=>{return {'id':i}})).map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+}
+
+function getParent(currentElement){
+if (currentElement==null){return null}
+for(let i=0;i<g_masterData.length;i++)
+{
+if ( g_masterData[i].children.includes(currentElement.id) ) { return g_masterData[i];break }
+}
+}
+
+
+
+g_detectKey=''
+document.onkeydown = checkKey;
+function checkKey(e) {
+    e = e || window.event;
+	if (g_detectKey=='') {
+	return
+	}
+	else if ( e.keyCode == '38' || e.keyCode == '40' || e.keyCode == '37' || e.keyCode == '39' )
+	{ handleKeyPress(g_detectKey,e.keyCode) }
+}
+
+function handleKeyPress(name,code)
+{
+if (name=='moveTreeBfs'){moveTreeBfs(code)}
+}
+
+g_moveTreeBfsPayLoad={'id':'seed','changeState':true,'currSiblilng':null,'firstCall':true}
+function moveTreeBfs(code){
+console.log('moving tree',g_moveTreeBfsPayLoad)
+hideTextArea()
+let siblings=[]
+if ( g_moveTreeBfsPayLoad['changeState'] == true ) 
+{ 
+    id=g_moveTreeBfsPayLoad['id']
+    g_moveTreeBfsPayLoad['currMember']=nodeDataSearch([{'id':id}])[0]
+    g_moveTreeBfsPayLoad['parent']= g_moveTreeBfsPayLoad['currMember'] ? getParent( g_moveTreeBfsPayLoad['currMember'] ) : null
+    g_moveTreeBfsPayLoad['siblings']= g_moveTreeBfsPayLoad['parent'] ? getChildren( g_moveTreeBfsPayLoad['parent'] ) : []
+    g_moveTreeBfsPayLoad['currSiblilng']=g_moveTreeBfsPayLoad['siblings'].indexOf( g_moveTreeBfsPayLoad['currMember'] )
+	console.log(g_moveTreeBfsPayLoad)
+}
+
+let data=''
+siblings=g_moveTreeBfsPayLoad['siblings']
+	if ( g_moveTreeBfsPayLoad['firstCall'] || g_moveTreeBfsPayLoad['changeState'] ) {
+	console.log('first call or change state')
+	g_moveTreeBfsPayLoad['firstCall'] = false 
+	g_moveTreeBfsPayLoad['changeState'] = false
+	}
+	else if (code == '38') {
+        // up arrow
+		console.log('up arrow')
+		if ( g_moveTreeBfsPayLoad['parent'] != null ) {
+		g_moveTreeBfsPayLoad['changeState'] = true
+		g_moveTreeBfsPayLoad['id']=g_moveTreeBfsPayLoad['parent'].id;moveTreeBfs(0);return
+		}
+    }
+    else if (code == '40') {
+        // down arrow
+		console.log('down arrow')
+		let childrens=getChildren(g_moveTreeBfsPayLoad['currMember'])
+		console.log('--childrens',childrens)
+		if ( childrens.length >0 ) {
+		g_moveTreeBfsPayLoad['changeState'] = true
+		g_moveTreeBfsPayLoad['id']=childrens[0].id;moveTreeBfs(0);return
+		}
+    } 
+    else if (code == '37') {
+	   //left arrow 
+	   console.log('left arrow')
+	   if(siblings.length>0){
+	   g_moveTreeBfsPayLoad['currSiblilng']-=1
+	   if(g_moveTreeBfsPayLoad['currSiblilng']<0){g_moveTreeBfsPayLoad['currSiblilng']=siblings.length-1}
+	   //else if(g_moveTreeBfsPayLoad['currSiblilng']>siblings.length-1){g_moveTreeBfsPayLoad['currSiblilng']=0}
+	   g_moveTreeBfsPayLoad['currMember'] =siblings[g_moveTreeBfsPayLoad['currSiblilng']]
+	   g_moveTreeBfsPayLoad['changeState'] = false
+	   }
+
+    }
+    else if (code == '39') {
+       // right arrow
+	   console.log('right arrow',g_moveTreeBfsPayLoad['currSiblilng'])
+	   if(siblings.length>0){
+	   g_moveTreeBfsPayLoad['currSiblilng']+=1
+	   //if(g_moveTreeBfsPayLoad['currSiblilng']<0){g_moveTreeBfsPayLoad['currSiblilng']=siblings.length-1}
+	   if(g_moveTreeBfsPayLoad['currSiblilng']>siblings.length-1){g_moveTreeBfsPayLoad['currSiblilng']=0}	   
+	   g_moveTreeBfsPayLoad['currMember'] =siblings[g_moveTreeBfsPayLoad['currSiblilng']]}
+	   g_moveTreeBfsPayLoad['changeState'] = false
+    }
+console.log(g_moveTreeBfsPayLoad['currMember'] )
+data=g_moveTreeBfsPayLoad['currMember'] 
+if(data=='' || data==null){data='No data'}else{data=data.data.name+"\n"+data.data.desc}
+showTextArea(data)
+}
+
+function dfs(data){
+let totalItems=[]
+let items=[]
+let orderedItems=[]
+totalItems=totalItems.concat(data.filter(i=>i.id=='seed'))
+while (totalItems.length>0)
+{
+//items.push(totalItems)
+let currentElement=totalItems.shift()
+orderedItems.push(currentElement)
+//get master data , sort by title number and return 
+let childList=getChildren(currentElement)
+//console.log(currentElement,childList)
+if (hasDuplicates(childList.map(d=>{return d.data.name}).map(d=>{return d.split(':')[0]}))) {alert('duplicate child topic number for '+currentElement.data.name);return}
+totalItems=childList.concat(totalItems)
+//console.log(totalItems)
+//console.log('------')
+}
+return(orderedItems)
+//console.log(items)
+}
+function getNoTreeData(data,orderedItems)
+{
+let i=0
+let orderedIds=[]
+let noTreeItems=[]
+orderedItems.forEach(d=>{ if (d.id!='root'){ orderedIds.push(d.id)}})
+for(let i=0;i<data.length;i++){
+if ( ! ( orderedIds.includes( data[i].id ) ) ) {
+noTreeItems.push( data[i] )
+}
+}
+return noTreeItems
+}
+
+function OutFormat(data,type='text')
+{
+if (type=='text'){
+	let orderedItems=dfs(data)
+	orderedItems=orderedItems.concat(getNoTreeData(data,orderedItems))
+	let totalItems=''
+	for (let i=0;i<orderedItems.length;i++){
+	obj=orderedItems[i]
+	let currData='#?#box'
+	let data_desc=''
+	let property=[]
+	for (var prop in obj) {if (Object.prototype.hasOwnProperty.call(obj, prop)){property.push(prop)}}
+	property.sort()
+	for (let i=0;i<property.length;i++) {
+	if(property[i]=='data'){
+	currData+='#'+'name'+'@'+obj[property[i]]['name']
+	data_desc=obj[property[i]]['desc']
+	//if (!(data_desc.substr(data_desc.length-1).includes("\n"))){data_desc+='\n'}
+	//writing new logic always strip new line and add two new line , why two new because we want a space to separate from box as it is very difficult to view . why this way , hard to check if one or two new line is there 
+	data_desc=data_desc.replace(/[\n]+$/,'')+'\n\n'
+	}
+	else{currData+='#'+property[i]+'@'+obj[property[i]]}
+	}
+	totalItems+=currData+'\n'+data_desc
+	}
+	return totalItems
+	}
+else {
+	data='{"data":{"nodeData":'+JSON.stringify(g_masterData)+'}}'.replaceAll("\\n","\n")
+	data=data.replaceAll(",,,br,,,","\n")
+	return data
+	}
+}
+////////////////////////////////////////////got these from web
+function hasDuplicates(array) {
+    return (new Set(array)).size !== array.length;
+}
+
+
+function nodeDataChanges(action,objectList){
+console.log("nodeDataChanges",action,objectList)
+selectedNodes=[]
+nodes=g_masterData
+for (let i=0; i<nodes.length;i++)
+{
+for (let j=0; j<objectList.length;j++){
+if (nodes[i].id == objectList[j].id ){selectedNodes.push([ nodes[i] , objectList[j]]);break}
+}
+}
+if (action == 'findAndRemove'){
+for (let i=0; i<nodes.length;i++)
+{
+for (let j=0; j<selectedNodes.length;j++){
+console.log(nodes[i],selectedNodes[j])
+console.log(nodes[i].parent.filter(x => x!= selectedNodes[j][0].id))
+nodes[i].parent = nodes[i].parent.filter(x => x!= selectedNodes[j][0].id)
+nodes[i].children = nodes[i].children.filter(x => x !=  selectedNodes[j][0].id)
+console.log(nodes[i],selectedNodes[j])
+}}
+for (let i=0; i<selectedNodes.length;i++)
+{
+index = nodes.indexOf(selectedNodes[i][0])
+if (index > -1 ){nodes.splice(index , 1 )}
+}
+}
+
+if(action=='findAndUpdate'){
+for( let i=0;i<selectedNodes.length;i++){
+index=nodes.indexOf(selectedNodes[i][0])
+if (index >  -1 ){ Object.assign(nodes[index],selectedNodes[i][1])}
+}
+}
+
+if (action=='childrenUpdate'){
+for( let i=0;i<selectedNodes.length;i++){
+index=nodes.indexOf(selectedNodes[i][0])
+if (index >  -1 ){ 
+if (!(nodes[index].children.includes(selectedNodes[i][1].children )))
+{
+nodes[index].children.push(selectedNodes[i][1].children)
+}
+}
+}
+}
+
+if (action=="add"){
+nodes.push(objectList)
+}
+//console.log(nodes)
+//console.log(g_linkData)
+//console.log(g_masterData)
+validateMasterData(g_masterData)
+viewableNodes()
+generateLink()
+refresh()
+}
+
+function hideMenu(){document.getElementById("contextMenu").style.display="none"}
+
+function rightClick(e){
+e.preventDefault()
+v_triggerer=e.currentTarget
+if ( document.getElementById("contextMenu").style.display == "block" ) { hideMenu()}
+else {
+var menu = document.getElementById("contextMenu")
+menu.style.position="absolute";menu.style.zIndex=1000000;menu.style.display='block';menu.style.left = e.pageX + "px" ; menu.style.top = e.pageY + "px"
+} 
+}
+
+g_startLink=false 
+function rightClickAction(option){
+if ( option == "delete" ) {
+nodeDataChanges("findAndRemove",[{"id":v_triggerer.id}])
+}
+if (option == "modify")
+{
+let idToBeModified=v_triggerer.id 
+let idFound=nodeDataSearch([{"id": idToBeModified}])[0]
+let name=prompt("title",idFound.data.name)
+let desc=prompt("data",idFound.data.desc)
+if (name==null && desc==null ) { alert('Box modification cancelled');return }
+desc=desc.replaceAll(',,,br,,,','\n')
+result={id:v_triggerer.id , data: {'name':name , 'desc':desc} }
+nodeDataChanges("findAndUpdate",[result])
+}
+if (option == "link")
+{
+g_startLink=true 
+}
+if (option=="unlink")
+{
+g_startunLink=true
+let idToBeRemoved=v_triggerer.id 
+let data=nodeDataSearch([{"id": idToBeRemoved}])[0]
+console.log("id to be removed",data)
+let childrens=[]
+for ( let k=0;k<data.children.length;k++)
+{childrens.push({"id":data.children[k]})}
+console.log(childrens)
+let childrenData=nodeDataSearch(childrens)
+console.log(childrenData)
+let childrenPair=childrenData.map(d=>[d.id,d.data.name])
+console.log(childrenPair)
+let linkName=prompt("enter title",childrenPair.map(d=>d[1]).join(";"))
+let newChildrens=[]
+	if (linkName && childrenPair.map(d=>d[1]).indexOf(linkName) > -1 ){
+		for (let k=0;k<childrenPair.length;k++){
+			if (childrenPair[k][1]!=linkName){
+			newChildrens.push(childrenPair[k][0])
+			}
+			else {
+			console.log('removing',childrenPair[k][0],'from link')
+			}}
+		nodeDataChanges("findAndUpdate",[{"id":idToBeRemoved,"children":newChildrens}])
+		}
+	}
+hideMenu()
+}
+
+function deriveActualPosition(x,y){
+let newX=(x-g_shiftedX)/v_nodeTranslationFactor
+let newY=(y-g_shiftedY)/v_nodeTranslationFactor
+return ([newX,newY])
+
+}
+
+function addNewNode(event)
+{
+
+if (event.target.id == "drawarea")
+{
+var name=prompt("title","title")
+var desc=prompt("data","content")
+if (name==null || name=='title' || name=='') { alert('Box creation cancelled');return }
+x=event.clientX
+y=event.clientY
+let actualPos=deriveActualPosition(x,y)
+desc=desc.replaceAll(',,,br,,,','\n')
+result={id:Date.now().toString() , calculatedX:x , calculatedY: y , x:actualPos[0] , y: actualPos[1],data: {'name':name , 'desc':desc} , parent: [] , children: [] }
+nodeDataChanges("add",result)
+}
+}
+
+function postdata(data,format='text'){
+
+data=OutFormat(data,format)
+
+data={'data':data,'fileName':g_fileName}
+console.log(data)
+url=window.location.href
+url='http://localhost:5000/post_json'
+var xhr = new XMLHttpRequest();
+console.log(url,data)
+xhr.open("POST", url, true);
+xhr.setRequestHeader("Content-Type", "application/json");
+xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+        var ret = JSON.parse(xhr.responseText);
+        alert(JSON.stringify(ret));
+        //window.location.reload()
+        
+    }
+};
+xhr.send(JSON.stringify(data));
+}
+
+g_linkData=[]
+function generateLink(){
+g_linkData=[]
+let nodes=g_masterData
+if ( g_masterData.length==0){console.log("no selected nodes ")}
+for ( let i=0;i<nodes.length;i++){
+for ( let j=0;j<nodes[i].children.length;j++){
+let childrenNode=nodeDataSearch([{"id":nodes[i].children[j]}])[0]
+//console.log(childrenNode)
+g_linkData.push({"id":makeid(6) , "parentId":childrenNode.id , "childId":nodes[i].id , "source":[childrenNode.calculatedX,childrenNode.calculatedY], "target": [nodes[i].calculatedX , nodes[i].calculatedY]})
+}
+}
+//console.log(g_linkData)
+}
+
+g_shiftedX=0
+g_shiftedY=0
+
+function moveMap(e,data){
+if ( data == "l"){g_shiftedX+=v_moveFactor}
+if ( data == "r"){g_shiftedX+=(-v_moveFactor)}
+if ( data == "u"){g_shiftedY+=v_moveFactor}
+if ( data == "d"){g_shiftedY+=(-v_moveFactor)}
+for ( let i=0;i<g_masterData.length;i++)
+{
+let currentItem=g_masterData[i]
+if ( data == "l"){currentItem.calculatedX+=v_moveFactor}
+if ( data == "r"){currentItem.calculatedX+=(-v_moveFactor)}
+if ( data == "u"){currentItem.calculatedY+=v_moveFactor}
+if ( data == "d"){currentItem.calculatedY+=(-v_moveFactor)}
+}
+shifToCentre(g_rootNode)
+viewableNodes()
+generateLink()
+refresh()
+}
+
+function shifToCentre(node){
+node.calculatedX=g_windWidth/2
+node.calculatedY=g_winHeight/2
+let tempResult=deriveActualPosition(node.calculatedX,node.calculatedY)
+node.x=tempResult[0]
+node.y=tempResult[1]
+
+}
+function zoomMap(e,data){
+if (data=="zi"){v_sizeTranslationFactor+=0.05;v_moveTranslationFactor+=0.05;v_nodeTranslationFactor+=0.05}
+if (data=="zo"){v_sizeTranslationFactor-=0.05;v_moveTranslationFactor-=0.05;v_nodeTranslationFactor-=0.05}
+if (data=="reset"){v_sizeTranslationFactor=g_sizeTranslationFactor;v_moveTranslationFactor=g_moveTranslationFactor;v_nodeTranslationFactor=g_nodeTranslationFactor;
+g_rootNode.x=g_windWidth/2;g_rootNode.y=g_winHeight/2}
+sizeTranslation(v_sizeTranslationFactor,v_moveTranslationFactor)
+nodeTranslation(v_nodeTranslationFactor)
+viewableNodes()
+generateLink()
+refresh()
+}
+
+
+d3.select("#root").style("margin","0px").style("position","relative").style("width",g_windWidth+"px").style("height",g_winHeight+"px").style("overflow","hidden")
+const svg=d3.select("#root").append("svg").attr("viewBox",[0,0,g_windWidth,g_winHeight]).on("click",(event)=>{console.log(event.clientX,event.clientY)}).style("z-index",-1).style("position","absolute").style("top","0px").style("left","0px").style("width",g_windWidth+"px").style("height",g_winHeight+"px")
+svg.append("svg:defs").append("svg:marker").attr("id","triangle").attr("refX",4.5).attr("refY",4.5).attr("markerWidth",10).attr("markerHeight",10).attr("orient","auto").append("path").attr("d","M 0 0 9 4.5 0 9 3 4.5").attr("class","triangle")
+
+drawGroup=d3.select("#root").append("g").style("width",g_windWidth+"px").style("height",g_winHeight+"px").style("top","0px").style("left","0px").style("position","absolute").attr("id","drawarea").on("dblclick",addNewNode).on("click",deactivateAll).style("z-index",0)
+divGroup=drawGroup.append("g")
+linkGroup=svg.append("g").attr("fill","none").attr("stroke","black").attr("stroke-opacity",0.4).attr("stroke-width",1.5)
+buttonGroup=drawGroup.append("g")
+
+
+var timeout
+function holdit(e,direction,action,start,speedup){
+var repeat=function(){action(e,direction);if (start!=0){timeout=setTimeout(repeat,start)};start=start/speedup}
+//all below are different events so each of these needs to be handled to prevent even bubble
+e.onmousedown=function(e){start=1000;e.stopPropagation();if (timeout){/*nothing*/}else{repeat()}}
+e.onmouseup=e.onmouseout=function(e){e.stopPropagation();clearTimeout(timeout);timeout=null}
+e.onclick=function(e){e.stopPropagation();}
+}
+
+buttonGroup.append("button").text("right").attr("id","rbutton").style("position","absolute").style("left",(g_windWidth*.8)+"px").style("top",(g_winHeight-20)/2+"px").style("z-index",100000)
+
+buttonGroup.append("button").text(" left ").attr("id","lbutton").style("position","absolute").style("left",(30)+"px").style("top",(g_winHeight-20)/2+"px").on("click",(e)=>moveMap(e,"l")).style("z-index",100000)
+
+buttonGroup.append("button").text("Uppp").attr("id","ubutton").style("position","absolute").style("left",((g_windWidth-30)/2)+"px").style("top",(30)+"px").on("click",(e)=>moveMap(e,"u")).style("z-index",100000)
+
+buttonGroup.append("button").text("  down  ").attr("id","dbutton").style("position","absolute").style("left",(g_windWidth-30)/2+"px").style("top",(g_winHeight-30)+"px").on("click",(e)=>moveMap(e,"d")).style("z-index",100000)
+holdit(document.getElementById("rbutton"),"r",moveMap,1000,200)
+holdit(document.getElementById("lbutton"),"l",moveMap,1000,200)
+holdit(document.getElementById("ubutton"),"u",moveMap,1000,200)
+holdit(document.getElementById("dbutton"),"d",moveMap,1000,200)
+
+
+
+buttonGroup.append("button").text("zi").style("position","absolute").style("left",(30)+"px").style("top",30+"px").on("click",(e)=>zoomMap(e,"zi")).style("z-index",100000)
+
+buttonGroup.append("button").text("zo").style("position","absolute").style("left",60+"px").style("top",30+"px").on("click",(e)=>zoomMap(e,"zo")).style("z-index",100000)
+
+g_moveWithChild=false
+buttonGroup.append("button").text("mvTree").style("position","absolute").style("left",90+"px").style("top",30+"px").on("click",(e)=>{g_moveWithChild=true}).style("z-index",100000)
+
+buttonGroup.append("button").text("reset").style("position","absolute").style("left",(150)+"px").style("top",(30)+"px").on("click",(e)=>zoomMap(e,"reset")).style("z-index",100000)
+
+buttonGroup.append("input").text("recenterAt").attr("id","centerId").style("position","absolute").style("left",(200)+"px").style("top",(30)+"px").style("width","100px").on("keyup",(e)=>{e.key=='Enter'&&recenterAtNode(e.target.value)}).style("z-index",100000);
+
+buttonGroup.append("button").text("post").style("position","absolute").style("left",310+"px").style("top",30+"px").on("click",(e)=>postdata(g_masterData)).style("z-index",100000)
+
+buttonGroup.append("button").attr("id","walk").text("walk").style("position","absolute").style("left",360+"px").style("top",30+"px").on("click",(e)=>{
+let id=document.getElementById('centerId').value
+id = id == '' ? 'seed' : id
+console.log(id,g_detectKey)
+if ( g_detectKey == 'moveTreeBfs' ) { 
+g_detectKey = null 
+e.target.style.color='white'
+} else { 
+g_detectKey = 'moveTreeBfs' 
+g_moveTreeBfsPayLoad={'id':id,'changeState':true,'currSiblilng':null,'firstCall':true}
+e.target.style.color='red'
+}
+}).style("z-index",100000)
+
+function styles(prefix)
+{
+console.log('---',prefix)
+}
+
+function refresh(){
+update(v_masterData,g_linkData)
+}
+diagonal=d3.linkHorizontal().x(d=>d[0]).y(d=>d[1])
+
+
+function showTextArea(data) {
+let ele=document.getElementById('textAreaPop')
+ele.value=data
+document.getElementById('textAreaDiv').style.visibility="visible";
+}
+
+function hideTextArea() {
+document.getElementById('textAreaDiv').style.visibility="hidden";
+}
+function divPop(id){
+data=nodeDataSearch([{"id": id}])[0]
+if(data=='' || data==null){data='No data'}else{data=data.data.name+"\n"+data.data.desc}
+showTextArea(data)
+}
+
+function update(nodeData,linkData)
+{
+//console.log('update',nodeData,linkData)
+divs=divGroup.selectAll("div").data(nodeData,d=>{return d.id}).style("top",d=>d.calculatedY+"px").style("left",d=>d.calculatedX+"px").style("width",v_divWidth+"px").style("height",v_divHeight+"px")
+divs.selectAll("p").text(d=>d.data.name).style("font-size",v_divFontSize+"px").call(d=>{return function(selection){console.log(selection)}})
+divs.selectAll("textarea").text(d=>d.data.desc).style("font-size",v_divFontSize+"px")
+
+g_divzIndex=100
+divsEnter=divs.enter().append("div").attr("class","nodeitem").attr("id",d=>d.id).style("position","absolute").style("top",d=>d.calculatedY+"px").style("left",d=>d.calculatedX+"px").style("width",v_divWidth+"px").style("height",v_divHeight+"px").style("border","1px solid black").on("click",(e)=>hideMenu(e)).on("contextmenu",(e)=>rightClick(e)).style("z-index",g_divzIndex).on("click",(e,d)=>{console.log(d.id);getChildren(d).map(j=>console.log("-"+j.id+" "+j.data.name+"-"));g_divzIndex+=1;e.target.parentNode.style.zIndex=g_divzIndex;e.stopPropagation()});
+
+divsEnter.append("p").attr("id","title").attr("class","titleItem").text(d=>d.data.name).style("font-size",v_divFontSize+"px").style("font-family",g_pFontFamily).style("margin","0px").on("mousedown",mouseDown,true).on("mouseup",mouseUp,true).on("mousemove",mouseMove,true)
+
+divsEnter.append("textarea").text(d=>d.data.desc).style("font-size",v_divFontSize+"px").on("click",(e,d)=>{console.log("texxt area stop propagation");
+if (e.detail==2) {divPop(d.id)};//if its a double click
+e.stopPropagation()})
+
+divs.exit().remove()
+
+const links=linkGroup.selectAll("path").data(linkData).attr("marker-end","url(#triangle)").attr("stroke-opacity",0.4).attr("stroke-width",1.5).attr("d",d=>{
+t=diagonal({source:d.target,target:d.source})
+return(t)
+})
+
+links.enter().append("path").attr("marker-end","url(#triangle)").attr("stroke-opacity",0.4).attr("stroke-width",1.5).attr("d",d=>{
+t=diagonal({source:d.target,target:d.source})
+return(t)
+}).attr("class","linepath")
+
+links.exit().remove()
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+#?#box#calculatedX@67#calculatedY@61#children@45,1679375926472,1679467038402#name@0:seed#id@seed#parent@#x@53#y@48
+#?#topic@kubernetes#tag@kubernetes
+
+#?#box#calculatedX@71#calculatedY@150#children@#name@0:properties#id@45#parent@#x@56#y@120
+todo
+
+#?#box#calculatedX@293#calculatedY@151#children@1679375814785#name@1:ControlPlane#id@1679375926472#parent@#x@234#y@120
+octopus
+what is control plane 
+bunch of server services running on one or more machines
+components
+kube-apiserver, kube-controller-manager, kube-scheduler, and etcd
+
+kube-apiserver is the --- for the Kubernetes API server.
+front end
+
+kube-controller-manager is a ?
+daemon that manages the Kubernetes control loop
+Logically, each controller is a ---, but to reduce complexity, they are all compiled into a single binary and run in a single process.
+separate process
+eg of few:
+--- : Responsible for noticing and responding when nodes go down.
+Node controller
+--- : Watches for Job objects that represent one-off tasks, then creates Pods to run those tasks to completion.
+Job controller
+
+kube-scheduler is a function that looks for --- that have no Nodes, and assigns them a Node based on a host of requirements
+newly created Pods
+
+---- is a highly available key-value store that provides the backend database for Kubernetes
+Etcd
+what is the use of Etcd
+stores and replicates the entirety of the Kubernetes cluster state.
+in what language is Etcd written 
+Its written in Go and uses the Raft protocol
+why Go and Raft protocol
+it maintains identical logs of state changing commands across nodes and coordinates the order in which these state changes occur.
+
+#?#box#calculatedX@296#calculatedY@236#children@66#name@1:node#id@1679375814785#parent@#x@236#y@188
+glassbox
+node is a 
+logical VM on which multiple pods run VK CARNATIC
+mandatory node components - 
+kube-proxy (Vasool raja mbbs crazy mohan proxy exam)- implementing part of the Kubernetes Service concept.
+Container runtime (whale)- interface with container technology such as docker 
+kubelet (icecube) - It makes sure that containers are running in a Pod.
+
+#?#box#calculatedX@297#calculatedY@285#children@1679466667599#name@1:pod#id@66#parent@#x@237#y@228
+VK
+smallest kubernetes unit
+pod
+pod usually has one container running inside it but it can contain more SHIP CONTAINER ON VK SHOULDER
+eg two container in a pod is known as 
+side car pattern - second pod captures logs 
+
+#?#box#calculatedX@301#calculatedY@342#children@#name@0:properties#id@1679466667599#parent@#x@240#y@273
+pod is an abstraction over 
+container 
+why it is abstracted because if not docker we can use some other container
+pod keeps crashing EXPLOSIONS IN GLASSBOX so it cant have 
+permanent ip address
+___ provides permanent ip address
+SERVICES
+pods communicate with each other using services
+
+#?#box#calculatedX@533#calculatedY@146#children@#name@2:services#id@1679467038402#parent@#x@426#y@116
+services provide
+permanent ip address
+helps 
+group pods using example a load balancer
+services can span 
+nodes 
+types of service 
+external - world facing , internal for local communication
+external services has ip address not dns
+ingress has a url with a name and forwards requests to service
+
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node
+
