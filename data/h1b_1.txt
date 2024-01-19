@@ -1,7 +1,7 @@
 #?#box#calculatedX@87#calculatedY@79#children@45#name@0:seed#id@seed#parent@#x@87#y@79
-#?#topic@americavisa#tag@america,visa
+america,visa
 #?#box#calculatedX@129#calculatedY@131#children@66#name@0:h1b#id@45#parent@#x@129#y@131
-#?#section@h1b#tag@h1b
+h1b
 #?#box#calculatedX@161#calculatedY@203#children@1676281384659#name@0:2023Search#id@66#parent@#x@161#y@203
 temp
 #?#box#calculatedX@204#calculatedY@310#children@#name@0:R2 tech#id@1676281384659#parent@#x@204#y@310

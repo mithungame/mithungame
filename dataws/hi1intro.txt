@@ -1,0 +1,77 @@
+Apache Hive is a distributed, fault-tolerant data warehouse system
+Hive is built on top of Apache Hadoop and supports storage on S3, adls, gs etc though hdfs :0
+Hive-Server 2 (HS2) supports 
+multi-client concurrency and authentication, open API clients like JDBC and ODBC.
+Hive Metastore (HMS) is a central repository of metadata for Hive tables and partitions in a relational database
+HMS provides clients (including Hive, Impala and Spark) access to metadata using the metastore service API
+Hive provides full ACID support for ORC tables and insert only support to all other formats
+Hive supports bootstap and incremental REPLICATION for backup and recovery.
+Apache Hive supports kerberos auth and integrates with APACHE RANGER and APACHE ATLAS for security and observability.
+Low Latency Analytical Processing (LLAP), introduced in Hive 2.0 that makes Hive faster by using persistent query infrastructure and optimized data caching
+Hive uses APACHE CALCITES cost based query optimizer (CBO) and query execution framework to optimize sql queries.
+Hive provides Access to files stored either directly in Apache HDFS™ or in other data storage systems such as Apache HBase
+Hive provides Query execution via Apache Tez™, Apache Spark™, or MapReduce
+Hive provides Procedural language with HPL-SQL
+Hive provides Sub-second query retrieval via Hive LLAP, Apache YARN and Apache Slider.
+Hive's SQL can also be extended with user code via user defined functions (UDFs), user defined aggregates (UDAFs), and user defined table functions (UDTFs).
+There is not a single "Hive format" in which data must be stored. 
+Hive comes with built in connectors for comma and tab-separated values (CSV/TSV) text files, Apache Parquet™, Apache ORC™, and other formats. 
+Users can extend Hive with connectors for other formats using custom Hive SerDe
+Hive is not designed for online transaction processing (OLTP) workloads. It is best used for traditional data warehousing tasks.
+Components of Hive include HCatalog and WebHCat
+HCatalog is a table and storage management layer for Hadoop that enables users with different data processing tools — including Pig and MapReduce — to more easily read and write data on the grid.
+WebHCat provides a service that you can use to run Hadoop MapReduce (or YARN), Pig, Hive jobs. You can also perform Hive metadata operations using an HTTP (REST style) interface.
+
+HiveServer2 (introduced in Hive 0.11) has its own CLI called Beeline. 
+HiveCLI is now deprecated in favor of Beeline, as it lacks the multi-user, security, and other capabilities of HiveServer2.
+
+===start hive server 2
+==Initialize
+$HIVE_HOME/bin/schematool -dbType <db type> -initSchema
+==start hs2
+  $ $HIVE_HOME/bin/hiveserver2
+  $ $HIVE_HOME/bin/beeline -u jdbc:hive2://$HS2_HOST:$HS2_PORT
+
+Running HCatalog
+  $ $HIVE_HOME/hcatalog/bin/hcat
+
+Running WebHCat (Templeton)
+  $ $HIVE_HOME/hcatalog/sbin/webhcat_server.sh
+
+
+===configuration
+Hive by default gets its configuration from <install-dir>/conf/hive-default.xml ( HIVE_CONF_DIR environment variable )
+Hive configuration can be manipulated by:
+  Editing hive-site.xml
+  Using the set command
+  Invoking Beeline or HiveServer2
+
+===mapreduce  
+Hive queries are executed using map-reduce queries 
+Hive compiler generates map-reduce jobs for most queries. These jobs are then submitted to the Map-Reduce cluster
+==local mode
+Starting with release 0.7, Hive fully supports local mode execution
+local mode execution is done in a separate, child jvm (of the Hive client) instead of relying on hadoop jvm
+  mapred.local.dir should point to a path that's valid on the local machine
+    SET mapreduce.framework.name=local;
+    or
+    hive.exec.mode.local.auto, hive.exec.mode.local.auto.inputbytes.max, and hive.exec.mode.local.auto.tasks.max
+    
+    
+===Hive Logging
+Hive uses log4j for logging
+other logs
+  HiveServer2 Logs
+  Audit Logs from HMS
+  Perf Logger performance metrics
+
+Metadata Store
+  embedded Derby database
+  storage location conf/hive-default.xml -> javax.jdo.option.ConnectionURL -> default location ./metastore_db
+  Metastore can be stored in any database that is supported by JPOX.
+  
+  
+  
+
+
+    

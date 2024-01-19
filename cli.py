@@ -79,7 +79,7 @@ def showDFSOutput(res):
                     colored_print(nodes[ip]['data'])
                     break
                 ip = ip - l
-    input('continue..') # needed for multiple files to stop and continue else it just goes and not able to see result                  
+    input('\ncontinue..') # needed for multiple files to stop and continue else it just goes and not able to see result                  
 
 def displayTree(tree):
     print('displayTree')
@@ -143,7 +143,16 @@ def node_search_by_id(tree,node_id_list=[]):
             if i['id']==j:
                 selectedNodes.append(i)
                 break
-    return selectedNodes   
+    return selectedNodes 
+
+def node_search_by_child(tree,node_id_list=[]):
+    selectedNodes=[]
+    for i in tree:
+        for j in node_id_list:
+            if j in i['children']:
+                selectedNodes.append(i)
+                break
+    return selectedNodes     
 
 def node_search_by_name(tree,node_name_list=[],ignoreCase=False,partialmatch=False):
     selectedNodes=[]
@@ -180,6 +189,11 @@ def get_children(tree,node_id_list=[]):
         if len(i['children']) > 0 : 
             selectedNodes+=node_search_by_id( tree, i['children'] )
     return selectedNodes    
+ 
+def get_parent(tree,node_id_list=[])->str:
+    selectedNodes=[]
+    selectedNodes+=node_search_by_child(tree,node_id_list)
+    return selectedNodes
     
 def is_item_in_list(item,item_list,partial=False):
     item=item.lower()
@@ -235,17 +249,34 @@ def dive_mode(tree):
     start=int(input('choose diving point:'))
     selectedNodes=[curr_node_list[start]]
     
+    
     while True:
         childNodes = get_children(tree, list(map(lambda d:d['id'],selectedNodes)))
+        colored_print ( "===\n"+selectedNodes[0]['name'] + '\n'+ selectedNodes[0]['data'] +'===\n\n')
+        prevNode = get_parent(tree, list(map(lambda d:d['id'],selectedNodes)) ) 
         if len(childNodes) == 0:
-            print(selectedNodes[0]['data'])
-            break
+            start=input(getattr(Fore,'RED') + 'end of road e: to end b: to go back'+ Fore.RESET  ).rstrip()
+            if start not in ['e','b'] or start == 'e':
+                print('bye..')
+                break
+            else:
+                print()
         else:
-            selectedNodes=childNodes
-        for n,i in enumerate(selectedNodes):
-            print(n,i['name'])
-        start=int(input('choose starting point:'))
-        selectedNodes=[selectedNodes[start]]
+            for n,i in enumerate(childNodes):
+                print(str(n)+'('+i['name']+')',end=' ')
+            print()
+            if len(prevNode)>0:
+                print('Backward Node:(',prevNode[0]['name'],')')
+            
+            start=input(getattr(Fore,'GREEN') + 'choose starting point: b for prev'+ Fore.RESET  )
+        if start=='b':
+            if len(prevNode)<1: #this has no parent so we cannot go back 
+                selectedNodes = selectedNodes
+            else:
+                selectedNodes = [ prevNode[0] ]
+        else:
+            selectedNodes= [childNodes[int(start)]]
+        
 
 g_context=[]    
 def search(args,filename):
@@ -265,12 +296,12 @@ def search(args,filename):
         
 def main(args):
     files=[]
-    file_list = {'python' : [r'C:\Users\mithu\Desktop\d3\core\data\py*.txt', # non recursive
-                    # r'C:\Users\mithu\Desktop\d3\core\data\**\py*.txt', ** means recursive
+    file_list = {'reference' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\*[0-9].txt', # non recursive
+                    r'C:\Users\mithu\Downloads\track\projects\**\quickref.txt',# ** means recursive
                     #r'G:\My Drive\Downloads\jarvis\tech\**\py*.txt' not all files are converted now
                     ],
-                'spark' : [r'C:\Users\mithu\Desktop\d3\core\data\sp*.txt'],
-                'secret' : [r'C:\Users\mithu\Desktop\d3\privateData\secrets.txt']
+                'spark' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\sp*.txt'],
+                'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\secret*.txt']
                 }
     if args.key=='all':
         chosen_file_list = list({x for v in file_list.values() for x in v})
@@ -288,10 +319,10 @@ def main(args):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-k","--key", help="search by key python,nifi instead of file")
+parser.add_argument("-k","--key", help="search by key reference,nifi instead of file")
 parser.add_argument("-f","--filename", help="increase output verbosity")
 parser.add_argument("-s","--search", help="increase output verbosity")
-parser.add_argument("-d","--dive", help="dive into tree ",nargs="?",default='false',const="")
+parser.add_argument("-d","--dive", help="dive into tree ",nargs="?",default='false',const="true")
 parser.add_argument("-p","--property", help="increase output verbosity", default="name,tag")
 parser.add_argument("-l","--level", help="increase output verbosity", default=100)
 parser.add_argument("-e","--expand", help="node data", default=100)

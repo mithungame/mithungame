@@ -1,10 +1,8 @@
 #?#box#calculatedX@395#calculatedY@270#children@45,1698378337186#name@0:seed#id@seed#parent@#tag@australia#x@316#y@216
 australia
 #?#box#calculatedX@425#calculatedY@305#children@66#name@0:pte#id@45#parent@#x@340#y@244
-#?#section@pte#tag@pte
 pte
 #?#box#calculatedX@445#calculatedY@350#children@67,1678178657684,1678253893594,1678255381269#name@0:categories#id@66#parent@#x@356#y@280
-#?#section@categories#tag@categories
 categories
 #?#box#calculatedX@125#calculatedY@347#children@68,69,70,71,72,1698720896303#name@0:Speaking#id@67#parent@66#x@100#y@277
 Speaking 

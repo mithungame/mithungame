@@ -1,0 +1,76 @@
+#?#box#calculatedX@83#calculatedY@148#children@1704786298378,1704786809287#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@86#y@78
+title
+
+#?#box#calculatedX@100#calculatedY@213#children@1704786347678,1704786359487,1704786661708#name@1:warehouse#id@1704786298378#parent@#x@100#y@130
+warehouse, is a cluster of compute resources 
+size x small  to 6x 
+
+Gotcha:
+1. Increasing the size of a warehouse does not always improve "data loading" performance. 
+#?#box#calculatedX@94#calculatedY@299#children@#name@1:standard#id@1704786347678#parent@#x@95#y@199
+content
+#?#box#calculatedX@275#calculatedY@307#children@#name@2:snowparkOptimized#id@1704786359487#parent@#x@240#y@205
+Snowpark workloads can be run on both Standard and Snowpark-optimized warehouses. Snowpark-optimized warehouses are recommended for workloads that have large memory requirements such as ML training use cases
+#?#box#calculatedX@315#calculatedY@214#children@#name@3:SuspendAndResume#id@1704786661708#parent@#x@272#y@131
+Auto-suspend and auto-resume apply to "entire" warehouse and not to the individual clusters in the warehouse.
+
+For a multi-cluster warehouse:
+
+Auto-suspend only occurs when the minimum number of clusters is running and there is no activity for the specified period of time. The minimum is typically 1 (cluster), but could be more than 1.
+
+Auto-resume only applies when the entire warehouse is suspended (i.e. no clusters are running).
+#?#box#calculatedX@672#calculatedY@256#children@1704787008261,1704787113672#name@2:Tables#id@1704786809287#parent@#x@557#y@164
+1. Internal - Temporary , Transient, Permanent
+2. External 
+3. Iceberg
+
+Temporary
+============
+Longevity: Remainder of session
+Cloning: Temporary => Temporary Temporary => Transient
+Time Travel: 0 or 1 (default is 1)
+Fail safe:0
+
+Transient
+====================
+Until explicitly dropped
+Transient => Temporary Transient => Transient
+0 or 1 (default is 1)
+0
+
+Permanent (Standard Edition)
+==============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 or 1 (default is 1)
+7
+
+Permanent (Enterprise Edition and higher)
+=============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 to 90 (default is configurable)
+7
+#?#box#calculatedX@660#calculatedY@311#children@#name@1:microPartitions#id@1704787008261#parent@#x@548#y@208
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+#?#box#calculatedX@824#calculatedY@320#children@#name@2:Clustering#id@1704787113672#parent@#x@679#y@216
+manual clustering Disabled
+create table cluster by <key>
+Data within micro partition is ordered by key
+Table will not be 100% clustered
+
+clustering depth ( 2 below) - number of microparitition with overlapping data
+micro parition 1 - A TO F ---
+                             \
+micro parition 2 - A TO G --- overlap
+micro parition 3 - G TO Z
+
+
+<!OOO!>
+To view/monitor the clustering metadata for a table, Snowflake provides the following system functions:
+SYSTEM$CLUSTERING_DEPTH
+SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@511#y@219
+root Node

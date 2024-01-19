@@ -8,6 +8,5 @@ Read the disclaimer, click 'Confirm' and the user will be redirected to TDS-CPC 
 In the TDS-CPC Portal, Agree the acceptance of usage. Click 'Proceed'.
 Click ‘View Tax Credit (Form 26AS)’Select the ‘Assessment Year’ and ‘View type’ (HTML, Text or PDF)Click ‘View / Download’
 
-#?#section@sectiontTitle#tag@title
 #?#box#calculatedX@161#calculatedY@203#children@#name@0:folders#id@66#parent@#x@161#y@203
 childitem

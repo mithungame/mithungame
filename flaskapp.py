@@ -26,7 +26,7 @@ def process_json():
         filename_p2='_'.join(filename_p1.split('_')[:-1])+'_'+str(int(filename_p1.split('_')[-1])+1) if '_' in filename_p1 and filename_p1.split('_')[-1].isnumeric()  else filename_p1+'_1' 
         newfilename=filename_p2+'.'+filename_ext
         newpurefilename=filename_p2+'_data.'+filename_ext
-        datadir='C:\\Users\\mithu\\Desktop\\d3\\'+ '\\'.join(json['location'].split(','))
+        datadir='C:\\Users\\mithu\\Downloads\\track\\projects\\d3\\'+ '\\'.join(json['location'].split(','))
         try:
             with open(os.path.join(datadir,newfilename),'w',newline='') as f:
                 f.write(str(json['data']))

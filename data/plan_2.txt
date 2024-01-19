@@ -1,5 +1,5 @@
 #?#box#calculatedX@200#calculatedY@158#children@45,1679033668989,1697021921966#name@0:seed#id@seed#parent@#x@380#y@266
-#?#topic@plan#tag@plan
+plan
 #?#box#calculatedX@102#calculatedY@246#children@#name@0:properties#id@45#parent@#x@301#y@336
 IT is the only way i can make money do whatever i want
 i dont seem to have business talent
@@ -7,7 +7,7 @@ dont waste your time on anything else
 EVERYTHING IS A BYPRODUCT OF IT
 there is no time to do everything.
 #?#box#calculatedX@355#calculatedY@246#children@1679033718433,1679033800324#name@1:jobPlan#id@1679033668989#parent@#x@504#y@336
-#?#section@jobPlan#tag@jobPlan
+jobPlan
 #?#box#calculatedX@247#calculatedY@335#children@#name@0:properties#id@1679033718433#parent@#x@417#y@408
 make money
 make money

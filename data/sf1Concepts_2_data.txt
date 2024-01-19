@@ -1,0 +1,85 @@
+name@0:seed
+title
+
+
+name@1:warehouse
+warehouse, is a cluster of compute resources 
+size x small  to 6x 
+
+Gotcha:
+1. Increasing the size of a warehouse does not always improve "data loading" performance. 
+
+name@1:standard
+content
+
+name@2:snowparkOptimized
+Snowpark workloads can be run on both Standard and Snowpark-optimized warehouses. Snowpark-optimized warehouses are recommended for workloads that have large memory requirements such as ML training use cases
+
+name@3:SuspendAndResume
+Auto-suspend and auto-resume apply to "entire" warehouse and not to the individual clusters in the warehouse.
+
+For a multi-cluster warehouse:
+
+Auto-suspend only occurs when the minimum number of clusters is running and there is no activity for the specified period of time. The minimum is typically 1 (cluster), but could be more than 1.
+
+Auto-resume only applies when the entire warehouse is suspended (i.e. no clusters are running).
+
+name@2:Tables
+1. Internal - Temporary , Transient, Permanent
+2. External 
+3. Iceberg
+
+Temporary
+============
+Longevity: Remainder of session
+Cloning: Temporary => Temporary Temporary => Transient
+Time Travel: 0 or 1 (default is 1)
+Fail safe:0
+
+Transient
+====================
+Until explicitly dropped
+Transient => Temporary Transient => Transient
+0 or 1 (default is 1)
+0
+
+Permanent (Standard Edition)
+==============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 or 1 (default is 1)
+7
+
+Permanent (Enterprise Edition and higher)
+=============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 to 90 (default is configurable)
+7
+
+name@1:microPartitions
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+
+name@2:Clustering
+manual clustering Disabled
+create table cluster by <key>
+Data within micro partition is ordered by key
+Table will not be 100% clustered
+
+clustering depth ( 2 below) - number of microparitition with overlapping data
+micro parition 1 - A TO F ---
+                             \
+micro parition 2 - A TO G --- overlap
+micro parition 3 - G TO Z
+
+
+<!OOO!>
+To view/monitor the clustering metadata for a table, Snowflake provides the following system functions:
+SYSTEM$CLUSTERING_DEPTH
+SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
+
+name@rootNode
+root Node
+

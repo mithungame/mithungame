@@ -1,5 +1,5 @@
 #?#box#calculatedX@275#calculatedY@-169#children@45,1694745032585#name@0:seed#id@seed#parent@#x@380#y@264
-#?#topic@plan#tag@plan
+plan
 
 #?#box#calculatedX@175#calculatedY@-80#children@#name@0:properties#id@45#parent@#x@300#y@336
 feaw

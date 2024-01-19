@@ -1,6 +1,6 @@
 import glob,os,re,shutil
 i=input("1 data 2 private data").rstrip()
-all_path={ '1' : r'C:\Users\mithu\Desktop\d3\core\data' , '2' : r'C:\Users\mithu\Desktop\d3\privateData' } 
+all_path={ '1' : r'C:\Users\mithu\Downloads\track\projects\d3\core\data' , '2' : r'C:\Users\mithu\Downloads\track\projects\d3\privateData' } 
 base_path=all_path[i]
 file_path=base_path+'\\*.txt'
 file_list=glob.glob(file_path)
