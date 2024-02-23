@@ -1,0 +1,292 @@
+<html>
+<style>
+*{
+border: 0
+padding: 0
+margin: 0
+}
+#svgcontainer{
+position: absolute;
+top: 0px;
+left: 0px;
+}
+#root{
+width: 2400;
+height: 1600;
+}
+#svgdotcontainer{
+position: absolute;
+top: 0px;
+left: 0px;
+z-index:1
+}
+#dotroot{
+width: 2400;
+height: 1600;
+z-index:10
+}
+</style>
+<body>
+<div id='svgcontainer'>
+<svg id="root" >
+<rect width="200" height="100" x="100" y="50" rx="20" ry="20" fill="blue"  transform="translate(150, 80)" id="square" style="fill:none;stroke-width:1px;stroke:blue" />
+<g id="nose_g" transform="translate(354 182)"><path d="M 0 0 C123 3, 151 194, -14 105" " style="fill:red;stroke:black;stroke-width:1px" id="nose" id="nose"></path></g>
+<g id="arc_g" transform="translate(197 228)"><path d="M 0 0 C49 263, 291 285, 367 -8" id="arc" style="fill:transparent;stroke:black;stroke-width:1px"></path>
+<g id="outercircle1_g" transform="translate(150, 80)"><circle cx="30" cy="10" r="40" id="outercircle1" style="fill:none;stroke-width:1px;stroke:blue" ></circle></g>
+</svg></div>
+<div id='svgdotcontainer'><svg id="dotroot" ></svg></div>
+</body>
+<script>
+var svgns = "http://www.w3.org/2000/svg"
+g_masterData={
+'id':'frame','type': 'g', 'elementPointer':null, 'parent': 'root', 'child': 
+ [{ 'id': 'person1', 'type': 'g','elementPointer':null, 'parent': 'frame', child: 
+  [{'id': 'eye', 'type': 'g','elementPointer':null, 'parent': 'person1',
+  'child':
+   [{'id': 'outercircle' ,'type':'circle','elementPointer':null, 'parent': 'frame',child: [],'x':10,'y':10,'r':4,'xpos':0,'ypos':0,translate:[300, 300],stroke:'blue' },
+    {'id': 'outercircle1' ,'type':'circle','elementPointer':null, 'parent': 'frame',child: [],'x':30,'y':10,'r':4,'xpos':0,'ypos':0,translate: [150, 80],stroke:'blue'}
+   ]}
+  ]}
+ ]}
+g_logMode='DEBUG'
+function f_execute(f,...params){
+g_logMode == 'DEBUG' ? console.log(f.name,...params) :  console.log(f.name)
+return_value = f(...params)
+g_logMode == 'DEBUG' ? console.log('return',return_value) :  console.log('--end--')
+return return_value
+}
+
+function f_init_draw(data){
+if(!(data.elementPointer)){f_execute(f_draw,data)}
+if( 'child' in data ){for (let i=0;i< data['child'].length;i++){ f_init_draw( data['child'][i] ) }}
+}
+
+function f_createIdIfNull(data){if (!(data.id)){data.id=Date.now().toString()}}
+
+function f_materialize(data){
+if(data.type=='g'){f_materializeG(data)}
+if(data.type=='circle'){f_materializeCircle(data)}
+if(data.type=='bubble'){
+f_materializeCircle(data)
+data.elementPointer.setAttribute("class","draggable")
+data.elementPointer.addEventListener('mousedown', dragStart);
+data.elementPointer.addEventListener('mousemove', drag);
+data.elementPointer.addEventListener('mouseup', dragEnd);   
+}
+if(data.type=='arc'){f_materializeArc(data)}
+return data
+}
+function f_materializeG(data){let e=null;e = document.createElementNS(svgns, 'g');data.elementPointer=e;}
+function f_materializeCircle(data){
+let e=null;e = document.createElementNS(svgns, 'circle');e.setAttribute('r',data.r);
+if('cx' in data && data.cx){e.setAttribute('cx',data.cx)}
+if('cy' in data && data.cy){e.setAttribute('cy',data.cy)}
+data.elementPointer=e;}
+function f_materializeArc(data){let e=null;e = document.createElementNS(svgns, 'path');
+console.log(data.bubble)
+counter=data.bubble.length;let i=0
+while(i<counter){
+ console.log(i)
+ if(i==0){path="M "+data.bubble[0].cx+" "+data.bubble[0].cy;i++}
+ else if ( counter - i > 2 )
+ {
+ path+=" C"+data.bubble[i].cx+" "+data.bubble[i].cy+", "+data.bubble[i+1].cx+" "+data.bubble[i+1].cy+", "+data.bubble[i+2].cx+" "+data.bubble[i+2].cy
+ i+=3
+ }
+ else{i++}//no condition met just increment counter
+ }
+e.setAttribute('d', path);
+data.elementPointer=e;
+}
+
+function f_draw(data){
+if(data.type=='g'){f_execute(f_drawG,data)}
+if(data.type=='circle'){f_execute(f_drawCircle,data)}
+if(data.type=='bubble'){f_execute(f_drawBubble,data)}
+if(data.type=='arc'){f_execute(f_drawArc,data)}
+f_execute(f_materialize,data)
+if(data.elementPointer==null){return('ABORT - MATERIALIZATION FAILURE')}
+f_execute(f_setMaterialization,{type:'id'},{},data)
+f_execute(f_setMaterialization,{type:'rel'},{},data)
+if('translate' in data && data.translate ){f_setTranslate(data)}
+f_execute(f_style,data)
+return data
+}
+function f_drawG(data){f_materialize(data);return data}
+function f_drawCircle(data){f_materialize(data);return data}
+function f_drawBubble(data){f_materialize(data);return data}
+function f_drawArc(data){
+  for(let i=0;i<data.no_of_bubble;i++){
+    data.bubble.push( f_execute(f_create,{type:'bubble'},{parent: data.parent, cx: (i+1)*30, cy: (i+1)*30, }) )
+  }
+f_execute(f_materialize,data);
+return data
+}
+
+function f_create(params={wrap_by_g:false},override_data={}){
+let data=null
+data = params.wrap_by_g ? f_execute(f_createWithG,params,override_data) : f_execute(f_createWithoutG,params,override_data)
+return data
+}
+function f_createWithG(params,override_data=null){
+let g=null;g=f_execute(f_createWithoutG,{type:'g'},override_data)
+let e=null;e=f_execute(f_createWithoutG,params,{override_data,...{parent: g.id,id: g.id.concat("_e")}})
+return data
+}
+function f_createWithoutG(params,override_data=null){
+data=f_execute(f_createData,params);
+data={...data,...override_data}
+f_execute(f_draw,data)
+return data
+}
+
+function f_style(data){
+if (!('style' in data)){return}
+let e=document.getElementById(data.id)
+console.log(e)
+obj_keys=Object.entries(data.style)
+for(let i=0;i<obj_keys.length;i++)
+{
+data.elementPointer.setAttribute(obj_keys[i][0],obj_keys[i][1])
+}
+}
+
+
+
+function f_createData(params)
+{
+let data=null
+if(params.type=='g'){data=f_createGData()}
+if(params.type=='circle'){data=f_createCircleData()}
+if(params.type=='bubble'){data=f_createBubbleData()}
+if(params.type=='arc'){data=f_createArcData()}
+f_createIdIfNull(data)  
+return data
+}
+function f_createBaseData(){return {'id':null,'type': 'g','elementPointer':null,'parent': null, 'child':[]}}
+function f_createGData(){let data=f_createBaseData();data={...data,...{'translate':[0,0]}};return data}
+function f_createCircleData(){let data=f_createBaseData();data={...data,...{'type': 'circle','r':5,}};return data}
+function f_createBubbleData(){let data=f_createBaseData();data={...data,...{'type': 'bubble','cx':30,'cy':30,'r':5,}};return data}
+function f_createArcData(){let data=f_createBaseData();data={...data,...{'type': 'arc',bubble:[],no_of_bubble:4,style: {"fill":"transparent","stroke":"black","stroke-width":"1px"}}};return data}
+
+function f_setData(params={},overwrite_data={},data){//transient wont impact materialization
+if (params.mode=='transient') {
+ 
+ }
+else{
+ if (params.type=='rel'){ f_execute(f_setRelData,overwrite_data.parentId,data)   ; }
+ else { f_execute(f_setGenericData,overwrite_data,data) ;}
+ //CALL MATERIALIZE
+ f_execute(f_setMaterialization,type,data)
+}
+}
+
+
+function f_setRelData(parentId,data){ //keep theses function as simple as possible even to be called from outside
+  if(data.id=='frame'){console.log('frame is base hence no action needed');return}
+  if(data.parent==parentId){console.log('parent rel already established hence no action needed');return}
+  let p_data=f_getData(parentId,g_masterData)
+  p_data.child.filter(d=>d.id==data.id).length <= 0 ? p_data.child.push(data): console.log("This item already exists");
+  data.parent=parentId
+  }
+function f_setGenericData(data,overwrite_data){data={...data,...overwrite_data}}
+function f_getData(nodeId,data){
+node=null
+if (data['id']==nodeId ) {return data} 
+else if ('child' in data) {
+  for (let i=0;i< data['child'].length;i++)
+    { result=f_getData(nodeId,data['child'][i]) ;
+      if (result)
+        {return result} 
+    } 
+}
+return null
+}
+
+function f_setIdMaterialization(data){let e=data.elementPointer;if( !('id' in e) || e.id!=data.id){data.elementPointer.setAttribute('id',data.id)}}
+function f_setRelMaterialization(parentId,data){let pobj=document.getElementById(parentId);if(pobj.parentNode.id!=parentId)pobj.appendChild(data.elementPointer)}
+function f_setTranslatePos(parentId,data){f_setTranslate(data)}
+function f_setMaterialization(params,overwrite_data,data){
+if(params.type=='id'){f_execute(f_setIdMaterialization,data)}
+if(params.type=='rel'){f_execute(f_setRelMaterialization,data.parent,data)}
+if(params.type=='pos'){f_execute(f_setTranslatePos,data)}
+}
+
+
+
+function f_setTranslate(data){
+if (!('translate' in data)){return null}
+let element=data.elementPointer;if(!(element)){return null}
+    var transforms = element.transform.baseVal;
+    if (transforms.length === 0 || transforms.getItem(0).type !== SVGTransform.SVG_TRANSFORM_TRANSLATE) {
+      let svg=document.getElementById('root')
+      var translate = svg.createSVGTransform();
+      translate.setTranslate(0, 0);
+      element.transform.baseVal.insertItemBefore(translate, 0);
+    }
+    transform = transforms.getItem(0);
+    transform.setTranslate(data.translate[0], data.translate[1]);
+}
+
+
+
+
+    var active = false;
+    var currentX;
+    var currentY;
+    var initialX;
+    var initialY;
+    var xOffset = 0;
+    var yOffset = 0;
+
+    function dragStart(e) {
+    console.log('dragStart',e.target.id)
+    e.target.style.color='red'
+      console.log(e.target.classList.contains('draggable'))
+      if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - xOffset;
+        initialY = e.touches[0].clientY - yOffset;
+      } else {
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+      }
+
+      if (e.target.classList.contains('draggable')) {
+        active = true;
+        console.log(initialX,initialY)
+      }
+    }
+
+    function dragEnd(e) {
+      console.log('dragEnd')
+      initialX = currentX;
+      initialY = currentY;
+      redrawArc()
+      active = false;
+    }
+
+    function drag(e) {
+    
+      if (active) {
+        console.log('dragging...', e,initialX,initialY)
+        e.preventDefault();
+      
+        if (e.type === "touchmove") {
+          currentX = e.touches[0].clientX - initialX;
+          currentY = e.touches[0].clientY - initialY;
+        } else {
+          drag_x =   e.clientX
+          drag_y =   e.clientY
+          currentX = e.clientX ;
+          currentY = e.clientY ;
+        }
+        console.log(drag_x,drag_y,currentX,currentY)
+        xOffset = currentX;
+        yOffset = currentY;
+        data = f_execute(f_getData,e.id)
+        f_execute(f_setData,params={mode: 'permanent'},overwrite_data={cx: currentX, cy: currentY},data)
+        //setTranslate(currentX, currentY, e.target);
+      }
+    }
+</script>
+</html> 
