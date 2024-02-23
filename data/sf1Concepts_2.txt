@@ -1,12 +1,14 @@
 #?#box#calculatedX@83#calculatedY@148#children@1704786298378,1704786809287#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@86#y@78
 title
 
-#?#box#calculatedX@100#calculatedY@213#children@1704786347678,1704786359487,1704786661708#name@1:warehouse#id@1704786298378#parent@#x@100#y@130
+#?#box#calculatedX@100#calculatedY@213#children@1707559463#name@1:warehouse#id@1704786298378#parent@#x@100#y@130#visibility@hidden
 warehouse, is a cluster of compute resources 
 size x small  to 6x 
 
 Gotcha:
 1. Increasing the size of a warehouse does not always improve "data loading" performance. 
+#?#box#calculatedX@94#calculatedY@299#children@1704786347678,1704786359487,1704786661708#name@1:types#id@1707559463#parent@#x@95#y@199
+
 #?#box#calculatedX@94#calculatedY@299#children@#name@1:standard#id@1704786347678#parent@#x@95#y@199
 content
 #?#box#calculatedX@275#calculatedY@307#children@#name@2:snowparkOptimized#id@1704786359487#parent@#x@240#y@205
@@ -51,7 +53,15 @@ Until explicitly dropped
 Permanent => Temporary Permanent => Transient Permanent => Permanent
 0 to 90 (default is configurable)
 7
-#?#box#calculatedX@660#calculatedY@311#children@#name@1:microPartitions#id@1704787008261#parent@#x@548#y@208
+#?#box#calculatedX@660#calculatedY@311#children@1707563377,1707563378#name@1:microPartitions#id@1704787008261#parent@#x@548#y@208
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+#?#box#calculatedX@660#calculatedY@311#children@#name@1:microPartitions1#id@1707563378#parent@#x@548#y@208
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+#?#box#calculatedX@660#calculatedY@311#children@#name@1:microPartitions2#id@1707563377#parent@#x@548#y@208
 contiguous units of storage
 50 MB and 500 MB of "uncompressed data"
 "Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 

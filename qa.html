@@ -79,9 +79,9 @@ g_detectKey=''
 document.onkeydown = checkKey;
 function checkKey(e) {
     e = e || window.event;
-	if (e.keyCode==39){g_counter+=1}
-	if (e.keyCode==37){g_counter-=1}
-	displaydata()
+	if (e.keyCode==39){clickdisplay(event,1)}
+	if (e.keyCode==37){clickdisplay(event,2)}
+	
 	}
 	
 
@@ -133,12 +133,8 @@ function movetoname(){
 searchstring=document.getElementById('buttoninput').value
 let match=false
 for(i=0;i<fileData.length;i++){
-    if ( i<g_counter  || (! (fileData[i].startsWith('#?#') )) ) continue
-    
-    name_arr=fileData[i].split('#').filter(d=>d.includes('name@'))[0].split('@')
-    name_arr.shift()
-    console.log(name_arr)
-    if ( name_arr[0].toLowerCase().includes(searchstring) ) { g_counter = i-1 ; match= true;break }
+    if ( i<g_counter   ) continue
+    if ( fileData[i].toLowerCase().includes(searchstring) ) { g_counter = i-1 ; match= true;break }
 }
 if(!(match)){g_counter=0}
 }
