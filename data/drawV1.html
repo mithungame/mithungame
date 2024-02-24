@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
 <style>
 *{
 border: 0
@@ -20,10 +20,10 @@ height: 1600px;
 <body>
 <div id='svgcontainer'>
 <svg id="root" >
-<rect width="200" height="100" x="100" y="50" rx="20" ry="20" fill="blue"  transform="translate(150, 80)" id="square" style="fill:none;stroke-width:1px;stroke:blue" />
-<g id="nose_g" transform="translate(354 182)"><path d="M 0 0 C123 3, 151 194, -14 105" " style="fill:red;stroke:black;stroke-width:1px" id="nose" id="nose"></path></g>
+<!-- rect width="200" height="100" x="100" y="50" rx="20" ry="20" fill="blue"  transform="translate(150, 80)" id="square" style="fill:none;stroke-width:1px;stroke:blue" />
+<g id="nose_g" transform="translate(354 182)"><path d="M 0 0 C123 3, 151 194, -14 105" " style="fill:transparent;stroke:black;stroke-width:1px" id="nose" id="nose"></path></g>
 <g id="arc_g" transform="translate(197 228)"><path d="M 0 0 C49 263, 291 285, 367 -8" id="arc" style="fill:transparent;stroke:black;stroke-width:1px"></path>
-<g id="outercircle1_g" transform="translate(150, 80)"><circle cx="30" cy="10" r="40" id="outercircle1" style="fill:none;stroke-width:1px;stroke:blue" ></circle></g>
+<g id="outercircle1_g" transform="translate(150, 80)"><circle cx="30" cy="10" r="40" id="outercircle1" style="fill:none;stroke-width:1px;stroke:blue" ></circle></g-->
 </svg></div>
 <div id='svgdotcontainer'><svg id="dotroot" ></svg></div>
 </body>
@@ -52,11 +52,13 @@ if(!(data.elementPointer) || Object.keys(data.element.elementPointer).length < 1
 if( 'child' in data ){for (let i=0;i< data['child'].length;i++){ f_init_draw( data['child'][i] ) }}
 }
 
+function f_createIdIfNull(data){if (!(data.id)){data.id=Date.now().toString()}}
 
 function f_generateArcPath(data){
 counter=data.no_of_bubble;let i=0;let bubble_data=[]
 //f_execute(f_getData, data.id.split('_')[0]+'_c'+1, g_masterData)
 for(let i=0;i<counter;i++){ bubble_data.push( f_execute(f_getData, data.id.split('_')[0]+'_c'+(i+1), g_masterData ) ) }
+while(i<counter){
  if(i==0){path="M "+bubble_data[0].cx+" "+bubble_data[0].cy;i++}
  else if ( counter - i > 2 )
  {
@@ -68,7 +70,6 @@ for(let i=0;i<counter;i++){ bubble_data.push( f_execute(f_getData, data.id.split
  return path
 }
 
-function f_createIdIfNull(data){if (!(data.id)){data.id=Date.now().toString()}}
 
 function f_materialize(data){
 if(data.type=='g'){f_materializeG(data)}
@@ -119,8 +120,10 @@ function f_drawArc(data){f_execute(f_materialize,data);return data}
 function f_create(params={wrap_by_g:false},override_data={}){
 let data=null
 if(params.type=='arc'){f_createArc(params,override_data)}
+else{
 data = params.wrap_by_g ? f_execute(f_createWithG,params,override_data) : f_execute(f_createWithoutG,params,override_data)
 return data
+}
 }
 function f_createWithG(params,override_data=null){
 let g=null;g=f_execute(f_createWithoutG,{type:'g'},override_data)
@@ -183,11 +186,11 @@ function f_createBubbleData(){let data=f_createBaseData();data={...data,...{'typ
 function f_createArcData(){let data=f_createBaseData();data={...data,...{'type': 'arc',no_of_bubble:4,style: {"fill":"transparent","stroke":"black","stroke-width":"1px"}}};return data}
 
 function f_setData(params={},override_data={},data){//transient wont impact materialization
-if (params.type=='rel'){ f_execute(f_setRelData,overwrite_data.parentId,data)   ; }
+if (params.type=='rel'){ f_execute(f_setRelData,override_data.parentId,data)   ; }
 else { f_execute(f_setGenericData,overwrite_data,data) ;}
 //CALL MATERIALIZE 
 if (params.mode=='transient') {} else {
- f_execute(f_setMaterialization,type,data)
+ f_execute(f_setMaterialization,params,override_data,data)
 }
 }
 
@@ -219,7 +222,7 @@ return null
 
 function f_setIdMaterialization(data){let e=data.elementPointer;if( !('id' in e) || e.id!=data.id){data.elementPointer.setAttribute('id',data.id)}}
 function f_setRelMaterialization(parentId,data){let pobj=document.getElementById(parentId);if(pobj.parentNode.id!=parentId)pobj.appendChild(data.elementPointer)}
-function f_setTranslatePos(parentId,data){
+function f_setTranslatePos(data){
 if(data.type=='bubble'){f_execute(f_setCircleXYpos,data)}
 else{f_execute(f_setTranslate, data)}}
 }
@@ -283,6 +286,7 @@ let element=data.elementPointer;if(!(element)){return null}
       drag_initialX = drag_currentX;
       drag_initialY = drag_currentY;
       f_execute( f_setData, {mode: 'permanent', type: 'pos'}, {cx: drag_currentX, cy: drag_currentY}, drag_data )
+      f_execute( f_dragEndAction,{},{},drag_data )
       drag_active = false;
       drag_data = null 
     }
