@@ -25,7 +25,6 @@ height: 1600px;
 <g id="arc_g" transform="translate(197 228)"><path d="M 0 0 C49 263, 291 285, 367 -8" id="arc" style="fill:transparent;stroke:black;stroke-width:1px"></path>
 <g id="outercircle1_g" transform="translate(150, 80)"><circle cx="30" cy="10" r="40" id="outercircle1" style="fill:none;stroke-width:1px;stroke:blue" ></circle></g-->
 </svg></div>
-<div id='svgdotcontainer'><svg id="dotroot" ></svg></div>
 </body>
 <script>
 var svgns = "http://www.w3.org/2000/svg"
@@ -122,8 +121,8 @@ let data=null
 if(params.type=='arc'){f_createArc(params,override_data)}
 else{
 data = params.wrap_by_g ? f_execute(f_createWithG,params,override_data) : f_execute(f_createWithoutG,params,override_data)
-return data
 }
+return data
 }
 function f_createWithG(params,override_data=null){
 let g=null;g=f_execute(f_createWithoutG,{type:'g'},override_data)
@@ -142,10 +141,10 @@ function f_createArc(params,override_data){
 let g_data = f_execute(f_createWithoutG, {type: 'g'}, {parent: override_data.parent} )
 //create arc data 
 let arc_data = f_execute( f_createData, params )
-arc_data = {...arc_data, ...override_data, ...{oarebt: g_data.id, id:g_date.id+'_e'}}
+arc_data = {...arc_data, ...override_data, ...{parent: g_data.id, id:g_date.id+'_e'}}
 //create bubbles 
 for(let i=0;i<arc_data.no_of_bubble;i++){
-f_execute(f_create,{type: 'bubble', wrap_by_g: false},{parent: g_data.id, cx: (i+1)*30, id: g_data.id+"_c"+(i+1)})
+f_execute(f_create,{type: 'bubble', wrap_by_g:false},{parent: g_data.id, cx: (i+1)*30, id: g_data.id+"_c"+(i+1)})
 }
 f_execute(f_draw,arc_data)
 }
@@ -187,7 +186,7 @@ function f_createArcData(){let data=f_createBaseData();data={...data,...{'type':
 
 function f_setData(params={},override_data={},data){//transient wont impact materialization
 if (params.type=='rel'){ f_execute(f_setRelData,override_data.parentId,data)   ; }
-else { f_execute(f_setGenericData,overwrite_data,data) ;}
+else { f_execute(f_setGenericData,override_data,data) ;}
 //CALL MATERIALIZE 
 if (params.mode=='transient') {} else {
  f_execute(f_setMaterialization,params,override_data,data)
@@ -306,7 +305,6 @@ let element=data.elementPointer;if(!(element)){return null}
           drag_currentX = e.clientX ;
           drag_currentY = e.clientY ;
         }
-        console.log(drag_x,drag_y,currentX,currentY)
         drag_xOffset = drag_currentX;
         drag_yOffset = drag_currentY;
         e.target.setAttribute('cx', drag_currentX)
