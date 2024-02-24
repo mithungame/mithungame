@@ -137,14 +137,14 @@ return data
 }
 
 function f_createArc(params,override_data){
-//create group 
-let g_data = f_execute(f_createWithoutG, {type: 'g'}, {parent: override_data.parent} )
-//create arc data 
-let arc_data = f_execute( f_createData, params )
-arc_data = {...arc_data, ...override_data, ...{parent: g_data.id, id:g_data.id+'_e'}}
-//create bubbles 
-for(let i=0;i<arc_data.no_of_bubble;i++){
-f_execute(f_create,{type: 'bubble', wrap_by_g:false},{parent: g_data.id, cx: (i+1)*30, id: g_data.id+"_c"+(i+1)})
+  //create group 
+  let g_data = f_execute(f_createWithoutG, {'type': 'g'}, {parent: override_data.parent} )
+  //create arc data 
+  let arc_data = f_execute( f_createData, params )
+  arc_data = {...arc_data, ...override_data, ...{parent: g_data.id, id:g_data.id+'_e'}}
+  //create bubbles 
+  for(let i=0;i<arc_data.no_of_bubble;i++){
+  f_execute(f_create,{type: 'bubble', wrap_by_g:false},{parent: g_data.id, cx: (i+1)*30, cy: (i+1)*30, id: g_data.id+"_c"+(i+1)})
 }
 f_execute(f_draw,arc_data)
 }
