@@ -102,7 +102,7 @@ data.elementPointer.addEventListener('mousemove', drag);
 data.elementPointer.addEventListener('mouseup', dragEnd); 
 }
 if(data.type=='arc'){f_execute(f_drawArc,data)}
-f_execute(f_materialize,data)
+//f_execute(f_materialize,data)
 if(data.elementPointer==null){return('ABORT - MATERIALIZATION FAILURE')}
 f_execute(f_setMaterialization,{type:'id'},{},data)
 f_execute(f_setMaterialization,{type:'rel'},{},data)
@@ -185,7 +185,7 @@ function f_createBubbleData(){let data=f_createBaseData();data={...data,...{'typ
 function f_createArcData(){let data=f_createBaseData();data={...data,...{'type': 'arc',no_of_bubble:4,style: {"fill":"transparent","stroke":"black","stroke-width":"1px"}}};return data}
 
 function f_setData(params={},override_data={},data){//transient wont impact materialization
-if (params.type=='rel'){ f_execute(f_setRelData,override_data,data)   ; }
+if (params.type=='rel'){ f_execute(f_setRelData,data.parent,data)   ; }
 else { f_execute(f_setGenericData,override_data,data) ;}
 //CALL MATERIALIZE 
 if (params.mode=='transient') {} else {
