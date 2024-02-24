@@ -47,7 +47,7 @@ return return_value
 }
 
 function f_init_draw(data){
-if(!(data.elementPointer) || Object.keys(data.element.elementPointer).length < 1 ){f_execute(f_draw,data)}
+if(!(data.elementPointer) || Object.keys(data.elementPointer).length < 1 ){f_execute(f_draw,data)}
 if( 'child' in data ){for (let i=0;i< data['child'].length;i++){ f_init_draw( data['child'][i] ) }}
 }
 
@@ -141,7 +141,7 @@ function f_createArc(params,override_data){
 let g_data = f_execute(f_createWithoutG, {type: 'g'}, {parent: override_data.parent} )
 //create arc data 
 let arc_data = f_execute( f_createData, params )
-arc_data = {...arc_data, ...override_data, ...{parent: g_data.id, id:g_date.id+'_e'}}
+arc_data = {...arc_data, ...override_data, ...{parent: g_data.id, id:g_data.id+'_e'}}
 //create bubbles 
 for(let i=0;i<arc_data.no_of_bubble;i++){
 f_execute(f_create,{type: 'bubble', wrap_by_g:false},{parent: g_data.id, cx: (i+1)*30, id: g_data.id+"_c"+(i+1)})
@@ -185,7 +185,7 @@ function f_createBubbleData(){let data=f_createBaseData();data={...data,...{'typ
 function f_createArcData(){let data=f_createBaseData();data={...data,...{'type': 'arc',no_of_bubble:4,style: {"fill":"transparent","stroke":"black","stroke-width":"1px"}}};return data}
 
 function f_setData(params={},override_data={},data){//transient wont impact materialization
-if (params.type=='rel'){ f_execute(f_setRelData,override_data.parentId,data)   ; }
+if (params.type=='rel'){ f_execute(f_setRelData,override_data,data)   ; }
 else { f_execute(f_setGenericData,override_data,data) ;}
 //CALL MATERIALIZE 
 if (params.mode=='transient') {} else {
@@ -202,7 +202,7 @@ function f_setRelData(parentId,data){ //keep theses function as simple as possib
   data.parent=parentId
   }
 function f_setGenericData(override_data, data){
-//data={...data,...overwrite_data}//this creates a new variable
+//data={...data,...override_data}//this creates a new variable
 target=override_data
 Object.keys(target).forEach(k=>{if(k in data){ data[k] = target[k]}})
 }
@@ -223,7 +223,7 @@ function f_setIdMaterialization(data){let e=data.elementPointer;if( !('id' in e)
 function f_setRelMaterialization(parentId,data){let pobj=document.getElementById(parentId);if(pobj.parentNode.id!=parentId)pobj.appendChild(data.elementPointer)}
 function f_setTranslatePos(data){
 if(data.type=='bubble'){f_execute(f_setCircleXYpos,data)}
-else{f_execute(f_setTranslate, data)}}
+else{f_execute(f_setTranslate, data)}
 }
 function f_setMaterialization(params,overwrite_data,data){
 if(params.type=='id'){f_execute(f_setIdMaterialization,data)}
@@ -314,8 +314,8 @@ let element=data.elementPointer;if(!(element)){return null}
     }
     
     function f_dragEndAction(params, override_data, data){
-    let associated_data = f_execute(f_execute, data.parent+"_e", g_masterData)
-    f_execute(f_redraw, {type: 'arc', {}, associated_data})
+    let associated_data = f_execute(f_getData, data.parent+"_e", g_masterData)
+    f_execute(f_redraw, {type: 'arc'}, {}, associated_data)
     }
 </script>
 </html> 
