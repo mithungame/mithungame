@@ -2,6 +2,7 @@ import re
 import argparse
 from colorama import Fore,init
 import glob
+import os 
 
 init(autoreset=True)
 
@@ -301,9 +302,9 @@ def main(args):
                     #r'G:\My Drive\Downloads\jarvis\tech\**\py*.txt' not all files are converted now
                     ],
                 'spark' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\sp*.txt'],
-                'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\secret*.txt']
+                'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\*[0-9].txt']
                 }
-    if args.key=='all':
+    if args.key in ('all','fs'):
         chosen_file_list = list({x for v in file_list.values() for x in v})
     elif args.key is not None:
         chosen_file_list = file_list[args.key.lower()]
@@ -311,7 +312,12 @@ def main(args):
         chosen_file_list=[args.filename]
     for i in chosen_file_list:
         files+=glob.glob(i,recursive=True) 
-
+    
+    if args.key=='fs':
+        for n,i in enumerate(files):
+            print(n,os.path.basename(i))
+        files=[files[ int(input('enter file name').rstrip()) ]]
+    print(files)
     #dont make it complicated search each file individually
     for filename in files:
         print(Fore.YELLOW+ 'processing file:'+ filename)

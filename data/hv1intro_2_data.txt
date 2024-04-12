@@ -1,0 +1,89 @@
+name@0:seed
+title
+
+name@1:intro
+Apache Hive is built on top of 
+Apache Hadoop
+hive Query execution via 
+Apache Tez, Apache Spark, or MapReduce 
+Procedural language with 
+HPL-SQL
+Sub-second query retrieval via 
+Hive LLAP, Apache YARN and Apache Slider
+Hive's SQL can also be extended with user code via 
+user defined functions (UDFs), user defined aggregates (UDAFs), and user defined table functions (UDTFs).
+There is not a single Hive format in which data must be stored
+Hive comes with built in connectors for 
+comma and tab-separated values (CSV/TSV) text files, Apache Parquet™, Apache ORC™, and other formats.
+Users can extend Hive with connectors for other formats using 
+Hive SerDe 
+Hive is not designed for 
+online transaction processing (OLTP) workloads
+It is best used for 
+traditional data warehousing tasks.
+
+name@2:components
+content
+
+name@1:HCatalog
+HCatalog is a 
+table and storage management layer for Hadoop 
+HCatalog enables  Pig and MapReduce etc 
+to more easily read and write data on the grid.
+
+name@2:WebHCat
+WebHCat provides a service that you can use to 
+run Hadoop MapReduce (or YARN), Pig, Hive jobs. 
+WebHCat provides a HTTP (REST style) interface for 
+performing Hive metadata operations
+
+name@3:links
+content
+
+name@1:installation
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-InstallationandConfiguration
+
+name@4:Startup
+content
+
+name@1:gotcha
+HiveServer2 (introduced in Hive 0.11) has its own CLI called Beeline, which is a JDBC client based on SQLLine.  Due to new development being focused on HiveServer2, Hive CLI will soon be deprecated in favor of Beeline (HIVE-10511).
+
+name@2:steps
+content
+
+name@1:runHive
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive
+
+name@2:RunHS2andBeeLine
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHiveServer2andBeeline.1
+
+name@3:runHCatalog
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHCatalog
+
+name@4:RunWebHCat
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningWebHCat(Templeton)
+
+name@3:configuration
+Hive configuration can be manipulated by:
+
+https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-ConfigurationManagementOverview
+
+Editing hive-site.xml and defining any desired variables (including Hadoop variables) in it
+Using the set command (see next section)
+Invoking Hive (deprecated), Beeline or HiveServer2 using the syntax:
+$ bin/hive --hiveconf x1=y1 --hiveconf x2=y2  //this sets the variables x1 and x2 to y1 and y2 respectively
+$ bin/hiveserver2 --hiveconf x1=y1 --hiveconf x2=y2  //this sets server-side variables x1 and x2 to y1 and y2 respectively
+$ bin/beeline --hiveconf x1=y1 --hiveconf x2=y2  //this sets client-side variables x1 and x2 to y1 and y2 respectively.
+Setting the HIVE_OPTS environment variable to "--hiveconf x1=y1 --hiveconf x2=y2" which does the same as above.
+
+name@1:gotcha
+Hive queries are executed using map-reduce queries and, therefore, the behavior of such queries can be controlled by the Hadoop configuration variables.
+
+The HiveCLI (deprecated) and Beeline command 'SET' can be used to set any Hadoop (or Hive) configuration variable. For example:
+beeline> SET mapred.job.tracker=myhost.mycompany.com:50030;
+beeline> SET -v;
+
+name@rootNode
+root Node
+

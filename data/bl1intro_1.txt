@@ -1,0 +1,31 @@
+#?#box#calculatedX@116#calculatedY@432#children@1712719338991#name@0:seed#id@seed#parent@#x@92#y@345
+title
+#?#box#calculatedX@205#calculatedY@358#children@45,66,1712719432275#name@1:basics#id@1712719338991#parent@#x@164#y@286
+content
+#?#box#calculatedX@292#calculatedY@323#children@#name@1:Move#id@45#parent@#x@233#y@258
+delete cube
+
+create cube - shift A
+select cube - right click ( edit preferences )
+move in X Y Z direction - G+X G+Y G+Z
+#?#box#calculatedX@294#calculatedY@354#children@#name@2:rotate#id@66#parent@#x@235#y@283
+rotate cube
+
+R+X
+R+Y
+R+Z
+#?#box#calculatedX@293#calculatedY@383#children@1712719832939#name@3:SphereCreate#id@1712719432275#parent@#x@234#y@306
+shift A
+mesh - > UV SPHERE
+#?#box#calculatedX@433#calculatedY@384#children@#name@1:torusOnsphere#id@1712719832939#parent@#x@346#y@307
+create torus 
+
+switch on magnet OR "control" during move
+set to face
+Align rotation to target
+stick torus on sphere
+experiment with vertex, edge etc
+
+DO SAME WITH CUBE AND TORUS
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node

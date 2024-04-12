@@ -1,0 +1,67 @@
+#?#box#calculatedX@108#calculatedY@98#children@45#name@0:seed#id@seed#parent@#x@86#y@78
+title
+#?#box#calculatedX@161#calculatedY@163#children@66,1712330435713,1712330830657#name@0:ksqldb#id@45#parent@#x@128#y@130
+ksqlDB is
+the event streaming database
+
+In Kafka, you store a collection of events in a topic
+Each event can contain any raw bytes 
+
+In ksqlDB, you store events in a stream
+stream is a topic with a strongly defined schema
+#?#box#calculatedX@201#calculatedY@253#children@1712330229481#d_visibility@hidden#name@0:declareStream#id@66#parent@#x@160#y@202
+
+CREATE STREAM readings (
+    sensor VARCHAR KEY,
+    location VARCHAR,
+    reading INT
+) WITH (
+    kafka_topic = 'readings',
+    partitions = 3,
+    value_format = 'json'
+);
+#?#box#calculatedX@261#calculatedY@301#children@#name@1:behindScenes#id@1712330229481#parent@#x@208#y@240
+if topic does not exist create topic
+save metadata in a local metadata store
+data is partitioned on sensor
+#?#box#calculatedX@218#calculatedY@346#children@1712330531996#d_visibility@hidden#name@1:insertrow#id@1712330435713#parent@#x@174#y@276
+INSERT INTO readings (sensor, location, reading) VALUES ('sensor-1', 'wheel', 45);
+
+In Kafka, you model an event as a record and put it into a topic
+In ksqlDB, you model an event as a row and put it into a stream. 
+A row is just a record with additional metadata.
+#?#box#calculatedX@327#calculatedY@359#children@#name@1:behindScenes#id@1712330531996#parent@#x@261#y@287
+a request with the payload is sent to a ksqlDB server
+check schema
+reject malformed records
+use Kafka producer client to insert that record into the backing Kafka topic
+persisted on directly on the broker
+None of it lives in ksqlDB’s servers
+#?#box#calculatedX@232#calculatedY@407#children@1712331421750#d_visibility@hidden#name@2:transformations#id@1712330830657#parent@#x@185#y@325
+kafka way - use consumer to transform producer data
+this is low level
+
+ksqldb way - issue a persistent query to transform one stream into another using its SQL
+
+
+-- process from the beginning of each stream
+set 'auto.offset.reset' = 'earliest';
+CREATE STREAM clean AS
+SELECT sensor,
+reading,
+UCASE(location) AS location
+FROM readings
+EMIT CHANGES;
+#?#box#calculatedX@390#calculatedY@415#children@#name@1:behindScenes#id@1712331421750#parent@#x@312#y@332
+Persistent queries are little stream processing programs that run indefinitely
+ksqlDB server compiles query  to a physical execution plan as a Kafka Streams topology
+The topology runs as a daemon, reacting to new topic records as soon as they become available
+If you run ksqlDB as a cluster, the topology scales horizontally 
+all of the processing work happens on ksqlDB server; 
+no processing work happens on the Kafka brokers
+
+When a persistent query is created, it is assigned a generated name
+As each row passes through the persistent query, the transformation logic is applied to create a new row
+Persistent queries completely manage their own processing progression, even in the presence of faults. ksqlDB durably maintains the highest offset of each input partition.
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node

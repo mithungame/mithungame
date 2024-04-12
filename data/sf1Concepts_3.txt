@@ -1,0 +1,126 @@
+#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
+title
+
+#?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@1:warehouse#id@1704786298378#parent@#visibility@hidden#x@292#y@160
+warehouse, is a cluster of compute resources 
+size x small  to 6x 
+
+Gotcha:
+1. Increasing the size of a warehouse does not always improve "data loading" performance. 
+#?#box#calculatedX@475#calculatedY@165#children@1704786347678,1704786359487,1704786661708,1709548876390#name@1:types#id@1707559463#parent@#x@380#y@132
+
+#?#box#calculatedX@564#calculatedY@116#children@#name@1:standard#id@1704786347678#parent@#x@451#y@92
+content
+#?#box#calculatedX@564#calculatedY@156#children@#name@2:snowparkOptimized#id@1704786359487#parent@#x@451#y@124
+Snowpark workloads can be run on both Standard and Snowpark-optimized warehouses. Snowpark-optimized warehouses are recommended for workloads that have large memory requirements such as ML training use cases
+#?#box#calculatedX@560#calculatedY@189#children@#name@3:SuspendAndResume#id@1704786661708#parent@#x@448#y@151
+Auto-suspend and auto-resume apply to "entire" warehouse and not to the individual clusters in the warehouse.
+
+For a multi-cluster warehouse:
+
+Auto-suspend only occurs when the minimum number of clusters is running and there is no activity for the specified period of time. The minimum is typically 1 (cluster), but could be more than 1.
+
+Auto-resume only applies when the entire warehouse is suspended (i.e. no clusters are running).
+#?#box#calculatedX@564#calculatedY@241#children@1709548990743,1709548997137#d_visibility@hidden#name@4:multicluster#id@1709548876390#parent@#x@451#y@192
+A multi-cluster warehouse is defined by specifying the following properties:
+
+Maximum number of clusters, greater than 1 (up to 10).
+
+Minimum number of clusters, equal to or less than the maximum (up to 10).
+#?#box#calculatedX@697#calculatedY@244#children@#name@1:maximized#id@1709548990743#parent@#x@557#y@195
+same value for both maximum and minimum number of clusters
+use when large numbers of concurrent user sessions and/or queries and the numbers do not fluctuate significantly
+#?#box#calculatedX@698#calculatedY@278#children@1709549178164#name@2:autoscale#id@1709548997137#parent@#x@558#y@222
+different values for maximum and minimum number of clusters
+#?#box#calculatedX@811#calculatedY@278#children@1709549302125,1709549307931#name@1:scalingPolicy#id@1709549178164#parent@#x@648#y@222
+scaling policy only applies to auto scale mode
+#?#box#calculatedX@940#calculatedY@277#children@#name@1:standard#id@1709549302125#parent@#x@752#y@221
+favor starting additional clusters over conserving credits.
+#?#box#calculatedX@943#calculatedY@298#children@#name@2:economy#id@1709549307931#parent@#x@754#y@238
+Conserves credits by favoring keeping running clusters fully-loaded rather than starting additional clusters
+may result in query queueing
+#?#box#calculatedX@491#calculatedY@325#children@1709550035930,1709550115666#name@2:queryAccelerationService#id@1709549875289#parent@#x@392#y@260
+improve overall warehouse performance by reducing the impact of outlier queries
+offloading portions of the query processing work to shared compute resources
+
+examples = basically scenarios where parallelism can improve performance
+Ad hoc analytics, unpredictable data volume per query, large scans and selective filters.
+#?#box#calculatedX@702#calculatedY@327#children@#name@1:ineligibleQueries#id@1709550035930#parent@#x@561#y@261
+OVERALL CANDIDATES - Large Scan few selections
+
+There are not enough partitions. If there are not enough partitions to scan, the benefits of query acceleration are offset by the latency in acquiring resources for the query acceleration service.
+
+The query does not filter or aggregate.
+
+The filters are not selective enough. Alternatively, the GROUP BY expression has a high cardinality.
+
+The query includes a LIMIT clause but does not have an ORDER BY clause.
+
+The query includes functions that return nondeterministic results (for example, SEQ or RANDOM).
+#?#box#calculatedX@705#calculatedY@370#children@#name@2:IdentifyCandidates#id@1709550115666#parent@#x@564#y@296
+SELECT PARSE_JSON(SYSTEM$ESTIMATE_QUERY_ACCELERATION('8cd54bf0-1651-5b1c-ac9c-6a9582ebd20f'));
+
+Query the QUERY_ACCELERATION_ELIGIBLE View
+#?#box#calculatedX@337#calculatedY@313#children@1704787008261,1704787113672#name@2:Tables#id@1704786809287#parent@#x@269#y@250
+1. Internal - Temporary , Transient, Permanent
+2. External 
+3. Iceberg
+
+Temporary
+============
+Longevity: Remainder of session
+Cloning: Temporary => Temporary Temporary => Transient
+Time Travel: 0 or 1 (default is 1)
+Fail safe:0
+
+Transient
+====================
+Until explicitly dropped
+Transient => Temporary Transient => Transient
+0 or 1 (default is 1)
+0
+
+Permanent (Standard Edition)
+==============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 or 1 (default is 1)
+7
+
+Permanent (Enterprise Edition and higher)
+=============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 to 90 (default is configurable)
+7
+#?#box#calculatedX@326#calculatedY@368#children@1707563377,1707563378#name@1:microPartitions#id@1704787008261#parent@#x@260#y@294
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+#?#box#calculatedX@297#calculatedY@401#children@#name@1:microPartitions1#id@1707563378#parent@#x@237#y@320
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+#?#box#calculatedX@243#calculatedY@436#children@#name@2:microPartitions2#id@1707563377#parent@#x@194#y@348
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+#?#box#calculatedX@489#calculatedY@378#children@#name@2:Clustering#id@1704787113672#parent@#x@391#y@302
+manual clustering Disabled
+create table cluster by <key>
+Data within micro partition is ordered by key
+Table will not be 100% clustered
+
+clustering depth ( 2 below) - number of microparitition with overlapping data
+micro parition 1 - A TO F ---
+                             \
+micro parition 2 - A TO G --- overlap
+micro parition 3 - G TO Z
+
+
+<!OOO!>
+To view/monitor the clustering metadata for a table, Snowflake provides the following system functions:
+SYSTEM$CLUSTERING_DEPTH
+SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node

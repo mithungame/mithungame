@@ -61,7 +61,7 @@ contiguous units of storage
 contiguous units of storage
 50 MB and 500 MB of "uncompressed data"
 "Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
-#?#box#calculatedX@660#calculatedY@311#children@#name@1:microPartitions2#id@1707563377#parent@#x@548#y@208
+#?#box#calculatedX@660#calculatedY@311#children@#name@2:microPartitions2#id@1707563377#parent@#x@548#y@208
 contiguous units of storage
 50 MB and 500 MB of "uncompressed data"
 "Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 

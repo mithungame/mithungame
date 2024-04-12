@@ -1,0 +1,104 @@
+name@0:seed
+title
+
+name@0:ksqldb
+ksqlDB is
+the event streaming database
+
+In Kafka, you store a collection of events in a topic
+Each event can contain any raw bytes 
+
+In ksqlDB, you store events in a stream
+stream is a topic with a strongly defined schema
+
+name@0:declareStream
+
+CREATE STREAM readings (
+    sensor VARCHAR KEY,
+    location VARCHAR,
+    reading INT
+) WITH (
+    kafka_topic = 'readings',
+    partitions = 3,
+    value_format = 'json'
+);
+
+name@1:behindScenes
+if topic does not exist create topic
+save metadata in a local metadata store
+data is partitioned on sensor
+
+name@1:insertrow
+INSERT INTO readings (sensor, location, reading) VALUES ('sensor-1', 'wheel', 45);
+
+In Kafka, you model an event as a record and put it into a topic
+In ksqlDB, you model an event as a row and put it into a stream. 
+A row is just a record with additional metadata.
+
+name@1:behindScenes
+a request with the payload is sent to a ksqlDB server
+check schema
+reject malformed records
+use Kafka producer client to insert that record into the backing Kafka topic
+persisted on directly on the broker
+None of it lives in ksqlDB servers
+
+name@2:transformations
+kafka way - use consumer to transform producer data
+this is low level
+
+ksqldb way - issue a persistent query to transform one stream into another using its SQL
+
+
+-- process from the beginning of each stream
+set 'auto.offset.reset' = 'earliest';
+CREATE STREAM clean AS
+SELECT sensor,
+reading,
+UCASE(location) AS location
+FROM readings
+EMIT CHANGES;
+
+name@1:behindScenes
+Persistent queries are little stream processing programs that run indefinitely
+ksqlDB server compiles query  to a physical execution plan as a Kafka Streams topology
+The topology runs as a daemon, reacting to new topic records as soon as they become available
+If you run ksqlDB as a cluster, the topology scales horizontally 
+all of the processing work happens on ksqlDB server; 
+no processing work happens on the Kafka brokers
+
+When a persistent query is created, it is assigned a generated name
+As each row passes through the persistent query, the transformation logic is applied to create a new row
+Persistent queries completely manage their own processing progression, even in the presence of faults. ksqlDB durably maintains the highest offset of each input partition.
+
+name@2:kafka
+content
+
+name@1:keyConcepts
+EVENT
+An event records the fact that something happened
+
+PRODUCERS
+Producers are those client applications that publish (write) events to Kafka
+
+CONSUMERS
+consumers are those that subscribe to (read and process) these events. 
+
+In Kafka, producers and consumers are fully decoupled and agnostic of each other
+
+Events are organized and durably stored in topics
+
+TOPICS
+Topics in Kafka are always multi-producer and multi-subscriber
+a topic can 0,1,N producers that write events to it, as well as 0,1,N consumers that subscribe to these events
+
+PARTITION
+Topics are partitioned
+Kafka guarantees that any consumer of a given topic-partition will always read that partitions events in exactly the same order as they were written
+
+REPLICATION
+Topics are replicated
+
+name@rootNode
+root Node
+

@@ -1,0 +1,66 @@
+#?#box#calculatedX@115#calculatedY@406#children@1712719338991#name@0:seed#id@seed#parent@#x@92#y@344
+title
+#?#box#calculatedX@205#calculatedY@332#children@45,66,1712719432275,1712818224017,1712818598288,1712821353740,1712821389892#name@1:basics#id@1712719338991#parent@#x@164#y@285
+content
+#?#box#calculatedX@291#calculatedY@297#children@#name@1:Move#id@45#parent@#x@232#y@257
+delete cube
+
+create cube - shift A
+select cube - right click ( edit preferences )
+move in X Y Z direction - G+X G+Y G+Z
+#?#box#calculatedX@293#calculatedY@328#children@#name@2:rotate#id@66#parent@#x@234#y@282
+rotate cube
+
+R+X
+R+Y
+R+Z
+#?#box#calculatedX@292#calculatedY@357#children@1712719832939#name@3:SphereCreate#id@1712719432275#parent@#x@233#y@305
+shift A
+mesh - > UV SPHERE
+#?#box#calculatedX@432#calculatedY@358#children@#name@1:torusOnsphere#id@1712719832939#parent@#x@345#y@306
+create torus 
+
+switch on magnet OR "control" during move
+set to face
+Align rotation to target
+stick torus on sphere
+experiment with vertex, edge etc
+
+DO SAME WITH CUBE AND TORUS
+#?#box#calculatedX@296#calculatedY@401#children@#name@4:monkeyrotate#id@1712818224017#parent@#x@236#y@340
+create monkey head
+shift D to duplicate
+
+arrange in all directions
+tilt them differently 
+
+Rotate 
+
+set to local
+transform pivot point - median axis
+it will rotate on its own axis  but on a median point
+transform pivot point - individual origin
+it will rotate on its own axis  but in its own place
+#?#box#calculatedX@295#calculatedY@451#children@#name@5:doorHinge#id@1712818598288#parent@#x@236#y@380
+create door
+
+rotate on z axis
+place cursor on hinge 
+object - set origin - origin to 3d cursor
+rotate - must rotate like a door
+
+
+go to edit mode 
+select vertex
+shift s
+cursor to selected
+go to object mode
+object - set origin - origin to 3d cursor
+#?#box#calculatedX@296#calculatedY@497#children@#name@6:focus#id@1712821353740#parent@#x@236#y@417
+create sphere and cube , click on sphere hit / then hit / again
+#?#box#calculatedX@298#calculatedY@543#children@#name@7:create table #id@1712821389892#parent@#x@238#y@454
+after creating 
+hit control j for joining 
+hit z and see wireframe
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
+root Node

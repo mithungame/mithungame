@@ -1,0 +1,147 @@
+name@0:seed
+title
+
+
+name@1:warehouse
+warehouse, is a cluster of compute resources 
+size x small  to 6x 
+
+Gotcha:
+1. Increasing the size of a warehouse does not always improve "data loading" performance. 
+
+name@1:types
+
+
+name@1:standard
+content
+
+name@2:snowparkOptimized
+Snowpark workloads can be run on both Standard and Snowpark-optimized warehouses. Snowpark-optimized warehouses are recommended for workloads that have large memory requirements such as ML training use cases
+
+name@3:SuspendAndResume
+Auto-suspend and auto-resume apply to "entire" warehouse and not to the individual clusters in the warehouse.
+
+For a multi-cluster warehouse:
+
+Auto-suspend only occurs when the minimum number of clusters is running and there is no activity for the specified period of time. The minimum is typically 1 (cluster), but could be more than 1.
+
+Auto-resume only applies when the entire warehouse is suspended (i.e. no clusters are running).
+
+name@4:multicluster
+A multi-cluster warehouse is defined by specifying the following properties:
+
+Maximum number of clusters, greater than 1 (up to 10).
+
+Minimum number of clusters, equal to or less than the maximum (up to 10).
+
+name@1:maximized
+same value for both maximum and minimum number of clusters
+use when large numbers of concurrent user sessions and/or queries and the numbers do not fluctuate significantly
+
+name@2:autoscale
+different values for maximum and minimum number of clusters
+
+name@1:scalingPolicy
+scaling policy only applies to auto scale mode
+
+name@1:standard
+favor starting additional clusters over conserving credits.
+
+name@2:economy
+Conserves credits by favoring keeping running clusters fully-loaded rather than starting additional clusters
+may result in query queueing
+
+name@2:queryAccelerationService
+improve overall warehouse performance by reducing the impact of outlier queries
+offloading portions of the query processing work to shared compute resources
+
+examples = basically scenarios where parallelism can improve performance
+Ad hoc analytics, unpredictable data volume per query, large scans and selective filters.
+
+name@1:ineligibleQueries
+OVERALL CANDIDATES - Large Scan few selections
+
+There are not enough partitions. If there are not enough partitions to scan, the benefits of query acceleration are offset by the latency in acquiring resources for the query acceleration service.
+
+The query does not filter or aggregate.
+
+The filters are not selective enough. Alternatively, the GROUP BY expression has a high cardinality.
+
+The query includes a LIMIT clause but does not have an ORDER BY clause.
+
+The query includes functions that return nondeterministic results (for example, SEQ or RANDOM).
+
+name@2:IdentifyCandidates
+SELECT PARSE_JSON(SYSTEM$ESTIMATE_QUERY_ACCELERATION('8cd54bf0-1651-5b1c-ac9c-6a9582ebd20f'));
+
+Query the QUERY_ACCELERATION_ELIGIBLE View
+
+name@2:Tables
+1. Internal - Temporary , Transient, Permanent
+2. External 
+3. Iceberg
+
+Temporary
+============
+Longevity: Remainder of session
+Cloning: Temporary => Temporary Temporary => Transient
+Time Travel: 0 or 1 (default is 1)
+Fail safe:0
+
+Transient
+====================
+Until explicitly dropped
+Transient => Temporary Transient => Transient
+0 or 1 (default is 1)
+0
+
+Permanent (Standard Edition)
+==============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 or 1 (default is 1)
+7
+
+Permanent (Enterprise Edition and higher)
+=============================
+Until explicitly dropped
+Permanent => Temporary Permanent => Transient Permanent => Permanent
+0 to 90 (default is configurable)
+7
+
+name@1:microPartitions
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+
+name@1:microPartitions1
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+
+name@2:microPartitions2
+contiguous units of storage
+50 MB and 500 MB of "uncompressed data"
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+
+name@2:Clustering
+manual clustering Disabled
+create table cluster by <key>
+Data within micro partition is ordered by key
+Table will not be 100% clustered
+
+clustering depth ( 2 below) - number of microparitition with overlapping data
+micro parition 1 - A TO F ---
+                             \
+micro parition 2 - A TO G --- overlap
+micro parition 3 - G TO Z
+
+
+<!OOO!>
+To view/monitor the clustering metadata for a table, Snowflake provides the following system functions:
+SYSTEM$CLUSTERING_DEPTH
+SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
+
+name@rootNode
+root Node
+
