@@ -1,0 +1,184 @@
+name@0:seed
+title
+
+name@0:ksqldb
+ksqlDB is
+the event streaming database
+
+In Kafka, you store a collection of events in a 
+topic
+Each event can contain any 
+raw bytes 
+
+In ksqlDB, you store events in a 
+stream
+stream is a topic with a strongly 
+defined schema
+
+name@0:declareStream
+
+CREATE STREAM readings (
+    sensor VARCHAR KEY,
+    location VARCHAR,
+    reading INT
+) WITH (
+    kafka_topic = 'readings',
+    partitions = 3,
+    value_format = 'json'
+);
+
+name@1:behindScenes
+if topic does not exist 
+create topic
+save metadata in a local 
+metadata store
+data is partitioned on sensor
+
+name@1:insertrow
+INSERT INTO readings (sensor, location, reading) VALUES ('sensor-1', 'wheel', 45);
+
+In Kafka, you model an event as a --- and put it into a ---
+record,topic
+In ksqlDB, you model an event as a --- and put it into a ---. 
+row,stream
+A row is just a record with 
+additional metadata.
+
+name@1:behindScenes
+a request with the payload is sent to a ksqlDB server
+check schema
+reject malformed records
+use Kafka producer client to insert that record into the backing Kafka topic
+persisted on directly on the broker
+None of it lives in ksqlDB servers
+
+name@2:transformations
+kafka way - use consumer to transform producer data
+this is low level
+
+ksqldb way - issue a persistent query to transform one stream into another using its SQL
+
+
+-- process from the beginning of each stream
+set 'auto.offset.reset' = 'earliest';
+CREATE STREAM clean AS
+SELECT sensor,
+reading,
+UCASE(location) AS location
+FROM readings
+EMIT CHANGES;
+
+name@1:behindScenes
+Persistent queries are little stream processing programs that run indefinitely
+ksqlDB server compiles query  to a physical execution plan as a Kafka Streams topology
+The topology runs as a daemon, reacting to new topic records as soon as they become available
+If you run ksqlDB as a cluster, the topology scales horizontally 
+all of the processing work happens on ksqlDB server; 
+no processing work happens on the Kafka brokers
+
+When a persistent query is created, it is assigned a generated name
+As each row passes through the persistent query, the transformation logic is applied to create a new row
+Persistent queries completely manage their own processing progression, even in the presence of faults. ksqlDB durably maintains the highest offset of each input partition.
+
+name@2:kafka
+content
+
+name@1:keyConcepts
+EVENT
+An event records the fact that something happened
+
+PRODUCERS
+Producers are those client applications that publish (write) events to Kafka
+
+CONSUMERS
+consumers are those that subscribe to (read and process) these events. 
+
+In Kafka, producers and consumers are fully decoupled and agnostic of each other
+
+Events are organized and durably stored in topics
+
+TOPICS
+Topics in Kafka are always --- and ---
+multi-producer and multi-subscriber
+a topic can 0,1,N producers that write events to it, as well as 0,1,N consumers that subscribe to these events
+
+PARTITION
+Topics are partitioned
+Kafka guarantees that any consumer of a given topic-partition will always read that partitions events in exactly the same order as they were written
+
+REPLICATION
+Topics are replicated
+
+name@3:kafkaStreams
+Kafka Streams is a 
+client library for processing and analyzing data stored in Kafka.
+
+Supports exactly-once processing semantics to guarantee that each record will be processed once and only once even when there is a failure on either Streams clients or Kafka brokers in the middle of processing.
+
+name@1:keyConcepts
+link
+https://kafka.apache.org/37/documentation/streams/core-concepts
+
+A stream is the most important abstraction provided by Kafka Streams
+A stream is 
+an ordered, replayable, and fault-tolerant sequence of immutable data records, where a data record is defined as a key-value pair.
+
+TOPOLOGY
+A DAG of logical abstraction made of Source processor, Stream processor(nodes), Sink Processor. Streams are the edges which represent logic flow
+At runtime, the logical topology is instantiated and replicated inside the application for parallel processing (see Stream Partitions and Tasks for details).
+
+Source Processor
+does not have any upstream processors
+produces an input stream to its topology from one or multiple Kafka topics by consuming records from these topics
+
+A sink processor does not have 
+down-stream processors. 
+It sends any received records from its up-stream processors to a 
+specified Kafka topic.
+
+procssor topology can be manipulated using 
+Kafka Streams DSL provides the most common data transformation operations such as map, filter, join and aggregations out of the box
+the lower-level Processor API allows developers define and connect custom processors as well as to interact with state stores.
+
+name@1:streamPartitions&Task
+Each stream partition is a totally ordered sequence of data records and maps to a 
+Kafka topic partition.
+A data record in the stream maps to a 
+Kafka message from that topic.
+The keys of data records determine the partitioning of data in both 
+Kafka and Kafka Streams, i.e., how data is routed to specific partitions within topics.
+
+Kafka Streams creates a fixed number of tasks based on the 
+input stream partitions for the application
+
+each task assigned a list of partitions from the 
+input streams 
+
+The assignment of partitions to tasks 
+never changes
+
+Tasks can then instantiate their ---- based on the assigned partitions
+own processor topology
+
+slightly simplified, the maximum parallelism at which your application may run is bounded by the -----
+maximum number of stream tasks
+which itself is determined by ------ the application is reading from
+maximum number of partitions of the input topic(s)
+
+For example, if your input topic has 5 partitions, then you can run up to 5 
+applications instances
+(Multiple instances of the application are executed either on the same machine, or spread across multiple machines)
+
+if an application instance fails, all its assigned tasks will be automatically 
+restarted on other instances 
+
+Kafka Streams allows the user to configure the number of threads
+Each thread can execute one or more tasks with their --- independently
+processor topologies 
+
+Starting more stream threads or more instances of the application merely amounts to 
+replicating the topology
+
+name@rootNode
+root Node
+
