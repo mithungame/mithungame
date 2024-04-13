@@ -7,6 +7,9 @@ app=Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 
+
+base_path=os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+
 @app.route("/",  defaults={'path': ''})        
 @app.route("/", methods=['POST','GET'])
 def home():
@@ -26,7 +29,8 @@ def process_json():
         filename_p2='_'.join(filename_p1.split('_')[:-1])+'_'+str(int(filename_p1.split('_')[-1])+1) if '_' in filename_p1 and filename_p1.split('_')[-1].isnumeric()  else filename_p1+'_1' 
         newfilename=filename_p2+'.'+filename_ext
         newpurefilename=filename_p2+'_data.'+filename_ext
-        datadir='C:\\Users\\mithu\\Downloads\\track\\projects\\d3\\'+ '\\'.join(json['location'].split(','))
+        datadir=os.path.join(base_path, *(json['location'].split(',')))
+
         try:
             with open(os.path.join(datadir,newfilename),'w',newline='') as f:
                 f.write(str(json['data']))

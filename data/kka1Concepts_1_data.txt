@@ -5,11 +5,15 @@ name@0:ksqldb
 ksqlDB is
 the event streaming database
 
-In Kafka, you store a collection of events in a topic
-Each event can contain any raw bytes 
+In Kafka, you store a collection of events in a 
+topic
+Each event can contain any 
+raw bytes 
 
-In ksqlDB, you store events in a stream
-stream is a topic with a strongly defined schema
+In ksqlDB, you store events in a 
+stream
+stream is a topic with a strongly 
+defined schema
 
 name@0:declareStream
 
@@ -24,16 +28,21 @@ CREATE STREAM readings (
 );
 
 name@1:behindScenes
-if topic does not exist create topic
-save metadata in a local metadata store
+if topic does not exist 
+create topic
+save metadata in a local 
+metadata store
 data is partitioned on sensor
 
 name@1:insertrow
 INSERT INTO readings (sensor, location, reading) VALUES ('sensor-1', 'wheel', 45);
 
-In Kafka, you model an event as a record and put it into a topic
-In ksqlDB, you model an event as a row and put it into a stream. 
-A row is just a record with additional metadata.
+In Kafka, you model an event as a --- and put it into a ---
+record,topic
+In ksqlDB, you model an event as a --- and put it into a ---. 
+row,stream
+A row is just a record with 
+additional metadata.
 
 name@1:behindScenes
 a request with the payload is sent to a ksqlDB server
@@ -89,7 +98,8 @@ In Kafka, producers and consumers are fully decoupled and agnostic of each other
 Events are organized and durably stored in topics
 
 TOPICS
-Topics in Kafka are always multi-producer and multi-subscriber
+Topics in Kafka are always --- and ---
+multi-producer and multi-subscriber
 a topic can 0,1,N producers that write events to it, as well as 0,1,N consumers that subscribe to these events
 
 PARTITION
@@ -98,6 +108,37 @@ Kafka guarantees that any consumer of a given topic-partition will always read t
 
 REPLICATION
 Topics are replicated
+
+name@3:kafkaStreams
+Kafka Streams is a 
+client library for processing and analyzing data stored in Kafka.
+
+Supports exactly-once processing semantics to guarantee that each record will be processed once and only once even when there is a failure on either Streams clients or Kafka brokers in the middle of processing.
+
+name@1:keyConcepts
+link
+https://kafka.apache.org/37/documentation/streams/core-concepts
+
+A stream is the most important abstraction provided by Kafka Streams
+A stream is 
+an ordered, replayable, and fault-tolerant sequence of immutable data records, where a data record is defined as a key-value pair.
+
+TOPOLOGY
+A DAG of logical abstraction made of Source processor, Stream processor(nodes), Sink Processor. Streams are the edges which represent logic flow
+At runtime, the logical topology is instantiated and replicated inside the application for parallel processing (see Stream Partitions and Tasks for details).
+
+Source Processor
+does not have any upstream processors
+produces an input stream to its topology from one or multiple Kafka topics by consuming records from these topics
+
+A sink processor does not have 
+down-stream processors. 
+It sends any received records from its up-stream processors to a 
+specified Kafka topic.
+
+procssor topology can be manipulated using 
+Kafka Streams DSL provides the most common data transformation operations such as map, filter, join and aggregations out of the box
+the lower-level Processor API allows developers define and connect custom processors as well as to interact with state stores.
 
 name@rootNode
 root Node
