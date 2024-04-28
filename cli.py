@@ -297,29 +297,39 @@ def search(args,filename):
         
 def main(args):
     files=[]
-    file_list = {'reference' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\*[0-9].txt', # non recursive
+    file_list=[]
+    if os.getcwd().startswith('C:\\Users\\mithu'):
+        file_list = {'reference' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\*[0-9].txt', # non recursive
                     r'C:\Users\mithu\Downloads\track\projects\**\quickref.txt',# ** means recursive
                     #r'G:\My Drive\Downloads\jarvis\tech\**\py*.txt' not all files are converted now
                     ],
                 'spark' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\sp*.txt'],
                 'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\*[0-9].txt']
                 }
-    if args.key in ('all','fs'):
+    elif os.getcwd().startswith('/storage/emulated/0/download'):
+        file_list = {'reference' : [r'/storage/emulated/0/download*[0-9].txt', 
+                    ],
+                }       
+    if args.key and args.key in ('all'):
         chosen_file_list = list({x for v in file_list.values() for x in v})
-    elif args.key is not None:
+    elif args.key is not None and args.key != '':
         chosen_file_list = file_list[args.key.lower()]
     else:
         chosen_file_list=[args.filename]
     for i in chosen_file_list:
         files+=glob.glob(i,recursive=True) 
-    
-    if args.key=='fs':
-        for n,i in enumerate(files):
-            print(n,os.path.basename(i))
-        files=[files[ int(input('enter file name').rstrip()) ]]
-    print(files)
+    #print(files)
     #dont make it complicated search each file individually
+    
+    files=list(set(files))
+    if args.key=='all' and args.filename is not None:
+        files = [ i for i in files if args.filename in os.path.basename(i) ]
     for filename in files:
+        if args.filename is not None:
+            if input('do you want to process this file:\n'+filename+'?\nenter y').rstrip() in ['y']:
+                pass 
+            else:
+                continue
         print(Fore.YELLOW+ 'processing file:'+ filename)
         search(args,filename)
 

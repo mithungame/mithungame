@@ -13,7 +13,7 @@ Hive's SQL can also be extended with user code via
 user defined functions (UDFs), user defined aggregates (UDAFs), and user defined table functions (UDTFs).
 There is not a single Hive format in which data must be stored
 Hive comes with built in connectors for 
-comma and tab-separated values (CSV/TSV) text files, Apache Parquet™, Apache ORC™, and other formats.
+comma and tab-separated values (CSV/TSV) text files, Apache Parquet, Apache ORC, and other formats.
 Users can extend Hive with connectors for other formats using 
 Hive SerDe 
 Hive is not designed for 

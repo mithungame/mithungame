@@ -1,4 +1,4 @@
-#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
+#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1713613122#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
 title
 
 #?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@1:warehouse#id@1704786298378#parent@#visibility@hidden#x@292#y@160
@@ -61,7 +61,7 @@ The query includes functions that return nondeterministic results (for example, 
 SELECT PARSE_JSON(SYSTEM$ESTIMATE_QUERY_ACCELERATION('8cd54bf0-1651-5b1c-ac9c-6a9582ebd20f'));
 
 Query the QUERY_ACCELERATION_ELIGIBLE View
-#?#box#calculatedX@337#calculatedY@313#children@1704787008261,1704787113672#name@2:Tables#id@1704786809287#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1704787008261,1704787113672,1713612732#name@2:Concepts#id@1704786809287#parent@#x@269#y@250
 1. Internal - Temporary , Transient, Permanent
 2. External 
 3. Iceberg
@@ -97,14 +97,6 @@ Permanent => Temporary Permanent => Transient Permanent => Permanent
 contiguous units of storage
 50 MB and 500 MB of "uncompressed data"
 "Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
-#?#box#calculatedX@297#calculatedY@401#children@#name@1:microPartitions1#id@1707563378#parent@#x@237#y@320
-contiguous units of storage
-50 MB and 500 MB of "uncompressed data"
-"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
-#?#box#calculatedX@243#calculatedY@436#children@#name@2:microPartitions2#id@1707563377#parent@#x@194#y@348
-contiguous units of storage
-50 MB and 500 MB of "uncompressed data"
-"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
 #?#box#calculatedX@489#calculatedY@378#children@#name@2:Clustering#id@1704787113672#parent@#x@391#y@302
 manual clustering Disabled
 create table cluster by <key>
@@ -122,5 +114,34 @@ micro parition 3 - G TO Z
 To view/monitor the clustering metadata for a table, Snowflake provides the following system functions:
 SYSTEM$CLUSTERING_DEPTH
 SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
+#?#box#calculatedX@489#calculatedY@378#children@#name@2:zeroclone#id@1713612732#parent@#x@391#y@302
+clone utilizes --- because it shares all the existing micro-partitions of the original table at the time it was cloned
+no data storage
+rows can then be added, deleted, or updated in the clone --- from the original table
+independently
+Each change to the clone results in --- that are owned exclusively by the clone and are protected through CDP.
+new micro-partitions
+clones can be cloned, with no limitations which results in a n-level hierarchy of cloned objects each with their own portion of shared and independent data storage
+#?#box#calculatedX@337#calculatedY@313#children@1713613123#name@3:Tables#id@1713613122#parent@#x@269#y@250
+tables are stored in columnar micro-partitions
+#?#box#calculatedX@337#calculatedY@313#children@1713613124,1713613125,1713613126#name@1:types#id@1713613123#parent@#x@269#y@250
+content
+#?#box#calculatedX@337#calculatedY@313#children@#name@2:temporary#id@1713613124#parent@#x@269#y@250
+Temporary tables only exist within the session
+you can create temporary and non-temporary tables with the same name within the same schema.
+temporary table takes precedence in the session over any other table with the same name in the same schema.
+
+CREATE TEMPORARY TABLE mytemptable (id NUMBER, creation_date DATE);
+Time travel 0 or 1 ( default )
+fail safe 0
+#?#box#calculatedX@337#calculatedY@313#children@#name@2:transient#id@1713613125#parent@#x@269#y@250
+Transient tables are similar to permanent tables with the key difference that they do not have a Fail-safe period
+
+CREATE TRANSIENT TABLE mytranstable (id NUMBER, creation_date DATE);
+Time travel 0 or 1 ( default )
+fail safe 0
+#?#box#calculatedX@337#calculatedY@313#children@#name@3:permanent#id@1713613126#parent@#x@269#y@250
+time travel 0 to 90 (default is configurable)
+fail safe 7
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
 root Node

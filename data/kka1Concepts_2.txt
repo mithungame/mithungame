@@ -1,4 +1,4 @@
-#?#box#calculatedX@281#calculatedY@279#children@45,1712464776749,1712640915627#name@0:seed#id@seed#parent@#x@281#y@229
+#?#box#calculatedX@281#calculatedY@279#children@45,1712464776749,1712640915627,1713707071#name@0:seed#id@seed#parent@#x@281#y@229
 title
 #?#box#calculatedX@369#calculatedY@206#children@66,1712330435713,1712330830657#name@0:ksqldb#id@45#parent@#x@369#y@156
 ksqlDB is
@@ -99,12 +99,12 @@ Kafka guarantees that any consumer of a given topic-partition will always read t
 
 REPLICATION
 Topics are replicated
-#?#box#calculatedX@351#calculatedY@356#children@1712641154508#name@3:kafkaStreams#id@1712640915627#parent@#x@351#y@306
+#?#box#calculatedX@351#calculatedY@356#children@1712641154508,1713475712,1714245120,1714245121#name@3:kafkaStreams#id@1712640915627#parent@#x@351#y@306
 Kafka Streams is a 
 client library for processing and analyzing data stored in Kafka.
 
 Supports exactly-once processing semantics to guarantee that each record will be processed once and only once even when there is a failure on either Streams clients or Kafka brokers in the middle of processing.
-#?#box#calculatedX@458#calculatedY@355#children@1713009069738#name@1:keyConcepts#id@1712641154508#parent@#x@458#y@305
+#?#box#calculatedX@458#calculatedY@355#children@1714244654,1713009069738,1713522303,1713552032#name@1:keyConcepts#id@1712641154508#parent@#x@458#y@305
 link
 https://kafka.apache.org/37/documentation/streams/core-concepts
 
@@ -128,14 +128,65 @@ specified Kafka topic.
 procssor topology can be manipulated using 
 Kafka Streams DSL provides the most common data transformation operations such as map, filter, join and aggregations out of the box
 the lower-level Processor API allows developers define and connect custom processors as well as to interact with state stores.
-#?#box#calculatedX@579#calculatedY@354#children@#name@1:streamPartitions&Task#id@1713009069738#parent@#x@579#y@304
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:ktable#id@1713522303#parent@#x@458#y@305
+subscribe to only one topic
+concerned only about latest record for the key 
+does not react to every event , if a time limit of 30 sec set , emit output every 30 seconds after buffering
+    if set to zero emits every change for every event
+    will it emit only the records that got changed or all records ? it will emit all records if not materialized  a.k.a no state store or time set to zero 
+    Else it will emit only the record with changes for latest record 
+    note: in version 2.2 state store was made optional , so it behaves like kstreams emitting every single record to make it use state store use materialize ( https://stackoverflow.com/questions/55687101/events-that-should-be-emitted-by-a-ktable )
+An aggregation of a KStream yields a KTable.
+A KTable can be transformed record by record, joined with another KTable or KStream, or can be re-partitioned and aggregated into a new KTable.
+maintains a state store
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:globalktable#id@1713552032#parent@#x@458#y@305
+GlobalKTable extends a full copy of the data to each instance. 
+You typically use a GlobalKTable with lookup data
+
+StreamsBuilder builder = new StreamsBuilder();
+ GlobalKTable<String, String> globalKTable = 
+    builder.globalTable(inputTopic, 
+    Materialized.with(Serdes.String(), Serdes.String()));
+#?#box#calculatedX@458#calculatedY@355#children@1713609003,1713609004#name@2:code#id@1713475712#parent@#x@458#y@305
+content
+#?#box#calculatedX@458#calculatedY@355#children@1713475713,1713475714,1713475715#name@1:sampleKStream#id@1713609003#parent@#x@458#y@305
+https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
+#?#box#calculatedX@458#calculatedY@355#children@#name@1:setConfig#id@1713475713#parent@#x@458#y@305
+import java.util.Properties;
+final Properties streamsConfiguration = new Properties();
+streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount-avro-lambda-example");
+streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, "wordcount-avro-lambda-example-client");
+streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+streamsConfiguration.put(AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrl);
+streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, SpecificAvroSerde.class);
+streamsConfiguration.put(StreamsConfig.STATE_DIR_CONFIG, stateDir);
+streamsConfiguration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:createTopology#id@1713475714#parent@#x@458#y@305
+final StreamsBuilder builder = new StreamsBuilder();
+final KStream<String, String> textLines = builder.stream(inputTopic);
+//implement rest of app logic basically build topology
+#?#box#calculatedX@458#calculatedY@355#children@#name@3:start#id@1713475715#parent@#x@458#y@305
+//builder.build() returns instance of topology
+final KafkaStreams streams = new KafkaStreams(builder.build(), streamsConfiguration);
+streams.start();
+#?#box#calculatedX@579#calculatedY@354#children@#name@1:streamPartitions#id@1713009069738#parent@#x@579#y@304
 Each stream partition is a totally ordered sequence of data records and maps to a 
 Kafka topic partition.
 A data record in the stream maps to a 
 Kafka message from that topic.
 The keys of data records determine the partitioning of data in both 
 Kafka and Kafka Streams, i.e., how data is routed to specific partitions within topics.
+#?#box#calculatedX@579#calculatedY@354#children@1714244655#name@1:Task#id@1714244654#parent@#x@579#y@304
+If there are multiple processor topologies specified in a Kafka Streams application, each task instantiates only one of the topologies for processing
+In addition, a single processor topology may be decomposed into independent sub-topologies (or sub-graphs).
 
+A sub-topology is a set of processors, that are all transitively connected as parent/child or via state stores in the topology
+task may instantiate only one such sub-topology for processing
+so different sub-topologies exchange data via topics and don’t share any state stores
+
+#?#box#calculatedX@579#calculatedY@354#children@#name@1:TaskParallelism#id@1714244655#parent@#x@579#y@304
 Kafka Streams creates a fixed number of tasks based on the 
 input stream partitions for the application
 
@@ -166,5 +217,133 @@ processor topologies
 
 Starting more stream threads or more instances of the application merely amounts to 
 replicating the topology
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:statestore#id@1714245120#parent@#x@458#y@305
+The Kafka Streams DSL, for example, automatically creates and manages  state stores when you are calling stateful operators such as count() or aggregate(), or when you are windowing a stream.
+
+Every stream task in a Kafka Streams application may embed one or more local state stores 
+These state stores can either be a RocksDB database, an in-memory hash map, or another convenient data structure
+
+Because Kafka Streams partitions the data for processing it, an application’s entire state is spread across the local state stores of the application’s running instances
+
+The Kafka Streams API lets you work with an application’s state stores both locally (e.g., on the level of an instance of the application) 
+as well as in its entirety (on the level of the “logical” application) eg: count
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:memManagement#id@1714245121#parent@#x@458#y@305
+https://docs.confluent.io/platform/current/streams/architecture.html#memory-management
+
+specify the total memory (RAM) size that is used for an instance of a processing topology
+cache size is divided equally among the Kafka Stream threads of a topology
+
+cache
+serves as a read cache to speed up reading data from a state store
+serves as a write-back buffer for a state store
+the write-back cache reduces the number of records going to downstream processor nodes as well.
+
+The final computation results are identical regardless of the cache size (including a disabled cache), which means it is safe to enable or disable the cache
+
+Configuration parameters,commit.interval.ms - note: its not a guarantee
+#?#box#calculatedX@458#calculatedY@355#children@1713609005,1713609006#name@2:operations#id@1713609004#parent@#x@458#y@305
+content
+#?#box#calculatedX@458#calculatedY@355#children@#name@1:joinStream#id@1713609005#parent@#x@458#y@305
+KStream<String, String> leftStream = builder.stream("topic-A");
+KStream<String, String> rightStream = builder.stream("topic-B");
+
+ValueJoiner<String, String, String> valueJoiner = (leftValue, rightValue) -> {
+    return leftValue + rightValue;
+};
+leftStream.join(rightStream, 
+                valueJoiner, 
+                JoinWindows.of(Duration.ofSeconds(10)));
+
+return value type doesn't have to be the same as the two values coming
+JoinWindows argument, which states that an event on the right side needs to have a timestamp either 10 seconds before the left-stream side or 10 seconds after the left-stream side.
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:map#id@1713609005#parent@#x@458#y@305
+https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
+https://kafka.apache.org/20/javadoc/index.html?org/apache/kafka/streams/KeyValue.html
+
+Example 1
+ KStream<String, String> inputStream = builder.stream("topic");
+ KStream<String, Integer> outputStream = inputStream.map(new KeyValueMapper<String, String, KeyValue<String, Integer>> {
+     KeyValue<String, Integer> apply(String key, String value) {
+         return new KeyValue<>(key.toUpperCase(), value.split(" ").length);
+     }
+ });
+ 
+Example 2
+builder.stream(WIKIPEDIA_FEED).map((KeyValueMapper<String, WikiFeed, KeyValue<String, WikiFeed>>) (key, value) -> new KeyValue<>(value.getUser(), value))
+#?#box#calculatedX@458#calculatedY@355#children@1713707072,1713707073#name@1:serde#id@1713707071#parent@#x@458#y@305
+https://docs.confluent.io/platform/current/streams/developer-guide/datatypes.html
+https://kafka.apache.org/10/documentation/streams/developer-guide/datatypes
+
+Every Kafka Streams application must provide Serdes (Serializer/Deserializer) for the data types of record keys and record values
+
+Option 1 - Properties
+Properties settings = new Properties();
+settings.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+settings.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
+
+override properties serdes 
+final Serde<String> stringSerde = Serdes.String();
+final Serde<Long> longSerde = Serdes.Long();
+KStream<String, Long> userCountByRegion = ...;
+userCountByRegion.to("RegionCountsTopic", Produced.with(stringSerde, longSerde));
+
+override properties serdes selectively
+# HERE ONLY VALUE IS OVERRIDDEN, see more details https://kafka.apache.org/23/javadoc/index.html?org/apache/kafka/streams/kstream/Produced.html
+import org.apache.kafka.common.serialization.Serde;
+import org.apache.kafka.common.serialization.Serdes;
+final Serde<Long> longSerde = Serdes.Long();
+KStream<String, Long> userCountByRegion = ...;
+userCountByRegion.to("RegionCountsTopic", Produced.valueSerde(Serdes.Long()));
+#?#box#calculatedX@458#calculatedY@355#children@#name@1:default#id@1713707072#parent@#x@458#y@305
+<artifactId>kafka-clients</artifactId> artifact provides default serdes 
+byte[]	Serdes.ByteArray(), Serdes.Bytes() (see tip below)
+ByteBuffer	Serdes.ByteBuffer()
+Double	Serdes.Double()
+Integer	Serdes.Integer()
+Long	Serdes.Long()
+String	Serdes.String()
+UUID	Serdes.UUID()
+
+example 
+streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,   Serdes.String().getClass().getName());
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:basicCustomeSerde#id@1713707073#parent@#x@458#y@305
+https://github.com/apache/kafka/blob/1.0/clients/src/main/java/org/apache/kafka/common/serialization/Serializer.java
+
+package org.apache.kafka.streams.examples.pageview;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.kafka.common.errors.SerializationException;
+import org.apache.kafka.common.serialization.Serializer;
+import java.util.Map;
+
+public class JsonPOJOSerializer<T> implements Serializer<T> {
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * Default constructor needed by Kafka
+     */
+    public JsonPOJOSerializer() {
+    }
+    
+    @Override
+    public void configure(Map<String, ?> props, boolean isKey) {
+    }
+
+    @Override
+    public byte[] serialize(String topic, T data) {
+        if (data == null)
+            return null;
+
+        try {
+            return objectMapper.writeValueAsBytes(data);
+        } catch (Exception e) {
+            throw new SerializationException("Error serializing JSON message", e);
+        }
+    }
+
+    @Override
+    public void close() {
+    }
+
+}
 #?#box#calculatedX@546.4#calculatedY@288#children@#name@rootNode#id@root#parent@#x@546#y@238
 root Node
