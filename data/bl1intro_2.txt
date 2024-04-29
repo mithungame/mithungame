@@ -110,7 +110,8 @@ select 4 ring in cap ring 2 from bottom
 hold alt and click edge , it must select the ring ( alt selects a loop but its not doing now so hold shift and select the remaining edge)
 control b 
 bevel till baseball cap
-#?#box#calculatedX@296#calculatedY@401#children@#name@4:selections#id@1713794964#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1714330844,1714330845,1714330846,1714330847#name@4:selections#id@1713794964#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@1:basics#id@1714330844#parent@#x@236#y@340
 create a sphere 
 go to edit mode ( tab )
 
@@ -139,12 +140,15 @@ increase or decrease diameter
 
 select -> random
 
+#?#box#calculatedX@296#calculatedY@401#children@#name@2:sharp#id@1714330845#parent@#x@236#y@340
 SHARP SELECTION 
 create cube 
 select bottom face and bevel , form like a pot 
 select -> sharp edge 
 beveled smooth edges wont be selected 
+#?#box#calculatedX@296#calculatedY@401#children@#name@3:broken#id@1714330846#parent@#x@236#y@340
 
+BROKEN VERTICES
 select non manifold - non closed faces 
 1. create cube 
 press v on a vertex it opens the box like a gift box 
@@ -157,6 +161,18 @@ select non manifold also will be selected
 SOME TIMES IT IS DIFFICULT TO SEE IT 
 select -> select all by trait -> loose geometry will select those 
 w -> dissolve vertices - cleans up that dot 
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@4:monkey#id@1714330847#parent@#x@236#y@340
+GROW OR SHRINK SELECTION 
+monkey model 
+select vertex - control + - 
+
+select a mesh 
+monkey model 
+click on eye face 
+l - linked mesh will be selected 
+eye is a separate mesh 
+
 
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
 root Node

@@ -1,7 +1,7 @@
-#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1713613122#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
+#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1713613122,1714328151#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
 title
 
-#?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@1:warehouse#id@1704786298378#parent@#visibility@hidden#x@292#y@160
+#?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@1:warehouse#id@1704786298378#parent@#d_visibility@hidden#x@292#y@160
 warehouse, is a cluster of compute resources 
 size x small  to 6x 
 
@@ -143,5 +143,45 @@ fail safe 0
 #?#box#calculatedX@337#calculatedY@313#children@#name@3:permanent#id@1713613126#parent@#x@269#y@250
 time travel 0 to 90 (default is configurable)
 fail safe 7
+#?#box#calculatedX@337#calculatedY@313#children@1714328152#name@4:secureSharing#id@1714328151#parent@#x@269#y@250
+Secure Data Sharing lets you share selected objects in a database in your account with other Snowflake accounts
+All database objects shared between accounts are read-only
+no actual data is copied or transferred between accounts
+does not take up any storage in a consumer account
+The only charges to consumers are for the compute resources (i.e. virtual warehouses) used to query the shared data.
+
+The provider can share data from multiple databases in same account 
+On the consumer side, a read-only database is created from the share
+
+You can share the following Snowflake objects:
+Databases
+Tables
+Dynamic tables
+External tables
+Iceberg tables
+Secure views
+Secure materialized views
+Secure user-defined functions (UDFs)
+#?#box#calculatedX@337#calculatedY@313#children@1714328153,1714328154,1714328155#name@1:options#id@1714328152#parent@#d_visibility@hidden#x@269#y@250
+You can share data in Snowflake using one of the following options:
+
+a Listing, in which you offer a share and additional metadata as a data product to one or more accounts,
+a Direct Share, in which you directly share specific database objects (a share) to another account in your region,
+a Data Exchange, in which you set up and manage a group of accounts and offer a share to that group
+#?#box#calculatedX@337#calculatedY@313#children@#name@1:directShare#id@1714328153#parent@#x@269#y@250
+USE DATABASE d1;
+CREATE DATABASE ROLE r1;
+GRANT USAGE ON SCHEMA d1.s1 TO DATABASE ROLE d1.r1;
+CREATE SHARE share1;
+GRANT USAGE ON DATABASE d1 TO SHARE share1; -- even though we provide role we must also provide USAGE as well
+GRANT DATABASE ROLE d1.r1 TO SHARE share1;
+ALTER SHARE share1 ADD ACCOUNTS = org1.consumer1,org1.consumer2;
+
+#?#box#calculatedX@337#calculatedY@313#children@#name@1:listing#id@1714328154#parent@#x@269#y@250
+share to both public and private using snowflake app or listing on a market place 
+Charge consumers for access to the data in the share
+#?#box#calculatedX@337#calculatedY@313#children@#name@1:dataExchangeg#id@1714328155#parent@#x@269#y@250
+Data Exchange provides a data hub for securely collaborating around data with a selected group of members that you invite. 
+provide data to a specific group of consistent business partners taking part in the Data Exchange, such as internal departments in your company or vendors, suppliers, and partners external to your company
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
 root Node

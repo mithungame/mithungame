@@ -256,7 +256,7 @@ leftStream.join(rightStream,
 
 return value type doesn't have to be the same as the two values coming
 JoinWindows argument, which states that an event on the right side needs to have a timestamp either 10 seconds before the left-stream side or 10 seconds after the left-stream side.
-#?#box#calculatedX@458#calculatedY@355#children@#name@2:map#id@1713609005#parent@#x@458#y@305
+#?#box#calculatedX@458#calculatedY@355#children@#name@2:map#id@1713609006#parent@#x@458#y@305
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
 https://kafka.apache.org/20/javadoc/index.html?org/apache/kafka/streams/KeyValue.html
 
