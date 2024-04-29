@@ -1,0 +1,229 @@
+
+<html lang="en">
+<head>
+	<script src="../core/package/dist/d3.min.js"></script>
+</head>
+<style>
+body{
+  background-color: black;
+}
+#drawarea{
+  position: absolute;
+  top: 20px;
+  left: 0px;
+}
+  #textAreaDiv {
+  position: absolute;
+  z-index: 200001;
+  left: 100px;
+  top: 150px;
+  width: 80%;
+  height: 70%;
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  }
+#inputfile{
+  color: white;
+}
+</style>
+<body>
+<input type="file" name="inputfile" id="inputfile">
+<button onclick="(()=>getrandom())()">random</button>
+<div id="root"></div>
+<div id="drawarea"></div>
+<textarea id="textAreaDiv" style="visibility:hidden;z-index:200001;"></textarea>
+<script>
+const g_windowX=0
+const g_windowY=0
+const g_windWidth=window.screen.width - window.screen.width * .2
+const g_winHeight=window.screen.height - window.screen.height * .25
+const root_initial_posX=g_windWidth/2
+const root_initial_posY=g_winHeight/2
+g_masterData=[]
+const g_rootNode={"id":"root","x":root_initial_posX,"y":root_initial_posY,"calculatedX":root_initial_posX,"calculatedY":root_initial_posY,"data":{"name":"rootNode","desc":"root Node"},"parent":[],"children":[]}
+g_pixelRatio=1
+g_fileName=null
+var data = document.getElementById('inputfile').addEventListener('change',function(){
+var fr=new FileReader();
+fr.addEventListener("load",function(){
+let content=fr.result
+if (content.split('\n')[0].trim().substring(0,8)=='{"data":'){fileData=JSON.parse(fr.result);g_masterData=fileData.data.nodeData}
+else{fileData=InFormat(fr.result);g_masterData=fileData}
+console.log(fileData)
+g_masterData.forEach(i=>{delete i['x'];delete i['y']})
+//root node must be added after pixelTranslation
+let checkIfRootExists=g_masterData.map(d=>d.id).indexOf("root")
+console.log(checkIfRootExists)
+if(checkIfRootExists>-1){g_masterData.splice(checkIfRootExists,1)}
+//console.log(g_masterData)
+//g_masterData.push(g_rootNode)
+data_update()
+},false)
+e=this.files[0]
+g_fileName=e.name
+text=fr.readAsText(e);
+})
+
+
+//DATA FORMAT FUNCTION
+function InFormat(content){
+let masterData=[]
+let desc=''
+let text=content.split('\n')
+//console.log(text)
+//removing last empty line as it is adding a new line every time 
+if (text[text.length-1]==''){text.pop()}
+text=text.map(d=>{return d+'\n'})
+//console.log(text)
+for (let i=0;i<text.length;i++){
+let currentLine=text[i];//console.log(currentLine)
+if (currentLine.trim().substring(0,6)=='#?#box'){
+if (masterData.length>0){masterData[masterData.length-1]['data']['desc']=desc;desc=''}
+let boxdetails=currentLine.trim().substring(7,currentLine.length).split('#')
+let currentJSON={'data':{'name':'','desc':''}}
+for (let j=0;j<boxdetails.length;j++){
+let currentBox=boxdetails[j].split('@')
+if(['parent','children','styles'].includes(currentBox[0])){
+currentJSON[currentBox[0]]=currentBox[1].split(",").filter(d=>!d=='')
+}
+else if (currentBox[0]=='name'){currentJSON['data']['name']=currentBox[1]} 
+else{ currentJSON[currentBox[0]]=currentBox[1]}    
+//console.log(currentJSON)
+}
+masterData.push(currentJSON)
+}
+else{desc+=currentLine}
+}
+if (masterData.length>0){masterData[masterData.length-1]['data']['desc']=desc;desc=''}
+return(masterData)
+}
+
+let zoom = d3.zoom().on('zoom', handleZoom)
+function handleZoom(e){
+d3.select('svg g').attr('transform',e.transform)
+}
+
+function initZoom(){
+d3.select('svg').call(zoom)
+}
+
+function expandTextArea(data)
+{
+obj=document.getElementById('textAreaDiv')
+obj.style.visibility=obj.style.visibility=='visible'?'hidden':'visible'
+document.getElementById('textAreaDiv').innerHTML="=="+data.name+"==\n"+data.desc
+}
+
+function dragstarted(event){var n=d3.select(this);orig_x=event.subject.x;orig_y=event.subject.y}
+function dragged(event)    {var n=d3.select(this)}
+function dragended(event)  {n.attr("cx",orig_x),n.attr("cy",orig_y)}
+
+function getParent(currentElement){
+if (currentElement==null){return null}
+for(let i=0;i<g_masterData.length;i++)
+{
+if ( g_masterData[i].children.includes(currentElement.id) ) { return g_masterData[i];break }
+}
+}
+function getParentsToLevel( currentElement, level = 10000 ){
+v_level=0 
+v_currentElement = currentElement
+parents = []
+while ( ! ( v_level == level || v_currentElement == null ) ) {v_currentElement = getParent(v_currentElement);if(v_currentElement){parents.push( v_currentElement )}; v_level += 1 }
+return parents
+}
+function unhide(e){ for(let i=e.length-1;i>-1;i--){ 
+g_d3_nodes.descendants().forEach(
+  (d)=>{ if(d.data.id==e[i].id && d._children ) {d.children = d._children;}}
+)
+}
+view_update()
+}
+function nodeDataSearch(objectList){
+nodes=g_masterData
+let selectedNodes=[] 
+for ( let i=0;i<nodes.length;i++)
+{
+for(let j=0;j<objectList.length;j++)
+{
+if (nodes[i].id == objectList[j].id ) { selectedNodes.push([nodes[i],objectList[j]]);break}
+}
+}
+let result=selectedNodes.map(d=>d[0])
+return result 
+}
+
+
+g_selection_id=null
+function getrandom(){ 
+g_selection_id = String ( g_masterData[Math.floor(Math.random()*g_masterData.length)].id )
+unhide ( getParentsToLevel ( nodeDataSearch( [ { id : g_selection_id } ] )[0] ) )
+}
+////////////////////////////////////////////////////////function d3 code////////////////////////////////////////////////////////
+treemap=d3.tree()
+treemap.nodeSize([20,150])
+
+main=d3.selectAll("#drawarea").append("svg").attr("width",1500).attr("height",1000).append("g")
+l=d3.line().x(d=>{return d.x}).y(d=>{return (d.y)}).curve(d3.curveStep)
+p1=main.append("g").attr("id","nodes")
+l1=main.append("g").attr("id","links")
+
+g_d3_nodes=null
+function data_update(){
+treeData=g_masterData
+
+hei=d3.stratify()
+    .id(d=>{return d.id})
+    .parentId(d=>{let res=null;for(let i=0;i<treeData.length;i++)
+    {if(treeData[i].children.includes(d.id)){res=treeData[i].id;break}}
+    return res
+    })(treeData)
+
+g_d3_nodes=treemap(hei)
+g_d3_nodes.descendants().forEach((d)=>{d._children=d.children})
+g_d3_nodes.descendants().forEach((d)=>{if('d_visibility' in d.data && d.data.d_visibility=='hidden'){console.log(d);d.children=null}})
+view_update()
+}
+
+g_expand=true
+g_collapse=false
+function node_click_action(e,d){
+console.log(e.detail)
+if(g_expand){expandTextArea(d.data.data.desc)}
+if(g_collapse){
+d.children = d.children ? null : d._children;
+view_update()}
+}
+
+function view_update(nodes=g_d3_nodes){
+
+p2=p1.selectAll("#nodes g").data(nodes.descendants(), d => d.id).attr("transform",d=>{return "translate(" + d.y + "," + d.x + ")" ; })
+
+p3=p2.enter().append("g").attr("transform",d=>{return "translate(" + d.y + "," + d.x + ")" ; })
+p3.append("circle").attr("r",d=>8).style("stroke","red").on("click",(e,d)=>{d.children = d.children ? null : d._children;view_update()})
+p3.append("text").text(d=>{return d.data.data.name}).style("font-size","15px").style("fill",d=>g_selection_id && d.id==g_selection_id ? 'green' : d.children==null&&d._children!=null?"#FFC300":"white").on("click",(e,d)=>{expandTextArea(d.data.data)}).style("text-anchor", "middle")//values can be start,middle,end
+p2.selectAll("text").text(d=>{return d.data.data.name}).style("font-size","15px").style("fill",d=>g_selection_id && d.id==g_selection_id ? 'green' : d.children==null&&d._children!=null?"#FFC300":"white")
+p2.exit().remove()
+
+
+l2=l1.selectAll("#links path").data(nodes.links()).attr("d",d=>l([{x:d.source.y, y:d.source.x},{x: d.target.y, y:d.target.x}])).style("stroke","white").style("fill","none")
+l2.enter().append("path").attr("d",d=>l([{x:d.source.y, y:d.source.x},{x: d.target.y, y:d.target.x}])).style("stroke","grey").style("fill","none")
+l2.exit().remove()
+
+
+
+//difficult to do in d3 so doing in plain js
+var div_list=document.querySelectorAll('svg g text')
+var div_array=[...div_list]
+/*
+div_array.forEach(i=>{
+i.innerHTML=i.innerHTML.match(/.{1,20}/g).map(d=>{return "<tspan x='0' dy='1.2em'>".concat(d,"</tsoab>")}).join('')
+})
+*/
+initZoom()
+}
+
+</script>
+</body>
+</html>
