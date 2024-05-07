@@ -1,7 +1,7 @@
 
 <html lang="en">
 <head>
-	<script src="../core/package/dist/d3.min.js"></script>
+	<script src="../package/dist/d3.min.js"></script>
 </head>
 <style>
 body{
@@ -103,9 +103,13 @@ let zoom = d3.zoom().on('zoom', handleZoom)
 function handleZoom(e){
 d3.select('svg g').attr('transform',e.transform)
 }
+function initZoom(){d3.select('svg').call(zoom)}
 
-function initZoom(){
-d3.select('svg').call(zoom)
+function center(pos){
+t=d3.zoomTransform(d3.select('svg g').node())
+zoomK=t.k;zoomX=(-pos[1])*zoomK+700;zoomY=(-pos[0])*zoomK+325
+zoomIdentity=d3.zoomIdentity.translate(zoomX,zoomY).scale(zoomK)  //creates a transform like above
+d3.select('svg').call(zoom.transform, zoomIdentity) //zoom.transform is a funtion that basically calls transform
 }
 
 function expandTextArea(data)
@@ -115,9 +119,9 @@ obj.style.visibility=obj.style.visibility=='visible'?'hidden':'visible'
 document.getElementById('textAreaDiv').innerHTML="=="+data.name+"==\n"+data.desc
 }
 
-function dragstarted(event){var n=d3.select(this);orig_x=event.subject.x;orig_y=event.subject.y}
-function dragged(event)    {var n=d3.select(this)}
-function dragended(event)  {n.attr("cx",orig_x),n.attr("cy",orig_y)}
+//function dragstarted(event){var n=d3.select(this);orig_x=event.subject.x;orig_y=event.subject.y}
+//function dragged(event)    {var n=d3.select(this)}
+//function dragended(event)  {n.attr("cx",orig_x),n.attr("cy",orig_y)}
 
 function getParent(currentElement){
 if (currentElement==null){return null}
@@ -156,15 +160,18 @@ return result
 
 
 g_selection_id=null
+g_selection_node = null 
 function getrandom(){ 
 g_selection_id = String ( g_masterData[Math.floor(Math.random()*g_masterData.length)].id )
 unhide ( getParentsToLevel ( nodeDataSearch( [ { id : g_selection_id } ] )[0] ) )
+g_selection_node = g_d3_nodes.descendants().map((d)=>{return d}).filter(d=>d.id==g_selection_id)[0] //get the object that is selected
+center([g_selection_node.x,g_selection_node.y])
 }
 ////////////////////////////////////////////////////////function d3 code////////////////////////////////////////////////////////
 treemap=d3.tree()
 treemap.nodeSize([20,150])
 
-main=d3.selectAll("#drawarea").append("svg").attr("width",1500).attr("height",1000).append("g")
+main=d3.selectAll("#drawarea").append("svg").attr("width",1500).attr("height",650).append("g")
 l=d3.line().x(d=>{return d.x}).y(d=>{return (d.y)}).curve(d3.curveStep)
 p1=main.append("g").attr("id","nodes")
 l1=main.append("g").attr("id","links")
@@ -188,18 +195,11 @@ view_update()
 
 g_expand=true
 g_collapse=false
-function node_click_action(e,d){
-console.log(e.detail)
-if(g_expand){expandTextArea(d.data.data.desc)}
-if(g_collapse){
-d.children = d.children ? null : d._children;
-view_update()}
-}
 
-function view_update(nodes=g_d3_nodes){
 
-p2=p1.selectAll("#nodes g").data(nodes.descendants(), d => d.id).attr("transform",d=>{return "translate(" + d.y + "," + d.x + ")" ; })
-
+function view_update(){
+g_d3_nodes=treemap(hei) // treemap needs to be recalculated every time even though it is done above already
+p2=p1.selectAll("#nodes g").data(g_d3_nodes.descendants(), d => d.id).attr("transform",d=>{return "translate(" + d.y + "," + d.x + ")" ; })
 p3=p2.enter().append("g").attr("transform",d=>{return "translate(" + d.y + "," + d.x + ")" ; })
 p3.append("circle").attr("r",d=>8).style("stroke","red").on("click",(e,d)=>{d.children = d.children ? null : d._children;view_update()})
 p3.append("text").text(d=>{return d.data.data.name}).style("font-size","15px").style("fill",d=>g_selection_id && d.id==g_selection_id ? 'green' : d.children==null&&d._children!=null?"#FFC300":"white").on("click",(e,d)=>{expandTextArea(d.data.data)}).style("text-anchor", "middle")//values can be start,middle,end
@@ -207,7 +207,7 @@ p2.selectAll("text").text(d=>{return d.data.data.name}).style("font-size","15px"
 p2.exit().remove()
 
 
-l2=l1.selectAll("#links path").data(nodes.links()).attr("d",d=>l([{x:d.source.y, y:d.source.x},{x: d.target.y, y:d.target.x}])).style("stroke","white").style("fill","none")
+l2=l1.selectAll("#links path").data(g_d3_nodes.links()).attr("d",d=>l([{x:d.source.y, y:d.source.x},{x: d.target.y, y:d.target.x}])).style("stroke","white").style("fill","none")
 l2.enter().append("path").attr("d",d=>l([{x:d.source.y, y:d.source.x},{x: d.target.y, y:d.target.x}])).style("stroke","grey").style("fill","none")
 l2.exit().remove()
 

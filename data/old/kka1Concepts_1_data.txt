@@ -140,45 +140,6 @@ procssor topology can be manipulated using
 Kafka Streams DSL provides the most common data transformation operations such as map, filter, join and aggregations out of the box
 the lower-level Processor API allows developers define and connect custom processors as well as to interact with state stores.
 
-name@1:streamPartitions&Task
-Each stream partition is a totally ordered sequence of data records and maps to a 
-Kafka topic partition.
-A data record in the stream maps to a 
-Kafka message from that topic.
-The keys of data records determine the partitioning of data in both 
-Kafka and Kafka Streams, i.e., how data is routed to specific partitions within topics.
-
-Kafka Streams creates a fixed number of tasks based on the 
-input stream partitions for the application
-
-each task assigned a list of partitions from the 
-input streams 
-
-The assignment of partitions to tasks 
-never changes
-
-Tasks can then instantiate their ---- based on the assigned partitions
-own processor topology
-
-slightly simplified, the maximum parallelism at which your application may run is bounded by the -----
-maximum number of stream tasks
-which itself is determined by ------ the application is reading from
-maximum number of partitions of the input topic(s)
-
-For example, if your input topic has 5 partitions, then you can run up to 5 
-applications instances
-(Multiple instances of the application are executed either on the same machine, or spread across multiple machines)
-
-if an application instance fails, all its assigned tasks will be automatically 
-restarted on other instances 
-
-Kafka Streams allows the user to configure the number of threads
-Each thread can execute one or more tasks with their --- independently
-processor topologies 
-
-Starting more stream threads or more instances of the application merely amounts to 
-replicating the topology
-
 name@rootNode
 root Node
 

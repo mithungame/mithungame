@@ -1,23 +1,25 @@
-#?#box#calculatedX@116#calculatedY@432#children@1712719338991#name@0:seed#id@seed#parent@#x@92#y@345
+#?#box#calculatedX@115#calculatedY@406#children@1713523021#name@0:seed#id@seed#parent@#x@92#y@344
 title
-#?#box#calculatedX@205#calculatedY@358#children@45,66,1712719432275#name@1:basics#id@1712719338991#parent@#x@164#y@286
+#?#box#calculatedX@205#calculatedY@332#children@1712719338991,1713523087#name@1:basics#id@1713523021#parent@#x@164#y@285
 content
-#?#box#calculatedX@292#calculatedY@323#children@#name@1:Move#id@45#parent@#x@233#y@258
+#?#box#calculatedX@205#calculatedY@332#children@45,66,1712719432275,1712818224017,1712818598288,1712821353740,1712821389892#name@1:video1#id@1712719338991#parent@#x@164#y@285
+content
+#?#box#calculatedX@291#calculatedY@297#children@#name@1:Move#id@45#parent@#x@232#y@257
 delete cube
 
 create cube - shift A
 select cube - right click ( edit preferences )
 move in X Y Z direction - G+X G+Y G+Z
-#?#box#calculatedX@294#calculatedY@354#children@#name@2:rotate#id@66#parent@#x@235#y@283
+#?#box#calculatedX@293#calculatedY@328#children@#name@2:rotate#id@66#parent@#x@234#y@282
 rotate cube
 
 R+X
 R+Y
 R+Z
-#?#box#calculatedX@293#calculatedY@383#children@1712719832939#name@3:SphereCreate#id@1712719432275#parent@#x@234#y@306
+#?#box#calculatedX@292#calculatedY@357#children@1712719832939#name@3:SphereCreate#id@1712719432275#parent@#x@233#y@305
 shift A
 mesh - > UV SPHERE
-#?#box#calculatedX@433#calculatedY@384#children@#name@1:torusOnsphere#id@1712719832939#parent@#x@346#y@307
+#?#box#calculatedX@432#calculatedY@358#children@#name@1:torusOnsphere#id@1712719832939#parent@#x@345#y@306
 create torus 
 
 switch on magnet OR "control" during move
@@ -27,5 +29,186 @@ stick torus on sphere
 experiment with vertex, edge etc
 
 DO SAME WITH CUBE AND TORUS
-#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+#?#box#calculatedX@296#calculatedY@401#children@#name@4:monkeyrotate#id@1712818224017#parent@#x@236#y@340
+create monkey head
+shift D to duplicate
+
+arrange in all directions
+tilt them differently 
+
+Rotate 
+
+set to local
+transform pivot point - median axis
+it will rotate on its own axis  but on a median point
+transform pivot point - individual origin
+it will rotate on its own axis  but in its own place
+#?#box#calculatedX@295#calculatedY@451#children@#name@5:doorHinge#id@1712818598288#parent@#x@236#y@380
+create door
+
+rotate on z axis
+place cursor on hinge 
+object - set origin - origin to 3d cursor
+rotate - must rotate like a door
+
+
+go to edit mode 
+select vertex
+shift s
+cursor to selected
+go to object mode
+object - set origin - origin to 3d cursor
+#?#box#calculatedX@296#calculatedY@497#children@#name@6:focus#id@1712821353740#parent@#x@236#y@417
+create sphere and cube , click on sphere hit / then hit / again
+#?#box#calculatedX@298#calculatedY@543#children@#name@7:create table #id@1712821389892#parent@#x@238#y@454
+after creating 
+hit control j for joining 
+hit z and see wireframe
+#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454#name@2:video2#id@1713523087#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@#name@1:tetris#id@1713523088#parent@#x@236#y@340
+create cube 
+control r 
+make 3 piece 
+e for extrude
+extend middle piece
+#?#box#calculatedX@296#calculatedY@401#children@#name@2:spoon#id@1713640081#parent@#x@236#y@340
+create cube 
+flatten it
+tab to switch to edit mode
+ctrl r 3 ring 
+scale to spoon size
+z - wireframe 
+first two middle vertex select 
+move 
+last two middle vertex select 
+move
+get a spoon shape
+last face select 
+e 
+extrude and complete spoon shape 
+select middle of spoon 
+pull down 
+space bar -> shade smooth 
+#?#box#calculatedX@296#calculatedY@401#children@#name@3:cap#id@1713698340#parent@#x@236#y@340
+create cube 
+modifier , add modifier, generate subdivision surface, levlels view port 2 render 2 quality 3 
+tab to edit mode 
+control r for ring place in middle 
+pull towards bottom 80%
+z 
+wired mode 
+face selection
+select 20% delete face 
+control r pull towards bottom so that bottom has space for extruding cap front
+select face 
+e 
+extrude
+
+MAKE THIS A BASEBALL HAT 
+select 4 ring in cap ring 2 from bottom 
+hold alt and click edge , it must select the ring ( alt selects a loop but its not doing now so hold shift and select the remaining edge)
+control b 
+bevel till baseball cap
+#?#box#calculatedX@296#calculatedY@401#children@1714330844,1714330845,1714330846,1714330847#name@4:selections#id@1713794964#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@1:basics#id@1714330844#parent@#x@236#y@340
+create a sphere 
+go to edit mode ( tab )
+
+RING
+click alt and select a edge - whole ring will be selected
+hold shift alt for multiple rings
+
+CONTROL
+select two edge , selects best shortest path. 
+guide it and select a square 
+
+in edit mode
+control f - face menu 
+control v - vertex menu 
+control e - edge menu
+
+w  - contextual menu 
+
+b - box  select 
+z wiremesh ( selects otherside as well )
+
+control i - invert selection 
+
+c - circle select 
+increase or decrease diameter 
+
+select -> random
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@2:sharp#id@1714330845#parent@#x@236#y@340
+SHARP SELECTION 
+create cube 
+select bottom face and bevel , form like a pot 
+select -> sharp edge 
+beveled smooth edges wont be selected 
+#?#box#calculatedX@296#calculatedY@401#children@#name@3:broken#id@1714330846#parent@#x@236#y@340
+
+BROKEN VERTICES
+select non manifold - non closed faces 
+1. create cube 
+press v on a vertex it opens the box like a gift box 
+select non manifold , selects broken edges 
+2. select a vertex on cube 
+shift d 
+move it 
+go to object mode - wont see edge as there is no face associated with it 
+select non manifold also will be selected 
+SOME TIMES IT IS DIFFICULT TO SEE IT 
+select -> select all by trait -> loose geometry will select those 
+w -> dissolve vertices - cleans up that dot 
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@4:monkey#id@1714330847#parent@#x@236#y@340
+GROW OR SHRINK SELECTION 
+monkey model 
+select vertex - control + - 
+
+select a mesh 
+monkey model 
+click on eye face 
+l - linked mesh will be selected 
+eye is a separate mesh 
+#?#box#calculatedX@296#calculatedY@401#children@1714420747,1714420748#name@5:propotionalEditing#id@1714420746#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@#name@1:plane#id@1714420747#parent@#x@236#y@340
+shift A - create plane 
+r y 90
+scale z 
+tab to edit 
+create lot of horizontal and vertical rings 
+select propotional editing 
+select a box on topmost grid 
+g - y - make it dance 
+r - z - make it rotate 
+#?#box#calculatedX@296#calculatedY@401#children@#name@2:monkey#id@1714420748#parent@#x@236#y@340
+monkey 
+proptional editing ON
+select forehead vertex keep radius small 
+pull - it will pull not just that polygon it will pull the area 
+
+switch connected only 
+pull , the eyes are a separate mesh so it wont move 
+
+projected from view 
+create two views one top view , one regular
+pull vertex between eye 
+it will pull all front of face 
+without this option it wont pull till bottom of face switch off and try
+#?#box#calculatedX@296#calculatedY@401#children@#name@6:extrude#id@1714821454#parent@#x@236#y@340
+create cylinder with 9 or 10 face 
+select alternative face 
+tab , extrude - goes in one directions
+extrude normal - forms a sun 
+select pair of faces 
+extrude normal - forms a sun like but for the pair 
+extrude individual - the pair gets separated 
+
+create plan 
+extrude cursor , short cut control+click 
+keep on extending to the clicked position 
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
 root Node
