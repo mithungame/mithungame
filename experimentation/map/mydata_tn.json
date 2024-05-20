@@ -1,0 +1,18 @@
+{"type": "FeatureCollection",
+"features": [
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.146718,11.681375]},"properties": {"name": "abc", "show": "false", "start" : 1, "end": 1.5, "tag": ["test"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.127873,11.632619]},"properties": {"name": "kondalaampatti", "show": "false", "start" : 1.5, "end": 2, "tag": ["salem"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1175068,11.670222]},"properties": {"name": "spr cine castle", "show": "false", "start" : 10, "end": 10.5, "tag": ["salem","theatre"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1401347,11.6872416]},"properties": {"name": "rajathji", "show": "true", "start" : 20, "end": 20.5, "tag": ["salem"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1598375,11.6755636]},"properties": {"name": "bull", "show": "true", "start" : 20, "end": 20.5, "tag": ["salem"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1443156,11.6614686]},"properties": {"name": "anna park", "show": "true", "start" : 20, "end": 20.5, "tag": ["salem"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1324137,11.6786486]},"properties": {"name": "d mart", "show": "true", "start" : 20, "end": 20.5, "tag": ["salem"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1654664,11.6837997]},"properties": {"name": "chinna tirupapthi", "show": "true", "start" : 20, "end": 20.5, "tag": ["salem","area"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1610985,11.6875516]},"properties": {"name": "gori medu", "show": "true", "start" : 20, "end": 20.5, "tag": ["salem","area"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.0971991,11.685047]},"properties": {"name": "coco villa", "show": "false", "start" : 20, "end": 20.5, "tag": ["salem"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1209231,11.6729858]},"properties": {"name": "gupta sweets", "show": "false", "start" : 20, "end": 20.5, "tag": ["salem","restaurant"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1459354,11.6770252]},"properties": {"name": "jojo", "show": "false", "start" : 20, "end": 20.5, "tag": ["salem","restaurant"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1464044,11.676939]},"properties": {"name": "chongqing", "show": "false", "start" : 20, "end": 20.5, "tag": ["salem","restaurant"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1283491,11.6759812]},"properties": {"name": "pallazio", "show": "true", "start" : 21, "end": 22, "tag": ["salem"]}}
+]
+}

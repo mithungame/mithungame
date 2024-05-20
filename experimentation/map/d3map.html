@@ -1,0 +1,148 @@
+
+<html lang="en">
+<head>
+	<script src="../../package/dist/d3.min.js"></script>
+</head>
+<style>
+body{
+  
+}
+#drawarea{
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 80%;
+  height: 70%;
+}
+#inputfile{
+  color: black;
+}
+</style>
+<body>
+<input type="file" name="inputfile" id="inputfile">
+<input type="file" name="datafile" id="datafile">
+<button onclick="(()=>getrandom())()">random</button>
+<textarea rows="1" cols="50" id="textAreaDiv"></textarea>
+<div id="root"></div>
+<div id="drawarea"></div>
+<script>
+const g_windowX=0
+const g_windowY=0
+const g_windWidth=window.screen.width - window.screen.width * .2
+const g_winHeight=window.screen.height - window.screen.height * .25
+const root_initial_posX=g_windWidth/2
+const root_initial_posY=g_winHeight/2
+g_masterData=[]
+const g_rootNode={"id":"root","x":root_initial_posX,"y":root_initial_posY,"calculatedX":root_initial_posX,"calculatedY":root_initial_posY,"data":{"name":"rootNode","desc":"root Node"},"parent":[],"children":[]}
+g_pixelRatio=1
+g_fileName=null
+document.getElementById('inputfile').addEventListener('change',function(){
+var fr=new FileReader();
+fr.addEventListener("load",function(){
+g_masterData=JSON.parse(fr.result)
+},false)
+e=this.files[0]
+g_fileName=e.name
+text=fr.readAsText(e);
+})
+document.getElementById('datafile').addEventListener('change',function(){
+var fr=new FileReader();
+fr.addEventListener("load",function(){
+g_contentData=JSON.parse(fr.result)
+data_update()
+},false)
+e=this.files[0]
+g_fileName=e.name
+text=fr.readAsText(e);
+})
+
+
+function showTextArea(data) {
+g_showTextArea=true
+let ele=document.getElementById('textAreaDiv')
+document.getElementById('textAreaDiv').value =data
+ele.focus()
+}
+
+let zoom = d3.zoom().on('zoom', handleZoom)
+g_scale=180;g_xpos=3;g_ypos=3;
+last_x=0;last_y=0;last_k=0;
+function handleZoom(e){
+t=d3.zoomTransform(d3.select('svg').node())
+console.log(t.k)
+////if(t.k>last_k){g_scale+=10}else{g_scale-=10}
+//if(t.x>last_x){g_xpos-=.01}else{g_xpos+=.01}
+//if(t.y>last_y){g_ypos-=.01}else{g_ypos+=.01}
+last_x=t.x;last_y=t.y;last_k=t.k
+d3.select('svg g').attr('transform',e.transform)
+//data_update()
+view_update()
+}
+function initZoom(){d3.select('svg').call(zoom)}
+
+
+////////////////////////////////////////////////////////function d3 code////////////////////////////////////////////////////////
+function get_projection(v_scale=180,v_x=3,v_y=4){
+return d3.geoMercator().scale([v_scale]).center(g_masterData.properties.coordinates).translate([chartWidth / v_x, chartHeight / v_y]);
+}
+const chartWidth = 1800;
+const chartHeight = 700;
+const backgroundColor = "#EAF2FA";
+const landColor = "black";
+const landStroke = "#FCF5E9";
+const markerColor = "#E26F99";
+const labelOnWaterColor = "#504C57";
+const labelOnLandColor = "#FAF9FB";
+svg = d3.selectAll("#drawarea").append('svg').attr("title", "Map").attr('width', chartWidth).attr('height', chartHeight).append("g").attr("id","maing")
+//svg.append("rect").attr("width", chartWidth).attr("height", chartHeight).attr('fill', backgroundColor);
+
+
+function data_update(){
+g_scale=g_masterData.properties.scale
+projection = get_projection(g_scale,g_xpos,g_ypos)
+mapData=g_masterData
+pathGenerator = d3.geoPath(projection);
+data=g_contentData
+
+svg.selectAll('path').data(mapData.features).join('path').attr('d', pathGenerator).attr('fill', landColor).attr('stroke', landStroke).attr('stroke-width', 1);
+//return svg.node();     
+
+view_update()
+}
+
+g_tag=["salem"]
+g_view_tag=[]
+g_showname=true
+function view_update(){
+let zoom_level = last_k
+console.log('here',zoom_level)
+  svg.selectAll("svg g")
+    .data(data.features.filter(d => { 
+    console.log(d.properties.name,zoom_level,d.properties.start,d.properties.end,( (zoom_level >= d.properties.start) && (zoom_level <= d.properties.end)  ) , ( d.properties.tag && g_tag.every(r=> d.properties.tag.includes(r))) ) ;
+    return (/*d.geometry.type === "Point" &&*/ ( ( (zoom_level >= d.properties.start) && (zoom_level <= d.properties.end)  ) || ( d.properties.tag && g_tag.every(r=> d.properties.tag.includes(r))) )) } ),d=>d.properties.name)
+    .join(
+       enter=> {console.log('enter for'); let leaf=enter;g=enter.append("g").attr("transform",d=>{return "translate(" + projection(d.geometry.coordinates)[0] + "," +projection(d.geometry.coordinates)[1] + ")" ; });c=g.append("circle")
+      //c.attr("cx", d => projection(d.geometry.coordinates)[0])
+      //.attr("cy", d => projection(d.geometry.coordinates)[1])
+      c.attr("r",d=>{console.log(d.properties.name);d=>{return 5/(last_k)}}).attr("fill-opacity", 0.5).attr("fill", markerColor).on('mouseover', (event, d) => showTextArea(d.properties.name));
+;
+      if(g_showname){g.append("text").text(d=>{
+      console.log((d.properties.show=="true"||  g_view_tag.every(r=> d.properties.tag.includes(r)) )?d.properties.name:'')
+      return ((d.properties.show=="true"||  g_view_tag.every(r=> d.properties.tag.includes(r)) )?d.properties.name:'')
+      }
+      ).style("font-size","15px").style("fill","white")}
+      return g },
+      update => {console.log('enter update',5/(last_k)); update.selectAll("g").attr("transform",d=>{return "translate(" + projection(d.geometry.coordinates)[0] + "," +projection(d.geometry.coordinates)[1] + ")" ; });
+      update.selectAll("g circle").attr("r",d=>{return 5/last_k}).attr("fill-opacity", 0.5).attr("fill", "blue")
+      update.selectAll("text").text(d=>{return ((d.properties.show=="true"||  g_view_tag.every(r=> d.properties.tag.includes(r)) )?d.properties.name:'')}).style("font-size",d=>{return (15/last_k)+"px"}).style("fill","white"); 
+      return update },
+      exit=>{return exit.remove()}
+      )
+      
+initZoom()
+}
+
+
+</script>
+</body>
+</html>

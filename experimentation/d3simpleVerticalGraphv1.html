@@ -9,7 +9,7 @@ body{
 }
 #drawarea{
   position: absolute;
-  top: 20px;
+  top: 25px;
   left: 0px;
 }
   #textAreaDiv {
@@ -107,7 +107,7 @@ function initZoom(){d3.select('svg').call(zoom)}
 
 function center(pos){
 t=d3.zoomTransform(d3.select('svg g').node())
-zoomK=t.k;zoomX=(-pos[1])*zoomK+700;zoomY=(-pos[0])*zoomK+325
+zoomK=t.k;zoomX=(-pos[1])*zoomK+300;zoomY=(-pos[0])*zoomK+200
 zoomIdentity=d3.zoomIdentity.translate(zoomX,zoomY).scale(zoomK)  //creates a transform like above
 d3.select('svg').call(zoom.transform, zoomIdentity) //zoom.transform is a funtion that basically calls transform
 }

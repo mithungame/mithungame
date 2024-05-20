@@ -1,6 +1,6 @@
 #?#box#calculatedX@115#calculatedY@406#children@1713523021#name@0:seed#id@seed#parent@#x@92#y@344
 title
-#?#box#calculatedX@205#calculatedY@332#children@1712719338991,1713523087#name@1:basics#id@1713523021#parent@#x@164#y@285
+#?#box#calculatedX@205#calculatedY@332#children@1712719338991,1713523087,1715855419#name@1:basics#id@1713523021#parent@#x@164#y@285
 content
 #?#box#calculatedX@205#calculatedY@332#children@45,66,1712719432275,1712818224017,1712818598288,1712821353740,1712821389892#name@1:video1#id@1712719338991#parent@#x@164#y@285
 content
@@ -64,7 +64,7 @@ create sphere and cube , click on sphere hit / then hit / again
 after creating 
 hit control j for joining 
 hit z and see wireframe
-#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454#name@2:video2#id@1713523087#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454,1715107332,1715107333,1715107334,1715107335#name@2:video2#id@1713523087#parent@#x@236#y@340
 content
 #?#box#calculatedX@296#calculatedY@401#children@#name@1:tetris#id@1713523088#parent@#x@236#y@340
 create cube 
@@ -210,5 +210,68 @@ extrude individual - the pair gets separated
 create plan 
 extrude cursor , short cut control+click 
 keep on extending to the clicked position 
+#?#box#calculatedX@296#calculatedY@401#children@#name@7:inset#id@1715107332#parent@#x@236#y@340
+==ROOF TOP
+create a box 
+tab for edit 
+select top face 
+i for inset 
+pull within 
+e for extrude and pull down 
+#?#box#calculatedX@296#calculatedY@401#children@#name@8:knife#id@1715107333#parent@#x@236#y@340
+Knife
+k shortcut 
+add points and press enter 
+not really sure what it does
+
+knife - bisect 
+make sure whole cube is selected 
+select bisect - goes through and through 
+left bottom bisect - choose inner and outer 
+#?#box#calculatedX@296#calculatedY@401#children@#name@9:polybuild#id@1715107334#parent@#x@236#y@340
+create a plane 
+go near a vertex 
+press control and move the mouse 
+press click to confirm
+#?#box#calculatedX@296#calculatedY@401#children@#name@10:dumbell#id@1715107335#parent@#x@236#y@340
+create a sphere in edit mode 
+shift d 
+delete two opposite faces 
+spacebar 
+bridge fill 
+
+Note: if one sphere is created in edit mode and shift d done in object mode , one looks like a grid and another looks solid.
+#?#box#calculatedX@296#calculatedY@401#children@#name@11:horseShoe#id@1715107335#parent@#x@236#y@340
+create a cube make it long 
+spin on z
+keep the view on top view - z ( else it wont go to correct place )
+control click to extrude to the point
+#?#box#calculatedX@296#calculatedY@401#children@1715855420,1715855421#name@3:video3#id@1715855419#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@#name@1:chocolate#id@1715855420#parent@#x@236#y@340
+create cube 
+scale to chocolate size, tab, control 3, select top face, inset inside , grab z
+modifiers -> add modifiers -> generate -> array -> count 3
+modifiers -> add modifiers -> factorx - 0 , factory 1
+modifiers -> add modifiers -> generate -> bevel
+#?#box#calculatedX@296#calculatedY@401#children@#name@2:screw#id@1715855421#parent@#x@236#y@340
+create plane
+r y 90
+add modifier screw 
+axis x 
+tool -> affect only origin
+move origin -> makes a cylinder with hole -> remove affect only origin
+screw - 3m ( distance between one ring )
+iterations - 10 ( repitition ) 
+tab - ctrl 2 edge - select edge to sharpen 
+    note: in this case i was able to select only on the top end not on bottom end 
+scale - narrow down 
+tab selecct screw - shift s - cursor to selected 
+sift a - cylinder - scale to fit inside screw 
+again cursor to selected - create cylinder with 8 face - move to top - bevel modifier
+
+modifiers -> add modifiers -> generate -> array -> count 3
+modifiers -> add modifiers -> factorx - 0 , factory 1
+modifiers -> add modifiers -> generate -> bevel
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
 root Node

@@ -62,37 +62,7 @@ SELECT PARSE_JSON(SYSTEM$ESTIMATE_QUERY_ACCELERATION('8cd54bf0-1651-5b1c-ac9c-6a
 
 Query the QUERY_ACCELERATION_ELIGIBLE View
 #?#box#calculatedX@337#calculatedY@313#children@1704787008261,1704787113672,1713612732#name@2:Concepts#id@1704786809287#parent@#x@269#y@250
-1. Internal - Temporary , Transient, Permanent
-2. External 
-3. Iceberg
-
-Temporary
-============
-Longevity: Remainder of session
-Cloning: Temporary => Temporary Temporary => Transient
-Time Travel: 0 or 1 (default is 1)
-Fail safe:0
-
-Transient
-====================
-Until explicitly dropped
-Transient => Temporary Transient => Transient
-0 or 1 (default is 1)
-0
-
-Permanent (Standard Edition)
-==============================
-Until explicitly dropped
-Permanent => Temporary Permanent => Transient Permanent => Permanent
-0 or 1 (default is 1)
-7
-
-Permanent (Enterprise Edition and higher)
-=============================
-Until explicitly dropped
-Permanent => Temporary Permanent => Transient Permanent => Permanent
-0 to 90 (default is configurable)
-7
+content
 #?#box#calculatedX@326#calculatedY@368#children@1707563377,1707563378#name@1:microPartitions#id@1704787008261#parent@#x@260#y@294
 contiguous units of storage
 50 MB and 500 MB of "uncompressed data"
@@ -123,8 +93,10 @@ Each change to the clone results in --- that are owned exclusively by the clone 
 new micro-partitions
 clones can be cloned, with no limitations which results in a n-level hierarchy of cloned objects each with their own portion of shared and independent data storage
 #?#box#calculatedX@337#calculatedY@313#children@1713613123#name@3:Tables#id@1713613122#parent@#x@269#y@250
-tables are stored in columnar micro-partitions
-#?#box#calculatedX@337#calculatedY@313#children@1713613124,1713613125,1713613126#name@1:types#id@1713613123#parent@#x@269#y@250
+1. Internal - Temporary , Transient, Permanent
+2. External 
+3. Iceberg
+#?#box#calculatedX@337#calculatedY@313#children@1713613124,1713613125,1713613126#name@1:internal#id@1713613123#parent@#x@269#y@250
 content
 #?#box#calculatedX@337#calculatedY@313#children@#name@2:temporary#id@1713613124#parent@#x@269#y@250
 Temporary tables only exist within the session

@@ -236,7 +236,7 @@ In addition, a single processor topology may be decomposed into independent sub-
 
 A sub-topology is a set of processors, that are all transitively connected as parent/child or via state stores in the topology
 task may instantiate only one such sub-topology for processing
-so different sub-topologies exchange data via topics and don’t share any state stores
+so different sub-topologies exchange data via topics and dont share any state stores
 #?#box#calculatedX@762#calculatedY@321#children@#name@1:TaskParallelism#id@1714244655#parent@#x@709#y@256
 Kafka Streams creates a fixed number of tasks based on the 
 input stream partitions for the application
@@ -355,7 +355,7 @@ Stream-time is only advanced if all input partitions over all input topics have 
 If at least one partition does not have any new data available, stream-time will not be advanced and thus punctuate() will not be triggered if PunctuationType.STREAM_TIME was specified. 
 This behavior is independent of the configured timestamp extractor, i.e., using WallclockTimestampExtractor does not enable wall-clock triggering of punctuate().
 
-#?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004#name@5:code#id@1713475712#parent@#x@465#y@359
+#?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004,1715941443#name@5:code#id@1713475712#parent@#x@465#y@359
 content
 #?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:sampleKStream#id@1713609003#parent@#x@762#y@356
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
@@ -439,5 +439,32 @@ myStream.groupByKey().aggregate(() -> 0L,
                                       characterCountAgg, 
                                       Materialized.with(Serdes.String(), Serdes.Long()))
                                       .toStream().to("output-topic");
+#?#box#calculatedX@571#calculatedY@513#children@1715941444#name@3:processApi#id@1715941443#parent@#x@556#y@410
+content
+#?#box#calculatedX@571#calculatedY@513#children@#name@1:init#id@1715941444#parent@#x@556#y@410
+@Override
+  @SuppressWarnings("unchecked")
+  public void init(ProcessorContext context) {
+      // keep the processor context locally because we need it in punctuate() and commit()
+      // class variable - private ProcessorContext context;
+      this.context = context;
+
+      // retrieve the key-value store named "Counts"
+      //  class variable = private KeyValueStore<String, Long> kvStore;
+      kvStore = (KeyValueStore) context.getStateStore("Counts");
+
+      // schedule a punctuate() method every 1000 milliseconds based on stream-time
+      this.context.schedule(1000, PunctuationType.STREAM_TIME, (timestamp) -> {
+          KeyValueIterator<String, Long> iter = this.kvStore.all();
+          while (iter.hasNext()) {
+              KeyValue<String, Long> entry = iter.next();
+              context.forward(entry.key, entry.value.toString());
+          }
+          iter.close();
+
+          // commit the current processing progress
+          context.commit();
+      });
+  }
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@591#y@259
 root Node
