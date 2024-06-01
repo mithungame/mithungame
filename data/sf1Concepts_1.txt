@@ -1,4 +1,4 @@
-#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1713613122,1714328151#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
+#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1716306061,1714328151#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
 title
 
 #?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@1:warehouse#id@1704786298378#parent@#d_visibility@hidden#x@292#y@160
@@ -92,7 +92,9 @@ independently
 Each change to the clone results in --- that are owned exclusively by the clone and are protected through CDP.
 new micro-partitions
 clones can be cloned, with no limitations which results in a n-level hierarchy of cloned objects each with their own portion of shared and independent data storage
-#?#box#calculatedX@337#calculatedY@313#children@1713613123#name@3:Tables#id@1713613122#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1713613122,1716306157#name@3:objects#id@1716306061#parent@#x@269#y@250
+content
+#?#box#calculatedX@337#calculatedY@313#children@1713613123#name@1:tables#id@1713613122#parent@#x@269#y@250
 1. Internal - Temporary , Transient, Permanent
 2. External 
 3. Iceberg
@@ -115,6 +117,42 @@ fail safe 0
 #?#box#calculatedX@337#calculatedY@313#children@#name@3:permanent#id@1713613126#parent@#x@269#y@250
 time travel 0 to 90 (default is configurable)
 fail safe 7
+#?#box#calculatedX@337#calculatedY@313#children@1716306158,1716308000#name@2:views#id@1716306157#parent@#x@269#y@250
+content
+#?#box#calculatedX@337#calculatedY@313#children@1716308001#name@2:secure#id@1716308000#parent@#x@269#y@250
+https://docs.snowflake.com/en/user-guide/views-secure
+
+cannot see query of view except for authorised users
+cannot see query profile after execution even for owner 
+optimizations that expose data will not be applied 
+#?#box#calculatedX@337#calculatedY@313#children@1716306158#name@1:isViewSecure#id@1716308001#parent@#x@269#y@250
+For non-materialized views, check the IS_SECURE column in the Information Schema
+SHOW VIEWS LIKE 'myview';
+SHOW MATERIALIZED VIEWS LIKE 'my_mv';
+
+#?#box#calculatedX@337#calculatedY@313#children@1716306159,1716306160#name@3:materialized#id@1716306158#parent@#x@269#y@250
+useful when 
+output row is less compare to base table 
+data calculaltion is process resource intensive
+query is on external table which might have slower performance 
+base table dont change frequently
+
+GUARANTEE
+Data accessed through materialized views is always current
+#?#box#calculatedX@337#calculatedY@313#children@#name@1:limits#id@1716306159#parent@#x@269#y@250
+https://docs.snowflake.com/en/user-guide/views-materialized#limitations-on-creating-materialized-views
+ONLY FEW COVERED HERE , SEE LINK FOR MORE 
+A materialized view can query only a single table.
+Joins, including self-joins, are not supported.
+A materialized view cannot include UDF,Window,HAVING,ORDER BY,LIMIT , many aggregate function ETC 
+#?#box#calculatedX@337#calculatedY@313#children@#name@2:gotcha#id@1716306160#parent@#x@269#y@250
+materialized view can be secure
+supports clustering on materialized view 
+can be suspended 
+add column to base table does not reflect automatically 
+update or drop column - recreate materialized view 
+without specifying a materialized view in a SQL statement query optimizer can automatically rewrite queries against the base table or regular views to use the materialized view instead.
+
 #?#box#calculatedX@337#calculatedY@313#children@1714328152#name@4:secureSharing#id@1714328151#parent@#x@269#y@250
 Secure Data Sharing lets you share selected objects in a database in your account with other Snowflake accounts
 All database objects shared between accounts are read-only

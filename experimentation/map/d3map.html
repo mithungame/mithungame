@@ -111,30 +111,29 @@ view_update()
 }
 
 g_tag=["salem"]
-g_view_tag=[]
+g_view_tag=[null]
 g_showname=true
 function view_update(){
 let zoom_level = last_k
 console.log('here',zoom_level)
   svg.selectAll("svg g")
     .data(data.features.filter(d => { 
-    console.log(d.properties.name,zoom_level,d.properties.start,d.properties.end,( (zoom_level >= d.properties.start) && (zoom_level <= d.properties.end)  ) , ( d.properties.tag && g_tag.every(r=> d.properties.tag.includes(r))) ) ;
-    return (/*d.geometry.type === "Point" &&*/ ( ( (zoom_level >= d.properties.start) && (zoom_level <= d.properties.end)  ) || ( d.properties.tag && g_tag.every(r=> d.properties.tag.includes(r))) )) } ),d=>d.properties.name)
+    console.log(d.properties.name,zoom_level,d.properties.start,d.properties.end,( (zoom_level >= d.properties.start) && (zoom_level <= d.properties.end)  ) , ( d.properties.tag && g_tag.some(r=> d.properties.tag.includes(r))) ) ;
+    return (/*d.geometry.type === "Point" &&*/ ( ( (zoom_level >= d.properties.start) && (zoom_level <= d.properties.end)  ) || ( d.properties.tag && d.properties.tag.some(r=> g_tag.includes(r))) )) } ),d=>d.properties.name)
     .join(
        enter=> {console.log('enter for'); let leaf=enter;g=enter.append("g").attr("transform",d=>{return "translate(" + projection(d.geometry.coordinates)[0] + "," +projection(d.geometry.coordinates)[1] + ")" ; });c=g.append("circle")
       //c.attr("cx", d => projection(d.geometry.coordinates)[0])
       //.attr("cy", d => projection(d.geometry.coordinates)[1])
       c.attr("r",d=>{console.log(d.properties.name);d=>{return 5/(last_k)}}).attr("fill-opacity", 0.5).attr("fill", markerColor).on('mouseover', (event, d) => showTextArea(d.properties.name));
 ;
-      if(g_showname){g.append("text").text(d=>{
-      console.log((d.properties.show=="true"||  g_view_tag.every(r=> d.properties.tag.includes(r)) )?d.properties.name:'')
-      return ((d.properties.show=="true"||  g_view_tag.every(r=> d.properties.tag.includes(r)) )?d.properties.name:'')
-      }
-      ).style("font-size","15px").style("fill","white")}
+      g.append("text").text(d=>{
+      console.log( g_view_tag,  d.properties.tag.some(r=> g_view_tag.includes(r)) , ( g_view_tag.some(r=> d.properties.tag.includes(r)) )?d.properties.name:'' )
+      return (( d.properties.tag.some(r=> g_view_tag.includes(r)) )?d.properties.name:'')}
+      ).style("font-size","12px").style("fill","white")
       return g },
       update => {console.log('enter update',5/(last_k)); update.selectAll("g").attr("transform",d=>{return "translate(" + projection(d.geometry.coordinates)[0] + "," +projection(d.geometry.coordinates)[1] + ")" ; });
       update.selectAll("g circle").attr("r",d=>{return 5/last_k}).attr("fill-opacity", 0.5).attr("fill", "blue")
-      update.selectAll("text").text(d=>{return ((d.properties.show=="true"||  g_view_tag.every(r=> d.properties.tag.includes(r)) )?d.properties.name:'')}).style("font-size",d=>{return (15/last_k)+"px"}).style("fill","white"); 
+      update.selectAll("text").text(d=>{return (( d.properties.tag.some(r=> g_view_tag.includes(r)) )?d.properties.name:'')}).style("font-size",d=>{return (12/last_k)+"px"}).style("fill","white"); 
       return update },
       exit=>{return exit.remove()}
       )

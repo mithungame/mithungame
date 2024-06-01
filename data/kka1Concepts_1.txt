@@ -319,8 +319,9 @@ the write-back cache reduces the number of records going to downstream processor
 The final computation results are identical regardless of the cache size (including a disabled cache), which means it is safe to enable or disable the cache
 
 Configuration parameters,commit.interval.ms - note: its not a guarantee
-#?#box#calculatedX@453#calculatedY@554#children@1715083674#name@4:processApi#id@1715083673#d_visibility@hidden#parent@#x@462#y@443
+#?#box#calculatedX@453#calculatedY@554#children@1715083674,1716237075#name@4:processApi#id@1715083673#d_visibility@hidden#parent@#x@462#y@443
 https://kafka.apache.org/10/documentation/streams/developer-guide/processor-api.html
+https://kafka.apache.org/documentation/streams/developer-guide/processor-api.html#overview
 
 The Processor API helps define custom processors and to interact with state stores
 implement both stateless as well as stateful operations
@@ -354,7 +355,8 @@ Attention
 Stream-time is only advanced if all input partitions over all input topics have new data (with newer timestamps) available. 
 If at least one partition does not have any new data available, stream-time will not be advanced and thus punctuate() will not be triggered if PunctuationType.STREAM_TIME was specified. 
 This behavior is independent of the configured timestamp extractor, i.e., using WallclockTimestampExtractor does not enable wall-clock triggering of punctuate().
-
+#?#box#calculatedX@457#calculatedY@449#children@#name@2:unittesting#id@1716237075#parent@#x@465#y@359
+https://kafka.apache.org/documentation/streams/developer-guide/testing.html#unit-testing-processors
 #?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004,1715941443#name@5:code#id@1713475712#parent@#x@465#y@359
 content
 #?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:sampleKStream#id@1713609003#parent@#x@762#y@356
@@ -439,7 +441,7 @@ myStream.groupByKey().aggregate(() -> 0L,
                                       characterCountAgg, 
                                       Materialized.with(Serdes.String(), Serdes.Long()))
                                       .toStream().to("output-topic");
-#?#box#calculatedX@571#calculatedY@513#children@1715941444#name@3:processApi#id@1715941443#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@1715941444,1716236972#name@3:processApi#id@1715941443#parent@#x@556#y@410
 content
 #?#box#calculatedX@571#calculatedY@513#children@#name@1:init#id@1715941444#parent@#x@556#y@410
 @Override
@@ -466,5 +468,20 @@ content
           context.commit();
       });
   }
+#?#box#calculatedX@571#calculatedY@513#children@#name@2:process#id@1716236972#parent@#x@556#y@410
+    @Override
+    public void process(final Record<String, String> record) {
+        final String[] words = record.value().toLowerCase(Locale.getDefault()).split("\\W+");
+
+        for (final String word : words) {
+            final Integer oldValue = kvStore.get(word);
+
+            if (oldValue == null) {
+                kvStore.put(word, 1);
+            } else {
+                kvStore.put(word, oldValue + 1);
+            }
+        }
+    }  
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@591#y@259
 root Node
