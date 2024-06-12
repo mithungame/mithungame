@@ -28,6 +28,7 @@
 {"type": "Feature","geometry": {"type": "Point","coordinates": [78.1464044,11.676939]},"properties": {"name": "chongqing", "tag": ["salem","restaurant"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [78.1563479,11.6564525]},"properties": {"name": "coll ofc", "tag": ["salem","marker"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [78.1283491,11.6759812]},"properties": {"name": "pallazio", "tag": ["salem","marker"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [78.1498559,11.6676396]},"properties": {"name": "nirmal skywin mall", "tag": ["salem","mall"]}},
 
 
 

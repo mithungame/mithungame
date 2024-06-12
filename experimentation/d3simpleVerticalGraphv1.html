@@ -59,6 +59,7 @@ if(checkIfRootExists>-1){g_masterData.splice(checkIfRootExists,1)}
 //console.log(g_masterData)
 //g_masterData.push(g_rootNode)
 data_update()
+generate_bucket()
 },false)
 e=this.files[0]
 g_fileName=e.name
@@ -161,8 +162,44 @@ return result
 
 g_selection_id=null
 g_selection_node = null 
+g_p_queue = null
+g_p_queue_tracker = {}
+function generate_bucket(){
+p_d=[.1,.15,.2,.3,.25]//percentage_distro
+g_p_queue_tracker={[p_d[0]]:0,[p_d[1]]:0,[p_d[2]]:0,[p_d[3]]:0,[p_d[4]]:0} // this is just for tracking which bucket got selected most 
+p=[p_d[0],p_d[1],p_d[2],p_d[3],p_d[4]].reverse() // reversing so as to fill the top ones first , also i put .2 at end so that not everything is new and i get over loaded , let it be fat in middle
+p_queue={[p_d[0]]:[],[p_d[1]]:[],[p_d[2]]:[],[p_d[3]]:[],[p_d[4]]:[]}
+id_list=g_masterData.map(d=>d.id).filter(d=>{return d!='seed'}).map(d=>parseInt(d)).sort()
+id_list_len=id_list.length
+id_list=id_list.reverse()
+p_id=p.map(d=>d*id_list_len)//get length percentages
+b=[]
+for(let i=0;i<p.length;i++){
+    b=id_list
+    id_list=b.splice(Math.round(p[i]*id_list_len))//cut len percentages 
+    p_queue[p[i]]=b
+}
+//if anything left over in id_list assign it to .1 bucket as it will be oldest that is left over . it is possible because math.round of .4 is 0 . so it might not pick it 
+p_queue[.1]=p_queue[.1].concat(id_list)
+g_p_queue = p_queue
+}
+function choose_bucket_and_get_random(){
+//if value less than 5 bucket then just choose random 
+let chosen_bucket=null
+p_queue=g_p_queue
+p_plot = p.reverse().map((sum=>value=>sum+=value)(0))//create a running total of percentages [0.1, 0.25, 0.5, 0.8, 1]
+let r_val=Math.random()
+for(let i=0;i<p_plot.length;i++){
+if(r_val<=p_plot[i]){chosen_bucket=p[i];break}
+}
+g_p_queue_tracker[chosen_bucket]+=1;console.log(g_p_queue_tracker)
+//if all bucket is not filled sometimes it may return empty bucket in that case just generate random and return 
+if(p_queue[chosen_bucket].length==0){return String ( g_masterData[Math.floor(Math.random()*g_masterData.length)].id )}
+else { return String ( p_queue[chosen_bucket][Math.floor(Math.random()*p_queue[chosen_bucket].length)] ) }
+console.log(g_p_queue_tracker)
+}
 function getrandom(){ 
-g_selection_id = String ( g_masterData[Math.floor(Math.random()*g_masterData.length)].id )
+g_selection_id = choose_bucket_and_get_random()
 unhide ( getParentsToLevel ( nodeDataSearch( [ { id : g_selection_id } ] )[0] ) )
 g_selection_node = g_d3_nodes.descendants().map((d)=>{return d}).filter(d=>d.id==g_selection_id)[0] //get the object that is selected
 center([g_selection_node.x,g_selection_node.y])

@@ -64,7 +64,7 @@ create sphere and cube , click on sphere hit / then hit / again
 after creating 
 hit control j for joining 
 hit z and see wireframe
-#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454,1715107332,1715107333,1715107334,1715107335#name@2:video2#id@1713523087#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454,1715107332,1715107333,1715107334,1715107335,1715107336#name@2:video2#id@1713523087#parent@#x@236#y@340
 content
 #?#box#calculatedX@296#calculatedY@401#children@#name@1:tetris#id@1713523088#parent@#x@236#y@340
 create cube 
@@ -241,12 +241,12 @@ spacebar
 bridge fill 
 
 Note: if one sphere is created in edit mode and shift d done in object mode , one looks like a grid and another looks solid.
-#?#box#calculatedX@296#calculatedY@401#children@#name@11:horseShoe#id@1715107335#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@11:horseShoe#id@1715107336#parent@#x@236#y@340
 create a cube make it long 
 spin on z
 keep the view on top view - z ( else it wont go to correct place )
 control click to extrude to the point
-#?#box#calculatedX@296#calculatedY@401#children@1715855420,1715855421#name@3:video3#id@1715855419#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1715855420,1715855421,1717326375,1717326376,1717326377#name@3:video3#id@1715855419#parent@#x@236#y@340
 content
 #?#box#calculatedX@296#calculatedY@401#children@#name@1:chocolate#id@1715855420#parent@#x@236#y@340
 create cube 
@@ -273,5 +273,56 @@ again cursor to selected - create cylinder with 8 face - move to top - bevel mod
 modifiers -> add modifiers -> generate -> array -> count 3
 modifiers -> add modifiers -> factorx - 0 , factory 1
 modifiers -> add modifiers -> generate -> bevel
+#?#box#calculatedX@296#calculatedY@401#children@#name@3:cuberoll#id@1717326375#parent@#x@236#y@340
+create a cube 
+add array modifier 7
+create empty object 
+set relative offset and pick empty object 
+select cube -> shift s -> cursor to world origin -> selected to cursor 
+select empty -> shift s -> cursor to world origin -> selected to cursor 
+select empty roll on same axis as of the array 
+#?#box#calculatedX@296#calculatedY@401#children@#name@4:cheese#id@1717326376#parent@#x@236#y@340
+create a cube and uv sphere 
+select cube -> add modifier -> generate -> boolean 
+choose sphere dependent object 
+disable sphere eye in right corner collection panel
+
+select sphere -> object -> view port display -> display as bounds 
+
+make solid again 
+edit mode -> select all of sphere 
+duplicate -> object mode -> display as bounds 
+#?#box#calculatedX@296#calculatedY@401#children@1717326378,1717326379#name@5:gameboy#id@1717326377#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@#name@1:base#id@1717326378#parent@#x@236#y@340
+create a cube 
+without moving it anywhere scale it and make the game boy shape 
+create one more cube 
+move it to side 
+set transform to local , rotate 45 degree and scale accordingly 
+
+select side cube control a -> all transform 
+add modifier array
+add mirror modifier -> set base cube as mirror object
+
+saved as base.blend
+#?#box#calculatedX@296#calculatedY@401#children@#name@2:faceAndButton#id@1717326379#parent@#x@236#y@340
+add a cube on face 
+go to edit mode and duplicate -> make it a button 
+    note : when we duplicate in edit mode it is the same object/mesh is interlinked 
+    so when we apply boolean on face or even button it is applied to all 
+go to edit mode and duplicate -> make a smaller button 
+
+choose the 4 horizontal edges of both button and bevel 
+    issue faced: bevel was not even, it was more on one side and less on another 
+    solution: go to object mode -> control A -> scale , didnt understand but it worked 
+        link: https://www.reddit.com/r/blenderhelp/comments/2iks8a/trying_to_bevel_both_sides_of_an_edge_but_it_only/
+        to dig this further i created a cube , scaled it in y axis , go to edit mode , select top edge of left most small face 
+        do bevel you will see same issue, and you will also see control a -> scale fixing it 
+        while doing this keep global transform ( N ) , object transform ( side pane ), open and watch values
+apply boolean on the face and button 
+
+saved as faceAndButton
+
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
 root Node
