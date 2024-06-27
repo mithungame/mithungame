@@ -1,25 +1,43 @@
-#?#box#calculatedX@115#calculatedY@406#children@1713523021#name@0:seed#id@seed#parent@#x@92#y@344
+#?#box#calculatedX@115#calculatedY@406#children@1713523021#name@seed#id@seed#parent@#x@92#y@344
 title
-#?#box#calculatedX@205#calculatedY@332#children@1712719338991,1713523087,1715855419#name@1:basics#id@1713523021#parent@#x@164#y@285
+#?#box#calculatedX@205#calculatedY@332#children@1712719338991,1713523087,1715855419,1718529823,1719393894#name@basics#id@1713523021#parent@#x@164#y@285
 content
-#?#box#calculatedX@205#calculatedY@332#children@45,66,1712719432275,1712818224017,1712818598288,1712821353740,1712821389892#name@1:video1#id@1712719338991#parent@#x@164#y@285
+#?#box#calculatedX@205#calculatedY@332#children@1712719338992,1712719338993#name@video1#id@1712719338991#parent@#x@164#y@285
 content
-#?#box#calculatedX@291#calculatedY@297#children@#name@1:Move#id@45#parent@#x@232#y@257
+#?#box#calculatedX@205#calculatedY@332#children@45,66,68,1712719432275,1712818224017#name@p1#id@1712719338992#parent@#x@164#y@285
+content
+#?#box#calculatedX@291#calculatedY@297#children@#name@Move#id@45#parent@#x@232#y@257
 delete cube
 
 create cube - shift A
 select cube - right click ( edit preferences )
 move in X Y Z direction - G+X G+Y G+Z
-#?#box#calculatedX@293#calculatedY@328#children@#name@2:rotate#id@66#parent@#x@234#y@282
+#?#box#calculatedX@293#calculatedY@328#children@#name@rotate#id@66#parent@#x@234#y@282
 rotate cube
 
 R+X
 R+Y
 R+Z
-#?#box#calculatedX@292#calculatedY@357#children@1712719832939#name@3:SphereCreate#id@1712719432275#parent@#x@233#y@305
+#?#box#calculatedX@293#calculatedY@328#children@#name@cancelTransform#id@68#parent@#x@234#y@282
+create cube 
+scale 
+rotate 
+grab 
+
+alt s 
+alt r 
+alt g 
+for all cancel alt a - DID NOT WORK
+
+apply app transform 
+go the same -> control a -> all transform 
+alt s 
+alt r 
+alt g
+#?#box#calculatedX@292#calculatedY@357#children@1712719832939#name@SphereCreate#id@1712719432275#parent@#x@233#y@305
 shift A
 mesh - > UV SPHERE
-#?#box#calculatedX@432#calculatedY@358#children@#name@1:torusOnsphere#id@1712719832939#parent@#x@345#y@306
+#?#box#calculatedX@432#calculatedY@358#children@#name@torusOnsphere#id@1712719832939#parent@#x@345#y@306
 create torus 
 
 switch on magnet OR "control" during move
@@ -29,7 +47,7 @@ stick torus on sphere
 experiment with vertex, edge etc
 
 DO SAME WITH CUBE AND TORUS
-#?#box#calculatedX@296#calculatedY@401#children@#name@4:monkeyrotate#id@1712818224017#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@monkeyrotate#id@1712818224017#parent@#x@236#y@340
 create monkey head
 shift D to duplicate
 
@@ -43,7 +61,9 @@ transform pivot point - median axis
 it will rotate on its own axis  but on a median point
 transform pivot point - individual origin
 it will rotate on its own axis  but in its own place
-#?#box#calculatedX@295#calculatedY@451#children@#name@5:doorHinge#id@1712818598288#parent@#x@236#y@380
+#?#box#calculatedX@205#calculatedY@332#children@1712818598288,1712821353740,1712821389892,1712821389893,1712821389896#name@p2#id@1712719338993#parent@#x@164#y@285
+content
+#?#box#calculatedX@295#calculatedY@451#children@#name@doorHinge#id@1712818598288#parent@#x@236#y@380
 create door
 
 rotate on z axis
@@ -58,21 +78,58 @@ shift s
 cursor to selected
 go to object mode
 object - set origin - origin to 3d cursor
-#?#box#calculatedX@296#calculatedY@497#children@#name@6:focus#id@1712821353740#parent@#x@236#y@417
+#?#box#calculatedX@296#calculatedY@497#children@#name@focus#id@1712821353740#parent@#x@236#y@417
 create sphere and cube , click on sphere hit / then hit / again
-#?#box#calculatedX@298#calculatedY@543#children@#name@7:create table #id@1712821389892#parent@#x@238#y@454
+#?#box#calculatedX@298#calculatedY@543#children@#name@createTable#id@1712821389892#parent@#x@238#y@454
 after creating 
 hit control j for joining 
 hit z and see wireframe
-#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454,1715107332,1715107333,1715107334,1715107335,1715107336#name@2:video2#id@1713523087#parent@#x@236#y@340
+#?#box#calculatedX@298#calculatedY@543#children@#name@hdri#id@1712821389893#parent@#x@238#y@454
+world 
+color 
+environment texture
+add hdri 
+OR
+shader editor
+add texture - environment texture - choose sunset 
+map to back ground - world output 
+control t on environment texture to bring up mapping for adjusting scale and stuff
+
+note: make sure in viewport/render scene world is turned on and perspective view is selected 
+
+to show only white light on the objects 
+render -> change to cycle 
+then come to 
+world -> ray visibility -> uncheck camera
+#?#box#calculatedX@298#calculatedY@543#children@#name@camera#id@1712821389896#parent@#x@238#y@454
+place camera before cube so that camera faces cube
+numpad 0
+0 again 
+
+split screen 
+numpad 0
+move the screen , it will immediately come out of camera view 
+n
+on right side you ll find 3 small tab so small i had my head spinning
+view lock -> camera to view 
+again do numpad 0
+now move -> see in above screen camera moves accordingly 
+uncheck once done
+===
+easily set camera 
+adjust the whole thing to how we want 
+control alt 0 
+camera will go there 
+much easier
+#?#box#calculatedX@296#calculatedY@401#children@1713523088,1713640081,1713698340,1713794964,1714420746,1714821454,1715107332,1715107333,1715107334,1715107335,1715107336#name@video2#id@1713523087#parent@#x@236#y@340
 content
-#?#box#calculatedX@296#calculatedY@401#children@#name@1:tetris#id@1713523088#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@tetris#id@1713523088#parent@#x@236#y@340
 create cube 
 control r 
 make 3 piece 
 e for extrude
 extend middle piece
-#?#box#calculatedX@296#calculatedY@401#children@#name@2:spoon#id@1713640081#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@spoon#id@1713640081#parent@#x@236#y@340
 create cube 
 flatten it
 tab to switch to edit mode
@@ -90,7 +147,7 @@ extrude and complete spoon shape
 select middle of spoon 
 pull down 
 space bar -> shade smooth 
-#?#box#calculatedX@296#calculatedY@401#children@#name@3:cap#id@1713698340#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@cap#id@1713698340#parent@#x@236#y@340
 create cube 
 modifier , add modifier, generate subdivision surface, levlels view port 2 render 2 quality 3 
 tab to edit mode 
@@ -110,8 +167,8 @@ select 4 ring in cap ring 2 from bottom
 hold alt and click edge , it must select the ring ( alt selects a loop but its not doing now so hold shift and select the remaining edge)
 control b 
 bevel till baseball cap
-#?#box#calculatedX@296#calculatedY@401#children@1714330844,1714330845,1714330846,1714330847#name@4:selections#id@1713794964#parent@#x@236#y@340
-#?#box#calculatedX@296#calculatedY@401#children@#name@1:basics#id@1714330844#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1714330844,1714330845,1714330846,1714330847#name@selections#id@1713794964#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@basics#id@1714330844#parent@#x@236#y@340
 create a sphere 
 go to edit mode ( tab )
 
@@ -140,13 +197,13 @@ increase or decrease diameter
 
 select -> random
 
-#?#box#calculatedX@296#calculatedY@401#children@#name@2:sharp#id@1714330845#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@sharp#id@1714330845#parent@#x@236#y@340
 SHARP SELECTION 
 create cube 
 select bottom face and bevel , form like a pot 
 select -> sharp edge 
 beveled smooth edges wont be selected 
-#?#box#calculatedX@296#calculatedY@401#children@#name@3:broken#id@1714330846#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@broken#id@1714330846#parent@#x@236#y@340
 
 BROKEN VERTICES
 select non manifold - non closed faces 
@@ -162,7 +219,7 @@ SOME TIMES IT IS DIFFICULT TO SEE IT
 select -> select all by trait -> loose geometry will select those 
 w -> dissolve vertices - cleans up that dot 
 
-#?#box#calculatedX@296#calculatedY@401#children@#name@4:monkey#id@1714330847#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@monkey#id@1714330847#parent@#x@236#y@340
 GROW OR SHRINK SELECTION 
 monkey model 
 select vertex - control + - 
@@ -172,9 +229,9 @@ monkey model
 click on eye face 
 l - linked mesh will be selected 
 eye is a separate mesh 
-#?#box#calculatedX@296#calculatedY@401#children@1714420747,1714420748#name@5:propotionalEditing#id@1714420746#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1714420747,1714420748#name@propotionalEditing#id@1714420746#parent@#x@236#y@340
 content
-#?#box#calculatedX@296#calculatedY@401#children@#name@1:plane#id@1714420747#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@plane#id@1714420747#parent@#x@236#y@340
 shift A - create plane 
 r y 90
 scale z 
@@ -184,7 +241,7 @@ select propotional editing
 select a box on topmost grid 
 g - y - make it dance 
 r - z - make it rotate 
-#?#box#calculatedX@296#calculatedY@401#children@#name@2:monkey#id@1714420748#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@monkey#id@1714420748#parent@#x@236#y@340
 monkey 
 proptional editing ON
 select forehead vertex keep radius small 
@@ -198,7 +255,7 @@ create two views one top view , one regular
 pull vertex between eye 
 it will pull all front of face 
 without this option it wont pull till bottom of face switch off and try
-#?#box#calculatedX@296#calculatedY@401#children@#name@6:extrude#id@1714821454#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@extrude#id@1714821454#parent@#x@236#y@340
 create cylinder with 9 or 10 face 
 select alternative face 
 tab , extrude - goes in one directions
@@ -210,7 +267,7 @@ extrude individual - the pair gets separated
 create plan 
 extrude cursor , short cut control+click 
 keep on extending to the clicked position 
-#?#box#calculatedX@296#calculatedY@401#children@#name@7:inset#id@1715107332#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@inset#id@1715107332#parent@#x@236#y@340
 ==ROOF TOP
 create a box 
 tab for edit 
@@ -218,22 +275,22 @@ select top face
 i for inset 
 pull within 
 e for extrude and pull down 
-#?#box#calculatedX@296#calculatedY@401#children@#name@8:knife#id@1715107333#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@knife#id@1715107333#parent@#x@236#y@340
 Knife
 k shortcut 
-add points and press enter 
-not really sure what it does
+add points , make multiple areas and press enter 
+now choose faces control 3 and see it is now subdivided to multiple areas
 
 knife - bisect 
 make sure whole cube is selected 
 select bisect - goes through and through 
 left bottom bisect - choose inner and outer 
-#?#box#calculatedX@296#calculatedY@401#children@#name@9:polybuild#id@1715107334#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@polybuild#id@1715107334#parent@#x@236#y@340
 create a plane 
 go near a vertex 
 press control and move the mouse 
 press click to confirm
-#?#box#calculatedX@296#calculatedY@401#children@#name@10:dumbell#id@1715107335#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@dumbell#id@1715107335#parent@#x@236#y@340
 create a sphere in edit mode 
 shift d 
 delete two opposite faces 
@@ -241,20 +298,20 @@ spacebar
 bridge fill 
 
 Note: if one sphere is created in edit mode and shift d done in object mode , one looks like a grid and another looks solid.
-#?#box#calculatedX@296#calculatedY@401#children@#name@11:horseShoe#id@1715107336#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@horseShoe#id@1715107336#parent@#x@236#y@340
 create a cube make it long 
 spin on z
 keep the view on top view - z ( else it wont go to correct place )
 control click to extrude to the point
-#?#box#calculatedX@296#calculatedY@401#children@1715855420,1715855421,1717326375,1717326376,1717326377#name@3:video3#id@1715855419#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1715855420,1715855421,1715855422,1717326375,1717326376,1717326377#name@video3#id@1715855419#parent@#x@236#y@340
 content
-#?#box#calculatedX@296#calculatedY@401#children@#name@1:chocolate#id@1715855420#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@chocolate#id@1715855420#parent@#x@236#y@340
 create cube 
 scale to chocolate size, tab, control 3, select top face, inset inside , grab z
 modifiers -> add modifiers -> generate -> array -> count 3
 modifiers -> add modifiers -> factorx - 0 , factory 1
 modifiers -> add modifiers -> generate -> bevel
-#?#box#calculatedX@296#calculatedY@401#children@#name@2:screw#id@1715855421#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@screw#id@1715855421#parent@#x@236#y@340
 create plane
 r y 90
 add modifier screw 
@@ -273,7 +330,21 @@ again cursor to selected - create cylinder with 8 face - move to top - bevel mod
 modifiers -> add modifiers -> generate -> array -> count 3
 modifiers -> add modifiers -> factorx - 0 , factory 1
 modifiers -> add modifiers -> generate -> bevel
-#?#box#calculatedX@296#calculatedY@401#children@#name@3:cuberoll#id@1717326375#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@nut#id@1715855422#parent@#x@236#y@340
+=create nut 
+create plane
+r y 90
+move origin 
+= create inside crease 
+create plane 
+r y 90 
+3 m , 10 iteration 
+edit scale z -> thin 
+move origin 
+1 m, iteration 3
+
+saved as nut.blend
+#?#box#calculatedX@296#calculatedY@401#children@#name@cuberoll#id@1717326375#parent@#x@236#y@340
 create a cube 
 add array modifier 7
 create empty object 
@@ -281,7 +352,7 @@ set relative offset and pick empty object
 select cube -> shift s -> cursor to world origin -> selected to cursor 
 select empty -> shift s -> cursor to world origin -> selected to cursor 
 select empty roll on same axis as of the array 
-#?#box#calculatedX@296#calculatedY@401#children@#name@4:cheese#id@1717326376#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@cheese#id@1717326376#parent@#x@236#y@340
 create a cube and uv sphere 
 select cube -> add modifier -> generate -> boolean 
 choose sphere dependent object 
@@ -292,9 +363,9 @@ select sphere -> object -> view port display -> display as bounds
 make solid again 
 edit mode -> select all of sphere 
 duplicate -> object mode -> display as bounds 
-#?#box#calculatedX@296#calculatedY@401#children@1717326378,1717326379#name@5:gameboy#id@1717326377#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1717326378,1717326379,1718452582,1718453841#name@gameboy#id@1717326377#parent@#x@236#y@340
 content
-#?#box#calculatedX@296#calculatedY@401#children@#name@1:base#id@1717326378#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@base#id@1717326378#parent@#x@236#y@340
 create a cube 
 without moving it anywhere scale it and make the game boy shape 
 create one more cube 
@@ -306,7 +377,7 @@ add modifier array
 add mirror modifier -> set base cube as mirror object
 
 saved as base.blend
-#?#box#calculatedX@296#calculatedY@401#children@#name@2:faceAndButton#id@1717326379#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@#name@faceAndButton#id@1717326379#parent@#x@236#y@340
 add a cube on face 
 go to edit mode and duplicate -> make it a button 
     note : when we duplicate in edit mode it is the same object/mesh is interlinked 
@@ -323,6 +394,340 @@ choose the 4 horizontal edges of both button and bevel
 apply boolean on the face and button 
 
 saved as faceAndButton
+#?#box#calculatedX@296#calculatedY@401#children@#name@shrink#id@1718452582#parent@#x@236#y@340
+open faceAndButton
+duplicate buttons
+original to bounds 
+duplicate to solid 
+edit -> side button -> s for shrink 
+alt the edge -> bevel 
+
+front face -> delete top and bottom 
+extrude along normals -> pull it inside
+
+saved as shrinkbutton
+#?#box#calculatedX@296#calculatedY@401#children@#name@bulb#id@1718453841#parent@#x@236#y@340
+go to y axis view 
+
+create plane 
+tab to edit mode
+delete plane 
+control click and create half bulb one side
+add modifier -> sub division surface 
+add modifier -> screw , play with x y z 
+create empty object if possible right at center and set as axis 
+  reusing empty object always difficult better delete and recreate 
+move empty object to adjust the shape 
+go to edit mode -> select indvidial vertex also to adjust shape
+#?#box#calculatedX@296#calculatedY@401#children@1718529875,1718530306,1718530353,1718530381,1718530959,1718539858,1718542494,1718542951,1718542970,1718545545,1719230379,1719232866,1719234118,1719236165#name@video4#id@1718529823#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@#name@rednderTypes#id@1718529875#parent@#x@236#y@340
+evee -  not production grade 
+cycles - production grade 
+can also use third party render algorithms, for now use cycles 
+#?#box#calculatedX@296#calculatedY@401#children@#name@setup#id@1718530306#parent@#x@236#y@340
+split screen to two top and bottom 
+top is render 
+bottom is shader editor 
+
+edit - preferences - addons - node wrangler
+
+to view scene world 
+1. it must be enabled in view port or render .
+2. must be in perspective view - numpad 5 or view -> perspective view 
+note in orthographic view its impossible to fit background
+
+not if you move from object to world in shader editor world properties are displayed
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@shortcuts#id@1718530353#parent@#x@236#y@340
+select the non colored part , then shift colored part 
+control l -> link material
+now same material liked to both item, chaning color of one affects another 
+to separate it , go to material -> copy button -> now they are different
+OR
+choose object , in below shader editor , drop down material and select material. same as linking
+hit copy button there - same as making it separate
+
+=cut connection
+control - right click - cut 
+
+if same property is used by many items in props it shows a number near by
+#?#box#calculatedX@296#calculatedY@401#children@#name@screw#id@1718530381#parent@#x@236#y@340
+file Day4.blend 
+isolate screw 
+delete all material for both screw and thread separately
+shift A -> principal bsdf 
+shit A ->  output -> material connect the two , render to see image
+OR 
+click New, will do both step from above
+rename to screw 
+change color to maroon, and metallic
+copy material using the control l button
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@bsdfProperties#id@1718530959#parent@#x@236#y@340
+principalbsdf is latest earlier for metallic , glass spearate bsdf was there 
+yellow - color input 
+grey - value input, black/white/grey values 
+blue - different uses 
+
+multiple bsdf - material output can be present, whichever is active will be chosen 
+try with 3 bsdf+material output combination
+
+multiple bsdf - 1 material output
+control shift click on bsdf attaches it to that bsdf
+
+control b - choose box it will be rendered 
+note: control b then release everything then select without holding anything
+control alt b to escape
+
+=paint job
+deacrease roughness and 
+increase specular ( IOR -index of reflection , each item water glass has a index of reflection )
+-> some reflection from environment
+=plasticky
+increase roughness 
+=full metal 
+metallic all the way up , roughness 0, specular dont matter 
+=pass through cheese 
+specular and subsurface
+#?#box#calculatedX@296#calculatedY@401#children@#name@ball#id@1718539858#parent@#x@236#y@340
+take the ball 
+reset all properties 
+increase specular all the way up 
+increase transmission all the way up, it becomes a see through
+it actually shows upside down like a prism or something
+
+==frozen
+turn off scene world and bring up extremely reflective ball
+add some rougness
+keep specular same 
+full transmission 
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@anistropic#id@1718542494#parent@#x@236#y@340
+take the ball 
+add a bit of roughness , make it specular , zero transmission
+see the sun as a dot 
+change anistrophic and anistrophic rotation to see it change
+#?#box#calculatedX@296#calculatedY@401#children@1718544258#name@bulb#id@1718542951#parent@#x@236#y@340
+=bulb 
+0 roughness full transmission 
+average/full specular (play with it)
+OR
+shader - glass shader 
+
+add filament emission 
+strength in 1000's 
+
+add metallic for rest 
+just refer to it in the saved file since it is all applying previous
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@general#id@1718544258#parent@#x@236#y@340
+most items are normal just refer to properties 
+the lower filament has a color emission  , a black body controls color temp
+    honestly i dont see any difference
+#?#box#calculatedX@296#calculatedY@401#children@#name@chocolate#id@1718545545#parent@#x@236#y@340
+for chocolate nothing special 
+subsurface used for splash
+in video there is subsurface color but there is no more in new blender
+use xyz to control the color 
+#?#box#calculatedX@296#calculatedY@401#children@1718571092,1718552974#name@gameBoy#id@1718542970#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@1718571092#name@texture#id@1718552974#parent@#x@236#y@340
+load gameboy_basic
+add texture for main piece 
+link it to button 
+click plus - go to material - make a copy , it becomes its own texture 
+same for round 
+black for internal frame 
+glass for bottom piece 
+emission for bottom inner piece 
+emission for console piece
+  add gradient texture to color ramp to bsdf with emission 
+  for color ramp click on the sliders to select two colors 
+output saved as gamebox_textured
+#?#box#calculatedX@296#calculatedY@401#children@1718571131,1718740407,1718740772,1718911543#name@uvunwrap#id@1718571092#parent@#x@236#y@340
+content 
+#?#box#calculatedX@296#calculatedY@401#children@#name@selectionConfusion#id@1718571131#parent@#x@236#y@340
+cube 008 is like a master container 
+  selecting it only selects few parts 
+
+in object mode if select A 
+go to edit mode
+u -> reset 
+u -> smart uv projet 
+will see different result , because it shows for entire heirarchy under cube 008
+
+in object mode select cube 008 
+repeat unwrap 
+see the result 
+#?#box#calculatedX@296#calculatedY@401#children@#name@polygonOverlap#id@1718740407#parent@#x@236#y@340
+add texture > image texture - basically editing the material for main part
+  note : this adds texture to only 
+
+open uv editor on left and gameboy on right
+in object mode 
+if you see neat unwarpping on the right hand -> press u  -> reset 
+on left see all polygons 
+
+on the game boy main material 
+ 
+ now switch to view port mode 
+ select A
+ move from edit mode -> texture paint mode
+ choose draw in left panel
+ delete and new -> brush -> pick a color
+ since polygon overlap paint on main part paits all part
+#?#box#calculatedX@296#calculatedY@401#children@#name@stencilPaint#id@1718740772#parent@#x@236#y@340
+once object is unwrapped 
+edit -> texture mode 
+choose fill on left panel 
+tool - create brush if not exist - choose color - drop color 
+
+with texture mode selected 
+choose draw on left panel 
+tool - delete and new -> brush
+scroll below in same tools texture -> create new 
+move to texture - last option in properties tab 
+ image -> settings -> choose pacman.png 
+tool -> texture -> mapping -> stencil 
+paint over it 
+
+stencil short cut
+  right click to move 
+  shit right click to zoom 
+  control right click rotate 
+  
+ouput saved as gameboy_painted
+#?#box#calculatedX@296#calculatedY@401#children@#name@manualUnwrap#id@1718911543#parent@#x@236#y@340
+not paying attention now for this and bulb texture + unwrap
+#?#box#calculatedX@296#calculatedY@401#children@#name@floor#id@1719230379#parent@#x@236#y@340
+new bsdf 
+
+new image texture 
+open C:\Users\mithu\Downloads\track\projects\blender\day4\large_grey_tiles_4k\textures
+choose diffuse file 
+with texture selected conrol t ( courtesy of node wrangler ) to bring up mapping
+adjust scale to increase or deacrease tiles 
+
+roughness 
+new image texture - roughness 
+connect existing mapping to vector 
+output roughness to bsdf roughness 
+
+view normals
+edit mode - mesh edit mode next to overlays - normals ( all are straight )
+go back to object mode ( dont really matter for below steps )
+new image texture - normal ( blue )
+connect to existing mapping 
+add - vector - bump 
+connect color to normal
+connect to bsdf normal 
+note: when viewing normals it never really changed and i dont really see a difference 
+
+control + right click cut to remove mapping.
+#?#box#calculatedX@296#calculatedY@401#children@#name@wood#id@1719232866#parent@#x@236#y@340
+focus / on wood 
+
+new principal bsdf 
+
+add musgrave texture 
+detail 18 dimension .8 lacunarity 2.2 looks like marbles 
+add color to bsdf 
+
+add noise texture 
+detail 2 roughness .5 
+add color to musgrave vector  looks like wood 
+
+add vector - bump 
+connect musgrave height to bump height looks rough 
+
+add converter - color ramp 
+musgrave height to color ramp fac 
+color ramp color to bsdf color 
+#?#box#calculatedX@296#calculatedY@401#children@#name@puddle#id@1719234118#parent@#x@236#y@340
+go to floor 
+
+add musgrave texture - create puddles ( white is water )
+add color - contrast ( just to pop things ) works without this as well 
+
+add new principal bsdf 
+zero roughness full specular 
+
+add mix shader - connect two principal bsdf 
+for factor add output of contrast 
+if factor is not there sliding it left and right leans the image towards the corresponging principal bsdf settings
+
+note: reflection of object visible only in render mode node view port render
+#?#box#calculatedX@296#calculatedY@401#children@#name@multiMaterial#id@1719236165#parent@#x@236#y@340
+create cube 
+edit mode 
+space bar - subdivide 
+material - new - basecolor red 
+click + - new - basecolor green 
+choose faces selection control 3 - choose a face - choose a material - assign 
+click select to see it selected
+note: entire material will have the color of first material 
+create material 
+#?#box#calculatedX@296#calculatedY@401#children@1719393921,1719394194,1719394853,1719396013,1719398109,1719399533,1719399564#name@video5#id@1719393894#parent@#x@236#y@340
+content
+#?#box#calculatedX@296#calculatedY@401#children@#name@pitchBlack#id@1719393921#parent@#x@236#y@340
+open blender 
+set render to cycles 
+switch off light in render top right
+keep scene world on
+go to world - background - color - make it black 
+its pitch black 
+
+now turn on scene light - see cube
+#?#box#calculatedX@296#calculatedY@401#children@#name@indirectLight#id@1719394194#parent@#x@236#y@340
+open blender - do pitch black - keep light exactly on top of cube 
+delete one side face of cube 
+rotate it little bit so some light falls on inside of cube 
+render - light paths - max bounce - total - 0
+#?#box#calculatedX@296#calculatedY@401#children@#name@mixHdri#id@1719394853#parent@#x@236#y@340
+texture cordinate ( generated ) - ( vector ) mapping - ( vector ) image texture - ( color ) background - ( shader ) mix shader - ( surface ) world output 
+texture cordinate ( generated ) - ( vector ) mapping - ( vector ) image texture - ( color ) background /
+
+slide fac of mix shader left or right to see influence of the two hdri 
+#?#box#calculatedX@296#calculatedY@401#children@#name@lightProperties#id@1719396013#parent@#x@236#y@340
+choose light 
+go to object - turn off camera - light wont be visible in camera , it is same for all objects 
+object - visibility - ray visibility 
+turn off diffuse majority of object not visible 
+diffuse and transmission - turning off - i dont really see a difference
+#?#box#calculatedX@296#calculatedY@401#children@#name@emission#id@1719398109#parent@#x@236#y@340
+make it dark 
+create cube - add wireframe modifier - add emission 
+create a plane place on one side - add emission 
+create another place place on other side - add image texture - pacman - emission 
+create a cube place it in center so that it touches the wireframe 
+
+all are simple effect is cool
+#?#box#calculatedX@296#calculatedY@401#children@#name@lightTypes#id@1719399533#parent@#x@236#y@340
+new
+create cube 
+create a plane below 
+split screen to two - top render bottom regular 
+
+light is default point light bring right above cube - see shadow 
+    point light has no direction just position 
+    click or unclick shadow below 
+selecct light - data  - change point light to sun   
+    sun has no position just direction 
+change to spot 
+    has both direction and rotation 
+area light - lights  up an area unlike spot , adjust size if needed
+    has both direction and rotation 
+#?#box#calculatedX@296#calculatedY@401#children@#name@lightColor#id@1719399564#parent@#x@236#y@340
+select light - data - change color 
+or 
+keep color white , render to cycles 
+use nodes 
+emission - color output 
+
+hdri 
+image texture - emission - color output 
+control t on image texture and rotate to see the difference 
 
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
 root Node

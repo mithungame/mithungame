@@ -83,7 +83,18 @@ layer=L.geoJSON(g_contentData, {
     /*pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, geojsonMarkerOptions);
     },*/
-    onEachFeature: function onEachFeature(feature, layer) {layer.bindPopup(feature.properties.name)}
+    coordsToLatLng: function (coords) {
+        //                    latitude , longitude, altitude
+        //return new L.LatLng(coords[1], coords[0], coords[2]); //Normal behavior
+        console.log(coords)
+        console.log( new L.LatLng(coords[0], coords[1], coords[2]));
+        return new L.LatLng(coords[0], coords[1], coords[2]);
+    },
+    onEachFeature: function onEachFeature(feature, layer) {
+    layer.bindPopup(feature.properties.comments),
+    layer.bindTooltip(feature.properties.name) 
+    
+    }
 }).addTo(map);
 }
 </script>
