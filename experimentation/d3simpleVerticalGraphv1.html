@@ -219,8 +219,14 @@ treeData=g_masterData
 
 hei=d3.stratify()
     .id(d=>{return d.id})
-    .parentId(d=>{let res=null;for(let i=0;i<treeData.length;i++)
-    {if(treeData[i].children.includes(d.id)){res=treeData[i].id;break}}
+    .parentId(d=>{
+    let res=null;
+    let generic=null
+    for(let i=0;i<treeData.length;i++)
+    {
+    if(treeData[i].children.includes(d.id)){res=treeData[i].id;break}
+    }
+    if (res==null && ( ! ( d.id == '0:seed' || d.id == 'seed'  ) ) ){return 'noparent' }
     return res
     })(treeData)
 

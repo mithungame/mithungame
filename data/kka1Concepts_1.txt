@@ -201,7 +201,7 @@ Kafka guarantees that any consumer of a given topic-partition will always read t
 
 REPLICATION
 Topics are replicated
-#?#box#calculatedX@313#calculatedY@382#children@1712641154508,1713475712,1714245120,1714245121,1715083673#name@3:kafkaStreams#id@1712640915627#parent@#x@350#y@305
+#?#box#calculatedX@313#calculatedY@382#children@1712641154508,1713475712,1714245120,1714245121,1715083673,1719925194#name@3:kafkaStreams#id@1712640915627#parent@#x@350#y@305
 Kafka Streams is a 
 client library for processing and analyzing data stored in Kafka.
 
@@ -383,7 +383,7 @@ final KafkaStreams streams = new KafkaStreams(builder.build(), streamsConfigurat
 streams.start();
 #?#box#calculatedX@571#calculatedY@513#children@1713609005,1713609006,1714819365#name@2:operations#id@1713609004#parent@#x@556#y@410
 content
-#?#box#calculatedX@696#calculatedY@494#children@#name@1:joinStream#id@1713609005#parent@#x@656#y@395
+#?#box#calculatedX@696#calculatedY@494#children@1719925573#name@1:joinStream#id@1713609005#parent@#x@656#y@395
 KStream<String, String> leftStream = builder.stream("topic-A");
 KStream<String, String> rightStream = builder.stream("topic-B");
 
@@ -396,6 +396,18 @@ leftStream.join(rightStream,
 
 return value type doesn't have to be the same as the two values coming
 JoinWindows argument, which states that an event on the right side needs to have a timestamp either 10 seconds before the left-stream side or 10 seconds after the left-stream side.
+#?#box#calculatedX@696#calculatedY@494#children@#name@behavior#id@1719925573#parent@#x@656#y@395
+ex window 10 seconds 
+each record starts a new window +/- 10 seconds from its point of view 
+the last record to arrive will be flushed only if 
+1. there is a record to compare on other side with in time window 
+or 
+2. there is no record on other side - NULL
+   basically no activity  
+   it will only be emitted when a new record arrives 
+   solution : define custom punctuator that emits a dummy heartbeat value or null
+
+
 #?#box#calculatedX@698#calculatedY@523#children@#name@2:map#id@1713609006#parent@#x@658#y@418
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
 https://kafka.apache.org/20/javadoc/index.html?org/apache/kafka/streams/KeyValue.html
@@ -483,5 +495,16 @@ content
             }
         }
     }  
+#?#box#calculatedX@571#calculatedY@513#children@1719925237#name@generic#id@1719925194#parent@#x@556#y@410
+content 
+#?#box#calculatedX@571#calculatedY@513#children@#name@autoOffset#id@1719925237#parent@#x@556#y@410
+The auto.offset.reset config kicks in ONLY if your consumer group does not have a valid offset committed somewhere
+example 
+1 you have a consumer in a consumer group group1 that has consumed 5 messages and died. 
+auto.offset.reset is irrelevant 
+will continue from the place it died because it will just fetch the stored offset from the offset storage (Kafka or ZK as I mentioned).
+
+2 You have messages in a topic (like you described) and you start a consumer in a new consumer group group2
+there is no offset stored anywhere and this time the auto.offset.reset config will decide whether to start from the beginning of the topic (earliest) or from the end of the topic (latest)
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@591#y@259
 root Node

@@ -506,7 +506,7 @@ if (getMultipleParents(data)){alert('multiple parents for a child')}
 if (checkSeed(data)==0){alert('No seed')}else if(checkSeed(data)>1){alert('Multiple seed')}
 if(checkIfBubbleHasNodeAsChild()){alert('bubble cannot have a node child')}
 dfs(data)
-checkDataFormat(data)
+//checkDataFormat(data)
 }
 
 function checkSeed(data){
@@ -589,9 +589,9 @@ console.log(v_masterData)
 function nodeDataSearch(objectList){
 nodes=g_masterData
 let selectedNodes=[] 
-for ( let i=0;i<nodes.length;i++)
-{
 for(let j=0;j<objectList.length;j++)
+{
+for ( let i=0;i<nodes.length;i++)
 {
 if (nodes[i].id == objectList[j].id ) { selectedNodes.push([nodes[i],objectList[j]]);break}
 }
@@ -614,8 +614,10 @@ if (currentElement==null){return null}
 let childrens=nodeDataSearch(currentElement.children.map(i=>{return {'id':i}}) )
 let bubble=childrens.filter(d=>d.type=="bubble")
 let node=childrens.filter(d=>d.type!="bubble")
-let sortedBubble = bubble.map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
-let sortedNode = node.map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+//let sortedBubble = bubble.map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+//let sortedNode = node.map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+let sortedBubble = bubble
+let sortedNode = node
 return sortedBubble.concat(sortedNode)
 }
 

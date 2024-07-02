@@ -35,6 +35,7 @@
 {"type": "Feature","geometry": {"type": "Point","coordinates": [11.7362103,79.0093856]},"properties": {"name": "kallakuruchi", "tag": ["s2c","marker","toll"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [11.7342008,79.0742321]},"properties": {"name": "thyagadurgam", "tag": ["s2c","marker","mountain"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [11.6659575,78.2624786]},"properties": {"name": "jai dev", "tag": ["s2c","marker","hospital"]}},
+{"type": "Feature","geometry": {"type": "Point","coordinates": [11.6715066,78.1559103]},"properties": {"name": "ammani", "tag": ["s2c","marker","hospital"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [11.6615372,78.3307415]},"properties": {"name": "mettupatti toll", "tag": ["s2c","marker"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [11.6652402,78.3318229]},"properties": {"name": "salem engg college", "tag": ["s2c","marker","college"]}},
 {"type": "Feature","geometry": {"type": "Point","coordinates": [11.6513067,78.4844608]},"properties": {"name": "murugan", "tag": ["s2c","marker"]}},

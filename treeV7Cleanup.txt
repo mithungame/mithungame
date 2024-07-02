@@ -493,7 +493,7 @@ if (getNoParentNodes(data).length>1 && g_turnOffMultipleTopLevelParents){alert('
 if (getMultipleParents(data)){alert('multiple parents for a child')}
 if (checkSeed(data)==0){alert('No seed')}else if(checkSeed(data)>1){alert('Multiple seed')}
 dfs(data)
-checkDataFormat(data)
+//checkDataFormat(data)
 }
 
 function checkSeed(data){
@@ -585,7 +585,8 @@ return children
 
 function getChildren(currentElement){
 if (currentElement==null){return null}
-return nodeDataSearch(currentElement.children.map(i=>{return {'id':i}})).map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+//return nodeDataSearch(currentElement.children.map(i=>{return {'id':i}})).map(j=>{return[j.data.name.split(':')[0],j]}).sort((a,b)=> a[0] - b[0]).map(i=>{return i[1]})
+return nodeDataSearch(currentElement.children.map(i=>{return {'id':i}}))
 }
 
 function getParent(currentElement){
