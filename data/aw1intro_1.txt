@@ -1,6 +1,8 @@
-#?#box#calculatedX@87#calculatedY@79#children@1719923185#name@seed#id@seed#parent@#x@87#y@79
+#?#box#calculatedX@87#calculatedY@79#children@noparent,1719923185,1720903687,1720965089#name@seed#id@seed#parent@#x@87#y@79
 title
-#?#box#calculatedX@129#calculatedY@131#children@1719924057,1719923206#name@network#id@1719923185#parent@#x@129#y@131
+#?#box#calculatedX@87#calculatedY@79#children@noparent#name@noparent#id@noparent#parent@#x@87#y@79
+content
+#?#box#calculatedX@129#calculatedY@131#children@1719924057,1719923206,1720962322,1720962387,1720962434#name@network#id@1719923185#parent@#x@129#y@131
 title
 #?#box#calculatedX@161#calculatedY@203#children@1719924136#name@ip#id@1719924057#parent@#x@161#y@203
 content
@@ -16,6 +18,14 @@ Amazon Virtual Private Cloud (Amazon VPC)
   logically isolated virtual network
 vpc is per region 
 AWS Region is a physical location
+
+VPC-HOME
+AZ-FLOOR
+SUBNET-ROOM
+FRIDGE-EC2
+SECURITY AT EACH FLOOR IS ROUTE TABLE
+SECURITY AT VPC IS INTERNET GATEWAY
+SECURITY AT FRIDGE IS SECURITY GROUP
 #?#box#calculatedX@161#calculatedY@203#children@#name@AvailabilityZones#id@1719923360#parent@#x@161#y@203
 An AWS Region is a physical location where we cluster data centers, known as Availability Zones.
 Availability Zone has independent power, cooling, and physical security, with redundant power, networking, and connectivity
@@ -34,5 +44,92 @@ Every subnet that you create is automatically associated with the default networ
 default network ACL allows all inbound and outbound traffic
 #?#box#calculatedX@161#calculatedY@203#children@#name@securitygroup#id@1719923879#parent@#x@161#y@203
 Security groups allow inbound and outbound traffic for associated resources, such as EC2 instances.
+I work on a per instance level , eg for EC2 , RDS
+if you attach me to VPC , RDS EC2 inherit those
+basically i act as a fire wall within network
+you still need to open the firewall port on the actual machine itself, SG just is a control mechanism
+
 #?#box#calculatedX@161#calculatedY@203#children@#name@nacl#id@1719923893#parent@#x@161#y@203
+Network control access list
 Network ACLs allow or deny inbound and outbound traffic at the subnet level. In most cases, security groups can meet your needs.
+
+#?#box#calculatedX@161#calculatedY@203#children@#name@internetGateway#id@1720962322#parent@#x@161#y@203
+control all access to outside world
+If i block internet only way to reach VPC is via VPC connection
+
+#?#box#calculatedX@161#calculatedY@203#children@#name@routeTable#id@1720962387#parent@#x@161#y@203
+control Outgoing access
+can block outgoing traffic at subnet  level
+which in turn means VPC level
+wont let you reach internet gateway
+
+#?#box#calculatedX@161#calculatedY@203#children@#name@natGateway#id@1720962434#parent@#x@161#y@203
+I can forward your traffic but you still dont get public IP
+Why do i need this ? say you are a database and you are in private
+        and you want to access internet for a patch
+but still outside world cannot access the database
+
+Hey Route table , I am a database , though i dont need public to reach me , i need to reach internet for patching
+I will point you to NAT - Network address translator 
+
+#?#box#calculatedX@161#calculatedY@203#children@1720903805#name@users#id@1720903687#parent@#x@161#y@203
+types of AWS Users
+AWS account root user
+IAM Users
+IAM Roles
+IAM User groups
+#?#box#calculatedX@161#calculatedY@203#children@#name@instanceProfile#id@1720903805#parent@#x@161#y@203
+An instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts.
+
+If you use the AWS Management Console(not command line) to create a role for Amazon EC2, the console automatically creates an instance profile and gives it the same name as the role
+The console does not create an instance profile for a role that is not associated with Amazon EC2
+
+#?#box#calculatedX@161#calculatedY@203#children@1720965151,1720965174,1720965197#name@lambda#id@1720965089#parent@#x@161#y@203
+ what is a container ?
+ functions are executed in container which is a isolated environment implemented by kernel , this is known as serverless
+ main properties of lambda functions ?
+ maximum memory size , timeout , IAM Role
+ 'Can we choose cpu power in lambda'
+ 'No , it is allocated propotional to memory eg:256 mb allocates twice cpu power as 128mb '
+ 
+#?#box#calculatedX@161#calculatedY@203#children@#name@billing#id@1720965151#parent@#x@161#y@203
+ how is billing done in aws lambda
+ no of invocations
+ hundreds of milliseconds of execution time
+ 'eg: 400 000 seconds and 1 gb memory package'
+ 1gb/8 = 128mb 400 000 seconds * 8 = 3.2 million seconds
+- qao:
+ do something and return resultwhat type of function is this
+ synchronous functions or RequestResponse invocations
+ what is the opposite
+ ' asynchronous functions or event invocation or stateless functionslike javascript'
+#?#box#calculatedX@161#calculatedY@203#children@#name@creation#id@1720965174#parent@#x@161#y@203
+Provide 
+    file name 
+    description
+    Runtimepython
+    CodeEntryinline to edit here or upload as zip
+provide 
+    handler name which tells which function should be called every time
+    '<filename without filename>.<function name> if file is uploaded as zip '
+    In python default is lambda_function.lambda_handler
+provide 
+    timeout 
+    memory 
+    role -> next -> 
+    create function, test(top left)
+        provide json as event in popup
+        save and test
+#?#box#calculatedX@161#calculatedY@203#children@#name@execution#id@1720965197#parent@#x@161#y@203
+execute help lambda cli
+ aws lambda invoke --function-name <function name> --payload ''<json>'' <local output file> 
+    in windows payload event becomes "{""name"":""json""}"  , double quotes need two double quotes inside json
+ use same region which was configured in lambda or else use --region <region name > specifically
+ aws lambda invoke help -- for help
+
+ should aws cli be of same language as that of lambda function '
+    no , aws lambda invoke api is called via cli '
+    its an api so any language can be used
+ is aws cli the only way of calling outside
+    no for each language aws sdk is available whick can call lambda functions
+----------END OF CHAPTER1 ---------- 

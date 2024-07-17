@@ -1,0 +1,60 @@
+#?#box#calculatedX@108#calculatedY@98#children@noparent,1720961599#name@0:seed#id@seed#parent@#x@86#y@78#tag@dwh
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@noparent#id@noparent#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@1720961623,1720961660,1720961704,1720961745,1720961816,1720961854#name@types#id@1720961599#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@ods#id@1720961623#parent@#x@86#y@78
+ODS
+operational data store 
+Front end
+processing at row level
+no historic data 
+no user query allowed
+lives outside datawarehouse
+#?#box#calculatedX@108#calculatedY@98#children@#name@Staging#id@1720961660#parent@#x@86#y@78
+reads from ods
+cleansing layer 
+can be in 3NF,called as EDW in Inmon
+3NF is also called ER model 
+Kimball rejects all this calls it staging 
+if staging is in 3NF , its called Normalized staging
+offlimits to query 
+#?#box#calculatedX@108#calculatedY@98#children@#name@IndependentDataMart#id@1720961704#parent@#x@86#y@78
+Independent datamart architecture
+Not a Kimball model 
+example each BI department gets a data mart of its own
+source -> Stage -> datamart 1 -> BI application 1 
+       -> Stage -> datamart 2 -> BI application 2  
+problem is if departmentA needs customer data they form their own dimension , same for departmentB
+Strongly discouraged by Kimball 
+but it help rapid development since each team is on its own 
+sometimes each team has its own staging layer as seen in diagram
+Maintenance nightmare
+#?#box#calculatedX@108#calculatedY@98#children@1720961792#name@kimball#id@1720961745#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@dimension#id@1720961792#parent@#x@86#y@78
+Dimensions must be atomic 
+Dimensions must be wide and descriptive 
+Dimensions must be conformed 
+atomic allows adhoc query 
+conformed allows single source 
+Facts must be narrow and long 
+uses BUS architecture TBD
+contains start schema , CUBES
+#?#box#calculatedX@108#calculatedY@98#children@#name@inmon#id@1720961816#parent@#x@86#y@78
+hub and spoke CIF
+CIF - corporate information factory 
+Bill Inmon model
+source -> EDW(must b normalized -> Presentation area   
+          user queryable           Dimensional 
+          3 NF                     Summarized  
+          Atomic                   Departmental
+Users query EDW
+since data is already atomic in edw , presentation area is often departmental and summarized
+Not suitable for large companies as EDW layer is a perfect world 
+#?#box#calculatedX@108#calculatedY@98#children@#name@hybridInmonKimbal#id@1720961854#parent@#x@86#y@78
+hybrid CIF KIMBALL
+staging is 3NF but off limits to users 
+Presentation area has all Kimball qualities eg: atomic dimensions
+endqwerty

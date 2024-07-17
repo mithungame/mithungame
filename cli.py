@@ -12,25 +12,43 @@ g_clrs={
     }
 
 def colored_print(text):
-    if g_context==[] or g_context[0] not in g_clrs.keys():
-        print(text,end='')
-    else:
-        context_resolver=list(set(g_context).intersection(set(g_clrs.keys())))[0]
+    temp=[text]
+    #if g_context==[] or g_context[0] not in g_clrs.keys():
+    #    g_context.append('others')
+    if 1== 1: #else
+        context_resolver=list(set(g_context).intersection(set(g_clrs.keys())))
+        context_resolver= context_resolver[0] if context_resolver else None
         line_parts = text.split('\n')
+        lines = []
         for i in line_parts:
+            words = []
             for j in [word for word in list(re.split('(\W)', i)) if word != '' ]:
-                curr_clr='WHITE'
-                for clr,value in g_clrs[context_resolver].items():
-                    if j=="for":print(j,clr,j.lower() in value,value)
-                    if j.lower() in  value:
-                        curr_clr=clr.upper()
-                        break
-                print( getattr(Fore,curr_clr) + j,end='')
-            print()
+                if not context_resolver:
+                    words.append( j )
+                else:
+                    curr_clr='WHITE'
+                    for clr,value in g_clrs[context_resolver].items():
+                        #if j=="for":print(j,clr,j.lower() in value,value)
+                        if j.lower() in  value:
+                            curr_clr=clr.upper()
+                            break
+                    words.append( getattr(Fore,curr_clr) + j)
+            lines.append( words )
+    for i in lines:
+        if args.modeofprint=='word': 
+            for j in i: 
+                print( j , end='')
+                input()
+        else:
+            print( ''.join(i) )
+            if args.modeofprint=='line': 
+                input()
+            
+            
     
 def file_to_list(filename):
     lines=[]
-    with open(filename,'r') as f:
+    with open(filename,'r',encoding='utf-8') as f:
         lines=f.readlines()
     return lines
     
@@ -206,7 +224,7 @@ def is_item_in_list(item,item_list,partial=False):
             if item in i:
                 return True
     
-def match_node_property(node_list,value=[''],property_name=['tag','name']):
+def match_node_property(node_list,value=[''],property_name=['tag','name'],include_context_as_tag=True):
     selectedNodes=[]
     for j in node_list:
         match=[]
@@ -215,6 +233,7 @@ def match_node_property(node_list,value=[''],property_name=['tag','name']):
             for k in property_name:
                 if k in j:
                     property_name_list=j[k] if isinstance(j[k],list)  else [j[k]] #some property like tag is a list but name is not a list so making common
+                    if include_context_as_tag and not args.filename : property_name_list += g_context #when specific file is chosen then no need to add a tag
                     if is_item_in_list(i,property_name_list,True):
                         match_found=True
                         break #found stop searching properties as for one property match is found
@@ -286,7 +305,7 @@ def search(args,filename):
     global g_context
     context=[ j.rstrip() for i in tree if i['id']=='seed' and 'tag' in i for j in i['tag']]
     g_context=[i.rstrip() for i in context]
-    print("context is:",context)
+    print("context is:",g_context)
     if args.search!='' and args.search is not None:
         args_property = args.property.split(',') if args.property != '' else ['name','tag']
         args_level = args.level
@@ -304,7 +323,8 @@ def main(args):
                     #r'G:\My Drive\Downloads\jarvis\tech\**\py*.txt' not all files are converted now
                     ],
                 'spark' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\sp*.txt'],
-                'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\*[0-9].txt']
+                'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\*[0-9].txt'],
+                'quickref' : [r'C:\Users\mithu\Downloads\track\**\*quickref*.txt'],
                 }
     elif os.getcwd().startswith('/storage/emulated/0/download'):
         file_list = {'reference' : [r'/storage/emulated/0/download*[0-9].txt', 
@@ -343,6 +363,7 @@ parser.add_argument("-p","--property", help="increase output verbosity", default
 parser.add_argument("-l","--level", help="increase output verbosity", default=100)
 parser.add_argument("-e","--expand", help="node data", default=100)
 parser.add_argument("-c","--choosenode", help="choosenode",nargs="?",default='false',const='true') #if just -c value 1 if nothing value false
+parser.add_argument("-m","--modeofprint", help="choosenode",nargs="?",default='read',const='line')
 args = parser.parse_args()    
 print(args)
 if __name__=="__main__":

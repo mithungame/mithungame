@@ -1,0 +1,79 @@
+#?#box#calculatedX@87#calculatedY@79#children@noparent,1720807813,#name@seed#id@seed#parent@#x@87#y@79#tag@eks
+title
+#?#box#calculatedX@87#calculatedY@79#children@#name@noparent#id@noparent#parent@#x@87#y@79
+content
+#?#box#calculatedX@87#calculatedY@79#children@1720807844,1720809170,1720809368#name@eks#id@1720807813#parent@#x@87#y@79
+content
+#?#box#calculatedX@87#calculatedY@79#children@1720807954,1720808085,1720808085#name@docker#id@1720807844#parent@#x@87#y@79
+content
+#?#box#calculatedX@87#calculatedY@79#children@#name@logInOut#id@1720807954#parent@#x@87#y@79
+docker login something.abc.com
+docker login -u srvcdopd
+
+docker logout
+
+note: output stored at /<user>/.docker/config.json
+#?#box#calculatedX@87#calculatedY@79#children@#name@buildPushPullRmv#id@1720808085#parent@#x@87#y@79
+docker build -t imagename:tagname . 
+docker build -t imagename:tagname -f DockerFileName DockerFileLocation
+
+docker push imagename:tagname 
+docker pull imagename:tagname 
+
+=remove container 
+docker rm <container id> # removes stopped container 
+docker rm -f <container id> # removes running container SIGKILL
+
+=remove image
+docker rmi <image id> # removes an image 
+docker rmi -f <image id> # forces remove even if it is referenced in multiple repositories, same image id given multiple names/tags 
+                         # will still fail if there is a docker container referencing this image 
+gotcha: 
+conflict: unable to delete must be foreced - image is being used - docker ps -a to findout 
+find all the container associated with this image using ps -a , remove the container , then remove the iamge
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@list#id@1720808085#parent@#x@87#y@79
+docker images 
+=check what containers are running 
+# ADD --no-trunc for wide output 
+docker container ls -a
+docker ps -a  #tells you which image they came from 
+
+note: images pulled by deployment yaml via kubectl command is stored in separate place and not listed in docker images
+#?#box#calculatedX@87#calculatedY@79#children@1720809282,1720817329,1720809290#name@helm#id@1720809170#parent@#x@87#y@79
+content
+#?#box#calculatedX@87#calculatedY@79#children@#name@listSearch#id@1720809282#parent@#x@87#y@79
+helm3 repo list 
+
+helm search repo <name>
+#?#box#calculatedX@87#calculatedY@79#children@#name@installUpgradeDel#id@1720817329#parent@#x@87#y@79
+helm install <deployment name>
+
+helm upgrade --set foo=bar --set foo=newbar redis ./redis
+note: if a helm chart is installed upgrade will automatically refresh new changes
+
+helm del <deployment name> '--namespace=<name>'
+helm uninstall <deployment name> '--namespace=<name>'
+NOTE: del and uninstall are alias of each other
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@showDeployment#id@1720809290#parent@#x@87#y@79
+helm get  values <release name> -n <name space>
+#?#box#calculatedX@87#calculatedY@79#children@1720809405,1720816948,1720817193,1720817862#name@kubectl#id@1720809368#parent@#x@87#y@79#tag@connect,kubectl
+https://kubernetes.io/docs/reference/kubectl/ 
+#?#box#calculatedX@87#calculatedY@79#children@#name@connect#id@1720809405#parent@#x@87#y@79#tag@kconnect
+kconnect use eks --region us-east-1
+kconnect use eks --namespace name --username user --idp-provider "PingNTLM" --region region --role-arn arn:aws:iam:1234:role/name --idp-protocol saml --idp-endpoint https:something.com
+#?#box#calculatedX@87#calculatedY@79#children@#name@listDescDel#id@1720817193#parent@#x@87#y@79#tag@kubectl
+note: if BAD REQUEST ERROR use --previous=false
+
+kubectl get pods -n <name space> -o yaml/json
+kubectl get pods -n <name space> -o json | grep -iE "imageID|hostname\":"
+
+kubectl describe pod <pod name> -n <name space>
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@createDel#id@1720817862#parent@#x@87#y@79#tag@kubectl
+kubectl create -f filename.yaml
+
+kubectl delete pod < pod name > -n <name space>
+#https://kubernetes.io/docs/reference/kubectl/generated/kubectl_delete/
+grace period for peaceful terminate etc

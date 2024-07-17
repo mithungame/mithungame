@@ -1,4 +1,4 @@
-#?#box#calculatedX@226#calculatedY@286#children@45,1712464776749,1712640915627,1713707071#name@0:seed#id@seed#parent@#x@280#y@228
+#?#box#calculatedX@226#calculatedY@286#children@45,1712464776749,1712640915627,1713707071#name@0:seed#id@seed#parent@#x@280#y@228#tag@kafka
 title
 #?#box#calculatedX@336#calculatedY@195#children@66,1712330435713,1712330830657#name@0:ksqldb#id@45#parent@#x@368#y@156
 ksqlDB is
@@ -359,7 +359,7 @@ This behavior is independent of the configured timestamp extractor, i.e., using 
 https://kafka.apache.org/documentation/streams/developer-guide/testing.html#unit-testing-processors
 #?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004,1715941443#name@5:code#id@1713475712#parent@#x@465#y@359
 content
-#?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:sampleKStream#id@1713609003#parent@#x@762#y@356
+#?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:egKStream#id@1713609003#parent@#x@762#y@356
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
 #?#box#calculatedX@852#calculatedY@556#children@#name@1:setConfig#id@1713475713#parent@#x@781#y@444
 import java.util.Properties;
