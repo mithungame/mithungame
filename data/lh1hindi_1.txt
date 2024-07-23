@@ -2,7 +2,8 @@
 content
 #?#box#calculatedX@108#calculatedY@98#children@#name@noparent#id@noparent#parent@#x@86#y@78
 content
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210332#parent@#x@86#y@78
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi1#id@1721210332#parent@#x@86#y@78
 i did not see the three of them from morning
 aaje maenae subhae se un theeno ko nahi dekha
 what is the way to dolakhpur
@@ -13,6 +14,8 @@ i have made my decision
 maine faisla kar liya hai
 this is good news
 eh tho achhae khabar hai
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi1a#id@1721722570#parent@#x@86#y@78
 the first contestant has arrived to the ground
 pehle pratiyogi maidaan mein aa chukhe kai
 once you are here you must figut
@@ -25,6 +28,8 @@ hindibeem to monkey - but you forgot one thing
 par thum ek cheese bool gayae
 girl to all-we must go home now else it will get late
 abhi hamae gar chalna chahiyae varna daer ho jaye gi
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi1b#id@1721722574#parent@#x@86#y@78
 kalia to beheem-i dont want to play this stupid game
 mejhe nahi kelna eh bekaar(useless,bad) ka kael
 girl to all -we must come to the river shore every day, coming here is a lot of fun
@@ -38,7 +43,7 @@ ab jo mein karunga usse dolakhpur mein sirf mera hi raj chalega , aur mein beem 
 raju to all - hey how did this happen
 arae ae kesae hua
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210388#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi2#id@1721210388#parent@#x@86#y@78
 hey hero how are you
 arey hero kaisa hai tu
 where is this hero going by walk
@@ -54,7 +59,7 @@ ab kya hoga
 mom told not to share this with outsiders
 ma nae mana(forbid) kya dhaki bahar walo ko eh baath bathayi nahi hai aur mein batha dhi
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210439#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi3#id@1721210439#parent@#x@86#y@78
 hamesha -  you always do something, you do it regularly, whenever a particular situation arises
 ladytoman brings cake , elaa vaatiyum en vaangitu varinga
 hamesha eh laanae ki kya jaroorat hai
@@ -75,7 +80,7 @@ eh chali jayaegi tho kya hua ham tho hai na
 
 
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210492#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi4#id@1721210492#parent@#x@86#y@78
 meet us some time man
 kabi tho milnae aakar yaarcome man... 
 make one tea for shiva
@@ -112,7 +117,7 @@ thum hothae kaun ho meri job kae barae mein decision laenae walae
 baath haq kae nahi baath priority ki
 its not about rights its about priority - rights here is like human rights
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210552#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi5#id@1721210552#parent@#x@86#y@78
 man to man I too don't want your friendship
 mujhe bi nahi chahiye aapki dosti
 man to man . I will not leave you
@@ -136,7 +141,7 @@ aesa kab thak chalega
 bro to tittu . don't worry every thing will be alright
 Chinta mat karo sab teek ho jaye ga
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210594#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi6#id@1721210594#parent@#x@86#y@78
 are you coming with me for my friend party
 gtb - meri friend ki party mein thum bhi chalo na merae saath
 i want to see movie
@@ -161,7 +166,7 @@ nama rendu per pona Jolly a irukum
 ham dono jaathae hai na maza aayega
 
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210612#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi7#id@1721210612#parent@#x@86#y@78
 
 dont cry
 ro math
@@ -184,7 +189,7 @@ tho thu inthna tension kyoon leta hai bai
 btog gf tell clearly wats ur problem 
 clearly batha teri problem kya hai
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210692#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi8#id@1721210692#parent@#x@86#y@78
 btog classmates thappu panitiyaeee
 oh ho galti kardi na
 he is making the noise
@@ -200,7 +205,7 @@ isko kaisae laga tha hai
 google and see it
 Google karkae dhek lae
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210724#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi9#id@1721210724#parent@#x@86#y@78
 Hindi is a gender based language.
 ता/रहा/गा/चा/का represents masculine.
 ती/रही/गी/ची/की represents feminine.
@@ -209,7 +214,7 @@ Hindi is a gender based language.
 Clouds (badal) are always considered plural.
 Badal ja rhe hain - clouds are going (After word to word translation).
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210824#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi10#id@1721210824#parent@#x@86#y@78
 mamtostu where is your attention
 kahaan dhyaan hai thumara
 bring your parents tomorrow 
@@ -223,7 +228,7 @@ kaun tha yae
 g teacher to g student nethu ne absent thaana
 kal thum school nahi aayi
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210864#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi11#id@1721210864#parent@#x@86#y@78
 code broke down
 code phad gaya
 do you do any work
@@ -233,7 +238,7 @@ kachra thum back end waalae kartae ho
 sathiyama unaku vela illa la
 tere paas sachi mein koyi kaam nahi nai na
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@hindi#id@1721210894#parent@#x@86#y@78btog are you fine
+#?#box#calculatedX@108#calculatedY@98#children@#name@hindi12#id@1721210894#parent@#x@86#y@78btog are you fine
 thum teek hu
 ithu namma chinna vayasula velaadnathula
 eh tho ham log bachpan mein khelthae thae nahi

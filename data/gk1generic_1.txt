@@ -44,7 +44,7 @@ Died:
  7 August 2018, Kauvery Hospital Chennai, Chennai
 Gandhi Jayanti
 October 2
-#?#box#calculatedX@108#calculatedY@98#children@1720953139,1720953192,1720953629#name@gk#id@1720952932#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@1720953139,1720953192,1720953629,1721249921#name@gk#id@1720952932#parent@#x@86#y@78
 content
 #?#box#calculatedX@108#calculatedY@98#children@#name@universe#id@1720953139#parent@#x@86#y@78
 which planet does not have moons
@@ -96,7 +96,7 @@ barathiyar
 என்மதத்தைக் கைக் கொண்மின்;பாடுபடல்வேண்டா;
 ஊனுடலை வருத்தாதீர்;உணவியற்கை கொடுக்கும்;
 உங்களுக்குத் தொழிலிங்கே அன்புசெய்தல் கண்டீர்!
-#?#box#calculatedX@108#calculatedY@98#children@#name@realestate#id@1720953745#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@1721250046#name@realestate#id@1720953745#parent@#x@86#y@78
 patta 
 Patta is a government record containing the details of land ownership, area of land, location with survey details
 
@@ -108,8 +108,28 @@ nanjai is rich water land , punjai is opposite
 
 ec
 An encumbrance refers to the charges created on the property in question, whereby it is held as a security for any debt of its owner, which has not been discharged as on a date. An Encumbrance Certificate or (EC) is a certificate of assurance that the concerned property is free from any legal or financial liability such as a mortgage or pending loan.    
-
+#?#box#calculatedX@108#calculatedY@98#children@#name@patta#id@1721250046#parent@#x@86#y@78
 acre to square feet
 43560
 cent 
 435.56 1% of acre 
+#?#box#calculatedX@108#calculatedY@98#children@1721250123,1721249967#name@general#id@1721249921#parent@#x@86#y@78
+
+feet is -- inch and -- cm
+12 , 30.48
+
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@uscoin#id@1721250123#parent@#x@86#y@78
+penny 1 cent
+nickel 5 cent
+dime 10 cent
+quarter 25 cent
+half dollar 50 cents
+golden dollar 1 dollar
+#?#box#calculatedX@108#calculatedY@98#children@#name@gold#id@1721249967#parent@#x@86#y@78
+1 Poun gold is
+8 grams. savaran is same as poun
+8 grams ?
+(7.9881 g accurate)
+1 savaran gold rate 
+around 38 000

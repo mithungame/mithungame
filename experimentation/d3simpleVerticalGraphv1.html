@@ -113,10 +113,17 @@ zoomIdentity=d3.zoomIdentity.translate(zoomX,zoomY).scale(zoomK)  //creates a tr
 d3.select('svg').call(zoom.transform, zoomIdentity) //zoom.transform is a funtion that basically calls transform
 }
 
+class TextArea{
+constructor( item  ){ this.item = item }
+getVisibility() { return this.item.style.visibility }
+putVisibility( mode ) { this.item.style.visibility = mode }
+}
+const textAreaObj = new TextArea( document.getElementById('textAreaDiv') )
+console.log(textAreaObj.item)
+
 function expandTextArea(data)
 {
-obj=document.getElementById('textAreaDiv')
-obj.style.visibility=obj.style.visibility=='visible'?'hidden':'visible'
+textAreaObj.putVisibility( textAreaObj.getVisibility()=='visible'?'hidden':'visible' )
 document.getElementById('textAreaDiv').innerHTML="=="+data.name+"==\n"+data.desc
 }
 
@@ -164,16 +171,19 @@ g_selection_id=null
 g_selection_node = null 
 g_p_queue = null
 g_p_queue_tracker = {}
+g_id_list=[]
 function generate_bucket(){
 p_d=[.1,.15,.2,.3,.25]//percentage_distro
 g_p_queue_tracker={[p_d[0]]:0,[p_d[1]]:0,[p_d[2]]:0,[p_d[3]]:0,[p_d[4]]:0} // this is just for tracking which bucket got selected most 
 p=[p_d[0],p_d[1],p_d[2],p_d[3],p_d[4]].reverse() // reversing so as to fill the top ones first , also i put .2 at end so that not everything is new and i get over loaded , let it be fat in middle
 p_queue={[p_d[0]]:[],[p_d[1]]:[],[p_d[2]]:[],[p_d[3]]:[],[p_d[4]]:[]}
-id_list=g_masterData.map(d=>d.id).filter(d=>{return d!='seed'}).map(d=>parseInt(d)).sort()
+id_list=g_masterData.map(d=>d.id).filter(d=>{return d!='seed' && d!='noparent'}).map(d=>parseInt(d)).sort()
+g_id_list=id_list.slice()//copy by value
 id_list_len=id_list.length
 id_list=id_list.reverse()
 p_id=p.map(d=>d*id_list_len)//get length percentages
 b=[]
+//console.log(p,id_list)
 for(let i=0;i<p.length;i++){
     b=id_list
     id_list=b.splice(Math.round(p[i]*id_list_len))//cut len percentages 
@@ -187,22 +197,38 @@ function choose_bucket_and_get_random(){
 //if value less than 5 bucket then just choose random 
 let chosen_bucket=null
 p_queue=g_p_queue
+//console.log(p_queue)
 p_plot = p.reverse().map((sum=>value=>sum+=value)(0))//create a running total of percentages [0.1, 0.25, 0.5, 0.8, 1]
 let r_val=Math.random()
 for(let i=0;i<p_plot.length;i++){
 if(r_val<=p_plot[i]){chosen_bucket=p[i];break}
 }
-g_p_queue_tracker[chosen_bucket]+=1;console.log(g_p_queue_tracker)
+g_p_queue_tracker[chosen_bucket]+=1;//console.log(g_p_queue_tracker)
 //if all bucket is not filled sometimes it may return empty bucket in that case just generate random and return 
 if(p_queue[chosen_bucket].length==0){return String ( g_masterData[Math.floor(Math.random()*g_masterData.length)].id )}
 else { return String ( p_queue[chosen_bucket][Math.floor(Math.random()*p_queue[chosen_bucket].length)] ) }
 console.log(g_p_queue_tracker)
 }
+function delayAction(f,timeout=3000,args) {
+  //console.log(timeout)
+  setTimeout(function() { f(...args)} , timeout);
+}
+
+g_random_ids=[]
+is_same=false
 function getrandom(){ 
+console.log(is_same,g_random_ids)
+is_same = (g_random_ids.length == g_id_list.length) && g_id_list.every(function(element, index) { return element === g_id_list[index];  })
+if ( is_same ) { console.log("g_random_ids length " , g_random_ids.length," g_selection_id length ", g_id_list.length); g_random_ids = [] }
+textAreaObj.putVisibility( 'hidden')
 g_selection_id = choose_bucket_and_get_random()
+while ( g_random_ids.includes( g_selection_id ) ) {  g_selection_id = choose_bucket_and_get_random()  } 
+g_random_ids.push(g_selection_id)
 unhide ( getParentsToLevel ( nodeDataSearch( [ { id : g_selection_id } ] )[0] ) )
 g_selection_node = g_d3_nodes.descendants().map((d)=>{return d}).filter(d=>d.id==g_selection_id)[0] //get the object that is selected
 center([g_selection_node.x,g_selection_node.y])
+//console.log(g_selection_node)
+delayAction( expandTextArea, 6000 , [ g_selection_node.data.data ] )
 }
 ////////////////////////////////////////////////////////function d3 code////////////////////////////////////////////////////////
 treemap=d3.tree()
