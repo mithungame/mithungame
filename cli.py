@@ -1,8 +1,10 @@
 import re 
+import sys
 import argparse
 from colorama import Fore,init
 import glob
-import os 
+import os, platform
+if platform.system() == 'Windows': import msvcrt
 
 init(autoreset=True)
 
@@ -52,7 +54,7 @@ def file_to_list(filename):
         lines=f.readlines()
     return lines
     
-def dfs(graph,start_node):
+def dfs(graph,start_node,child_key='_children'):
     visited = []
     stack = []
     output=[]
@@ -63,55 +65,499 @@ def dfs(graph,start_node):
         if node['id'] not in visited:
             output.append(node)
             visited.append(node['id'])
-            child_list=node['children']
+            #print(node)
+            child_list=node[child_key]
             child_list=node_search_by_id(graph,child_list)
             for i in child_list:
                 i['level']=node['level']+1
-            child_list.sort(key=lambda d:d['name'].split(':')[0]) # we are not chaning 1:gfdagf prefix to int because i use 1.1 etc as long as we dont cross 9 we wont have problem leave like this for now, sometimes i even miss to add that prefix
+            #child_list.sort(key=lambda d:d['name'].split(':')[0]) # we are not chaning 1:gfdagf prefix to int because i use 1.1 etc as long as we dont cross 9 we wont have problem leave like this for now, sometimes i even miss to add that prefix
             stack = child_list + stack
     return output 
     
 def showDFSOutput(res):
+    #print('---------------------\033[H',end='') # go to home https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+    #print('\033[0J',end='') #clear till end 
+    #print('\033[1J',end='')
+    #print('',end='',flush=True)
     if res == [] : 
         print('No match.. continue')
         return
     n=-1
-    for nodes in res:
-        for i in nodes:
-            n+=1
-            if i['level']<=int(args.level):
-                if args.expand=='node':
-                    print(i)
-                elif args.expand=='data':
-                    print(i['data'])
-                else:
-                    tag=i['tag'] if 'tag' in i else ""
-                    print( '{:<4}{}{}{} {}'.format(n, '|'*(i['level']-1),'-', i['name'],tag) )
+    for i in res:
+        #print(i)
+        n+=1
+        if i['level']<=int(args.level):
+            if args.expand=='node':
+                print(i)
+            elif args.expand=='data':
+                print(i['data'])
+            else:
+                tag=i['tag'] if 'tag' in i else ""
+                curr_level=i['level']-1
+                display_tree_level =  '|' + ( '-' * ( curr_level )  ) * 3
+                print( '{:<4}{}{}{} {}'.format(n, display_tree_level,'-', i['name'],tag) )
     
     if args.choosenode == "true":
         ip=input('show data for:').rstrip()
         if ip!='':
             ip=int(ip)
-            for nodes in res:
-                l = len(nodes)
-                if ip >= 0 and ip < l:
-                    colored_print(nodes[ip]['data'])
-                    break
-                ip = ip - l
-    input('\ncontinue..') # needed for multiple files to stop and continue else it just goes and not able to see result                  
+            if ip >= 0 and ip < len(res):
+                colored_print(res[ip]['data'])
+    action=input('q quit o onceMore enter continue..').rstrip()# needed for multiple files to stop and continue else it just goes and not able to see result                  
+    #action='o'
+    if action=='q':
+        sys.exit(0)
+    elif action =='o':        
+        #print('\0338',flush=True)
+        #input()
+        #print('\033[0J',end='',flush=True)
+        showDFSOutput(res)
+    else:
+        pass
 
+def build_partial_tree(tree,seed):
+    seed['_children'] = [] # this has to be done at first cnt wait for its turn
+    for each_item in tree:
+        v_each_item = each_item
+        if each_item['id'] != 'seed':
+            each_item['_children'] = []
+            #print('processing item ',v_each_item['name'])
+            has_upstream = False
+            while not has_upstream:
+                parent = node_search_by_child(g_global_tree, v_each_item['id'] ,  )
+                #lets say the current parent is not attached to anything and was not in list of selected items it will cause a problem
+                if parent and parent['id'] in [ i['id'] for i in tree] :
+                    if '_children' in parent :
+                        parent['_children'] += [ each_item['id'] ]
+                        #print('found parent for ',each_item['name'], ' it is ', parent['name'])
+                    else:
+                        parent['_children'] = [ each_item['id'] ]
+                    has_upstream = True
+                elif parent:
+                    v_each_item = parent
+                    pass # keep going 
+                else : # found no parent at all attach to seed 
+                    #print('found no parent for ',v_each_item['name'])
+                    seed[ '_children' ] += [ each_item['id'] ]
+                    has_upstream = True
+    return tree
+
+        
 def displayTree(tree):
-    print('displayTree')
+    #print('calling display tree')
     res=[]
-    root = {'children': [], 'name': '1:display', 'id': '1680960041999', 'parent': [], 'x': '0', 'y': '0', 'data': 'columns\n\n', 'level': 0}#tying them all under a root just for the sake of display
-    parent_node = getNoParentNode(tree)
-    parent_node_ids = list(map(lambda d:d['id'],parent_node))
-    root['children'] = parent_node_ids
-    for i in parent_node:
-        res.append( dfs(tree,i) )
+    for i in tree: print(i['name'])
+    seed = node_search_by_id(g_global_tree,['seed'])[0]
+    #parent_node = getNoParentNode(tree)
+    #parent_node_ids = list ( set(map(lambda d:d['id'],parent_node)).difference({'seed'}) )
+    #if seed not in result seed must be added as root 
+    #seed['children']=[ i for i in parent_node_ids ] # clear out existing children we are building new graph
+    #parent_node = seed
+    #the tree generated here is actually disconnected example if a child in 3rd level is selccted and grand parent is selected it is not attached to grand parent so we are going to attach it to closest ancestor
+    if 'seed' not in [ i['id'] for i in tree  ]: tree.insert(0,seed)
+    tree = build_partial_tree(tree,seed)
+    #print(tree)
+    #input()
+    res=dfs(tree,seed) 
+    #print('dfs result is \n',res)
+    #input()
     showDFSOutput(res)
+    build_table(seed,tree)
 
+def get_index_of_table(item,lst: []):
+    for n,i in enumerate(lst):
+        for m,j in enumerate(i):
+            if j and 'id' in j and j['id'] == item['id']:
+                return [n,m]
+    print('could not get index of item')
+    sys.exit(1)
 
+def build_table(parent_node,tree,child_key='_children'):
+    table=[[parent_node]]
+    items=[parent_node]
+    root_row = None
+    for i in items:
+        #print('llll',i['name'])
+        childrens = node_search_by_id(tree, i[child_key] )
+        l = len( childrens )
+        m = l // 2 
+        middle = l % 2
+        if l > 0: 
+            x,y = get_index_of_table( i, table )
+            if not root_row: root_row = x 
+            #print(x,y)
+            table[x].append(None)
+            item_no_after_middle = 1
+            for n_child, e_child in enumerate(childrens):
+                #print('child is',e_child['name'])
+                e_child = [ e_child ]
+                items+=e_child
+                if middle == 1 and n_child == m :
+                    #print('...appending ', e_child)
+                    table[x][-1] = e_child[0] # not a list since we said its a None and already assigned a palce
+                elif n_child < m :
+                    #print('...inserting before',table[x],'...', [ None for i in range(len(table[x])-1) ]   +  e_child )
+                    table.insert(x, [ None for i in range(len(table[x])-1) ]   +  e_child   )
+                    x+=1
+                else:
+                    #print('...inserting after','...',[ None for i in range(len(table[x])-1) ]   +  e_child )
+                    table.insert(x+item_no_after_middle, [ None for i in range(len(table[x])-1) ] +  e_child  )
+                    item_no_after_middle += 1
+                '''for temp in table: 
+                    for j in temp: 
+                        if j:
+                            print(j['name'],end='')
+                        else:
+                            print('--------',end='')
+                    print()'''
+            #input()
+    #normalize table to have all rows and cols of same lenth
+    max_cols = -1 
+    for i in table:
+        max_cols = max ( max_cols, len(i) )
+    for i in table:
+            i += [None] * ( max_cols - len(i) )
+    print_table(tree,table,parent_node)
+
+'''def get_col_array( start_y, w_end, width, w_size, table, w_shift):
+    print('get_col_array' , ( start_y, w_end, width, w_size, w_shift))
+    #validate if the shift triggers a new start y
+    cols=[]
+    if w_end - w_shift <= 0 or w_end - w_shift > w_size or start_y > len(table[0]) or start_y < 0: # then recalculate shift and width 
+        print('activate block switch',w_end,w_shift)
+        if w_shift >= 0:
+            how_much_more_is_needed = w_end - w_shift 
+        else:
+            how_much_more_is_needed = abs(w_shift) - ( w_size - w_end )  
+        print('how_much_more_is_needed',how_much_more_is_needed)
+        abs_how_much_more_is_needed = abs( how_much_more_is_needed )
+        if how_much_more_is_needed <= 0 :
+            print('shifting right')
+            w_shift = abs_how_much_more_is_needed % w_size
+            start_y += ( abs_how_much_more_is_needed // w_size ) + 1
+        else:
+            print('shifting left')
+            w_shift = w_size - ( abs_how_much_more_is_needed % w_size )
+            start_y -= ( abs_how_much_more_is_needed // w_size ) + 1
+        w_end=w_size
+        print('new w_shift',w_shift)
+        print('new start_y',start_y)
+    if  start_y >= len(table[0]):
+        print(start_y,w_shift)
+        print( { 'col': cols, 'start_y' : start_y, 'w_end': w_size - w_shift})
+        return { 'col': cols, 'start_y' : start_y, 'w_end': w_size - w_shift}
+    w_start = 0 
+    curr_col = 0
+    first_block_size = 'inf'
+    while w_end < width:
+        temp_size = w_end if w_start == 0 else w_size
+        w_end = w_start + temp_size - w_shift 
+        if w_end > width: w_end = width
+        if start_y+curr_col < len(table[0]) and start_y+curr_col >= 0:
+            cols.append( { 'w_start': w_start, 'w_end': w_end, 'start_y': start_y, 'curr_col' : start_y+curr_col } )
+        #one time 
+        w_shift = 0
+        if first_block_size == 'inf' : first_block_size = w_end
+        #
+        w_start = w_end  
+        curr_col += 1
+        print(cols)
+        input()
+    return { 'col': cols, 'start_y' : start_y, 'w_end': first_block_size }
+
+def get_height_array( start_x , h_start, height, h_size, table, h_shift):
+    print('get_height_array', start_x , h_start, height, h_size, h_shift)
+    rows = []
+    #upwards , 
+    if  h_start - h_shift > 0 or ( h_start - h_shift )  <= - ( h_size ) or start_x > len(table) or start_x < 0: # then recalculate shift and width 
+        first_block_size = h_size + h_start
+        print('activate block switch',first_block_size,h_shift)
+        if h_shift >= 0:
+            how_much_more_is_needed = first_block_size - h_shift 
+        else:
+            print( 'h_shift' , h_shift , '- (', 'h_size', h_size , '-', 'first_block_size', first_block_size, ' )' )
+            how_much_more_is_needed = abs(h_shift) - ( h_size - first_block_size )  
+        print('how_much_more_is_needed',how_much_more_is_needed)
+        abs_how_much_more_is_needed = abs( how_much_more_is_needed )
+        if how_much_more_is_needed <= 0 : #pushing up
+            print('push up')
+            h_shift = abs_how_much_more_is_needed % h_size
+            start_x += ( abs_how_much_more_is_needed // h_size ) + 1
+        else:
+            print('pull down')
+            if abs_how_much_more_is_needed % h_size == 0:
+                h_shift = 0
+            else:
+                h_shift = h_size - ( abs_how_much_more_is_needed % h_size )
+            if abs_how_much_more_is_needed % h_size == 0:
+                start_x -= ( abs_how_much_more_is_needed // h_size ) 
+            else:
+                
+                start_x -= ( abs_how_much_more_is_needed // h_size ) + 1 
+        h_start = 0
+        print('new start x',start_x)
+        print('new h_shift',h_shift)
+        print('new h_Start always 0',h_start)
+    if start_x > len(table):
+        print(start_x,h_shift)
+        print( { 'row': rows, 'start_x' : start_x, 'h_start': 0})
+        return { 'row': rows, 'start_y' : start_y, 'h_start': 0}
+    h_start -= h_shift
+    curr_col = 0
+    first_block_start = 'inf'
+    while h_start < height:
+        if first_block_start == 'inf' : first_block_start = h_start
+        print('-------',h_start, first_block_start)
+        if start_x+curr_col >=0 and start_x+curr_col < len(table) :
+            rows.append( { 'h_start': h_start, 'curr_col' : start_x+curr_col } )
+        print(rows)
+        h_start += h_size 
+        curr_col += 1
+    print  ({  'row': rows , 'start_x': start_x, 'h_start': first_block_start } )
+    return {  'row': rows , 'start_x': start_x, 'h_start': first_block_start } 
+'''
+def solve_it( curr_arr_pos, first_block_in_scope , block_size, shift_value, total_size ):
+    print({'curr_arr_pos': curr_arr_pos, 'first_block_in_scope': first_block_in_scope, 'block_size': block_size, 'shift_value': shift_value, 'total_size': total_size})
+    values = []
+    if shift_value > 0 : 
+        how_much_can_curr_arr_give =  first_block_in_scope
+        #print('how_much_can_curr_arr_give', how_much_can_curr_arr_give)
+        how_much_more_is_needed = how_much_can_curr_arr_give - shift_value
+        #print('how_much_more_is_needed', how_much_more_is_needed)
+        if how_much_more_is_needed > 0 :
+            #print('----- no right shift -----')
+            first_block_in_scope = how_much_more_is_needed
+            curr_arr_pos = curr_arr_pos
+        elif abs(how_much_more_is_needed) % block_size >= 0 :
+            #print('!!!!! trigger right shift !!!!!')
+            first_block_in_scope = block_size - ( abs(how_much_more_is_needed) % block_size )
+            curr_arr_pos +=  abs(how_much_more_is_needed) // block_size + 1
+    elif shift_value < 0 :
+        how_much_can_curr_arr_give =  block_size -  first_block_in_scope
+        #print('how_much_can_curr_arr_give', how_much_can_curr_arr_give)
+        how_much_more_is_needed = how_much_can_curr_arr_give - abs(shift_value)
+        #print('how_much_more_is_needed', how_much_more_is_needed)
+        if how_much_more_is_needed >= 0:
+            #print('----- no left shift -----')
+            first_block_in_scope += abs(shift_value)
+            curr_arr_pos = curr_arr_pos
+        elif abs(how_much_more_is_needed) % block_size >= 0 :
+            #print('!!!!! trigger left shift !!!!!')
+            first_block_in_scope = ( abs(how_much_more_is_needed) % block_size )
+            first_block_in_scope = block_size if first_block_in_scope == 0 else first_block_in_scope
+            #handle special case if the value is say 5 and block size is 5 do not increment by 1 as it will push it further add -1 
+            curr_arr_pos -=  ( abs(how_much_more_is_needed) - 1 ) // block_size + 1
+        
+    values.append( { 'p' : curr_arr_pos, 'b' : first_block_in_scope } )
+    
+    running_total_size = first_block_in_scope
+    running_arr_pos = curr_arr_pos + 1
+    while ( total_size - running_total_size ) > 0:
+        #print( total_size - running_total_size )
+        if block_size > ( total_size - running_total_size ):
+            block_size = ( total_size - running_total_size )
+        values.append( { 'p' : running_arr_pos, 'b' : block_size } )
+        running_arr_pos += 1
+        running_total_size += block_size
+        #print(values)
+    return curr_arr_pos, values, first_block_in_scope
+
+def build_array_table(tree,table,start_node,height=30,width=100,w_size = 20  ,w_shift=0, h_shift=0, h_size = 2 , pre_dots = 1 , post_dots = 2 , child_key = '_children'):
+    #print('===============',len(table),len(table[0]))
+    for i in table: print(len(i))
+    start_x, start_y = get_index_of_table( start_node , table )
+    #print("starting is ",start_x,start_y)
+    first_w_block_in_scope = w_size
+    first_h_block_in_scope = h_size
+    option = ''
+    while option != 'q':
+        start_y, cols, first_w_block_in_scope = solve_it( start_y, first_w_block_in_scope, w_size, w_shift, width)
+        start_x, rows, first_h_block_in_scope = solve_it( start_x, first_h_block_in_scope, h_size, h_shift, height)
+        sum = 0
+        for i in rows: sum += i['b']
+        if sum != height: raise Exception('sorry the rows size did not match')
+        sum = 0
+        for i in cols: sum += i['b']
+        if sum != width:   raise Exception('sorry the cols size did not match')
+        #print(rows)
+        #print(cols)
+        # fit the table to result 
+        first_row = True
+        first_col = True
+        print_arr = []
+        selected_visible_items = []
+        running_height = 0
+        for n_row,row in enumerate(rows):
+            #print('==',row,end='   ')
+            given_block_height = row['b']
+            for each_row in range(  0  , given_block_height  ):
+                running_width = 0 
+                print_row = []
+                #print('=====',each_row,running_width)
+                if ( each_row ==0 and first_row and given_block_height != h_size ) or ( each_row != 0 ):#print if hgt index is0 for given block except for first block which must be height size
+                    if first_row: first_row = False
+                    print_row+=([' ']*width)
+                    running_width+=width
+                else:
+                    for n_col,col in enumerate(cols):
+                        #print(col)
+                        if row['p'] >= 0 and row['p'] < len(table) and col['p'] >=0 and col['p'] < len(table[0]) and table [ row['p'] ] [ col['p'] ]:
+                            name = table [ row['p'] ] [ col['p'] ] ['name']
+                            size_for_name = w_size - ( pre_dots + post_dots )
+                            name = name[0:size_for_name]
+                            name = '{:-^{size}s}'.format(name,size=size_for_name)
+                            name = '-'*pre_dots + name +  '-'*post_dots
+                            if n_col == 0 :
+                                name = name[-col['b']:]
+                            else:
+                                name = name[0:col['b']]
+                            print_row+=name
+                            selected_visible_items.append( { 'obj': table [ row['p'] ] [ col['p'] ] , 'curr_row_in_table': n_row , 'curr_col_in_table': n_col,  'print_arr_row': running_height , 'print_arr_start': running_width, 'print_arr_end': running_width + len(name)  } )
+                            running_width+=len(name)
+                            #print(name,len(name),col ['b'])
+                        else:
+                            name=([' '] * col ['b'] )
+                            #print(name,len(name),col ['b'])
+                            print_row+=name
+                            running_width+=len(name)
+                print_arr.append(print_row)
+                #print(print_row)
+                #print(len(print_row))
+                #input()
+                #print(print_row)
+                #print(''.join(print_row) )
+                running_height += 1
+        fill_vertical_dots(tree,selected_visible_items, print_arr,width,height,h_size,w_size)
+        clear_screen_for_print()
+        #print(h_shift,w_shift)
+        for i in print_arr:
+            print(''.join(i) )
+        
+        '''i_h_shift = input('enter h_shift').rstrip()
+        h_shift = int(i_h_shift) if i_h_shift else 0
+        i_w_shift = input('enter w_shift').rstrip()
+        w_shift = int(i_w_shift) if i_w_shift else 0'''
+        h_shift = w_shift = 0
+        default_shift = 3
+        print(" i j k l for navigation, c for custom input")
+        if platform.system() == 'Windows':
+            i_shift_value = msvcrt.getch().decode("utf-8")
+            shift_by_how_much = default_shift
+        if i_shift_value == 'c' or platform.system() != 'Windows' : # custom , then revert to normal input 
+            i_shift_value = input('enter shift').rstrip()
+            shift_by_how_much = int(i_shift_value[1:]) if i_shift_value[1:] else default_shift
+        if i_shift_value == 'i':
+            h_shift = shift_by_how_much
+        if i_shift_value == 'k':
+            h_shift = - shift_by_how_much
+        if i_shift_value == 'j':
+            w_shift = shift_by_how_much
+        if i_shift_value == 'l':
+            w_shift = - shift_by_how_much
+            
+def clear_screen_for_print():
+    for i in range(os.get_terminal_size().lines): print()
+    print('\033[{hgt}A'.format(hgt=os.get_terminal_size().lines+1),end='',flush=True)
+
+def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_size,w_size, parent_non_visible_items=[],child_key = "_children",mode="children"): 
+    #first it should add vertical bars for all items in visible area, then we ll collect all the items for which parents are not visible and do one mroe round. it might lead to recursive so using mode and just calling once
+    #print("mode is ", mode )
+    if mode == "children" :
+        item_to_loop = selected_visible_items
+    else:
+        item_to_loop = parent_non_visible_items
+    for i in selected_visible_items: print('selected_visible_items', i )
+    if mode == "parent":
+        for i in parent_non_visible_items: print('parent_items', i['obj']['id'],  i['obj']['name'] )
+    selected_ids = [ i['obj']['id'] for i in selected_visible_items]
+    parent_not_visible_but_child_visible = []
+    visited_parent_ids = []
+    for n_item,i in enumerate(item_to_loop):
+        #print('******************',i['obj']['name'])
+        if mode == "children":
+            parent_of_visible_item =  node_search_by_child ( tree, i['obj']['id'] )
+            # if parent existis and  parent already identified ( many child can have same parent and add it multiple times ) and  parent is not already in visible
+            # and if the current col(not the parent) is first column then the vertical bar wont be visible anyway
+            if parent_of_visible_item : print(i['obj']['name'] , parent_of_visible_item['id'], parent_of_visible_item , parent_of_visible_item['id'] not in visited_parent_ids , parent_of_visible_item['id'] not in selected_ids , i['curr_col_in_table'] ) 
+            if parent_of_visible_item and parent_of_visible_item['id'] not in visited_parent_ids and parent_of_visible_item['id'] not in selected_ids and i['curr_col_in_table'] > 0: 
+                parent_not_visible_but_child_visible .append ( { 'obj':  parent_of_visible_item } )
+                visited_parent_ids.append( parent_of_visible_item['id'] )
+            
+        #give me childrens of this node 
+        given_item_child = i['obj'][ child_key ]
+        #for each children what is the position in table 
+        min_row = 0 
+        max_row = 0 
+        #print(i['obj']['name'])
+        arr_start = None
+        if not arr_start and mode == 'parent':
+            # used in parent mode since parent is not visible and wont have any column info so getting from children, all children have same column so just getting the last item, dont put this inside the above block where temp_obj is found . some times the first and last child are out of bounds so it dont go into the loop
+            for temp in selected_visible_items:
+                if temp['obj']['id'] in given_item_child: #note : not all childs will be in selected itesms but atleast one will be there since that is the one called the parent
+                    arr_start = temp['print_arr_start']  
+                    break
+        #if mode == "children" :
+            #print( '######', i['obj']['name'], given_item_child, len(given_item_child)  , not any(set(given_item_child).intersection(set(selected_ids))) , i['print_arr_row'] , width )
+        if mode == "children" and len(given_item_child) > 0 and not any(set(given_item_child).intersection(set(selected_ids))) and i['print_arr_end'] >= width : 
+            #print("&&&&&&&&& enter special calc for ", i['obj']['name'])
+            #if it does not have full width of the column then dont print ther vertical bar as it is not going to be visible anyway 
+            if i['print_arr_end'] - i['print_arr_start'] < w_size:
+                min_row = max_row = 0 
+            else:
+                #how many child the parent has 
+                n_of_child_on_each_side = len(i['obj'][child_key])//2 # supposte its 3 ans is 1 1 one each side
+                size_of_child_for_each_Side = n_of_child_on_each_side * h_size
+                size_on_upper_side = size_of_child_for_each_Side
+                size_on_lower_side = size_of_child_for_each_Side + h_size - ( h_size - 1 )
+                min_row = max ( 0, i['print_arr_row'] - size_on_upper_side )
+                max_row = min ( height, i['print_arr_row'] + size_on_lower_side )
+            print(min_row, max_row)
+        else:
+            for n,each_child_id in enumerate(given_item_child):
+                '''if not arr_start and mode == 'parent':
+                    # used in parent mode since parent is not visible and wont have any column info so getting from children, all children have same column so just getting the last item, dont put this inside the above block where temp_obj is found . some times the first and last child are out of bounds so it dont go into the loop
+                    temp_obj = [ temp  for temp in selected_visible_items if temp['obj']['id']==each_child_id ] #note : not all childs will be in selected itesms so it may retrun empty
+                    if temp_obj: 
+                        arr_start = temp_obj[0]['print_arr_start'] '''
+                if n == 0 : # if top most child is found 
+                    min_row = 0
+                    if each_child_id in selected_ids :
+                        temp_obj = [ temp  for temp in selected_visible_items if temp['obj']['id']==each_child_id ][0]
+                        min_row = temp_obj['print_arr_row']
+                        print("found min row ",temp_obj)
+                if n == len( given_item_child ) - 1 :
+                    max_row = min_row if len( given_item_child ) == 1 else height # if there only one child max row will be same as minrow which is zero
+                    if each_child_id in  selected_ids   :
+                        temp_obj = [ temp  for temp in selected_visible_items if temp['obj']['id']==each_child_id ][0]
+                        max_row = temp_obj['print_arr_row'] + 1
+                        print("found max row ",temp_obj)
+                print(each_child_id,min_row,max_row)
+            
+        if mode == "parent":
+            col_of_vertical_dots = arr_start - 1
+        else:
+            col_of_vertical_dots = i ['print_arr_end'] - 1 
+        print(min_row, max_row , col_of_vertical_dots , len(print_arr) , len(print_arr[0]) )
+        for each_row_for_dot in range(min_row, max_row ):
+            print(each_row_for_dot , col_of_vertical_dots)
+            print_arr[ each_row_for_dot ][ col_of_vertical_dots] = '.'
+    #one more call for parents 
+    if mode == "children":
+        fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_size,w_size,parent_not_visible_but_child_visible,child_key = "_children",mode="parent")
+
+def print_table(tree,table,parent_node):
+    #print(table)
+    '''for i in table:
+        for j in i:
+            if j:
+                print('{:<10}'.format(j['name'][:10]),end=' ')
+                #print( j )
+            else:
+                print('{:<10}'.format(' '*10),end=' ')
+                #print( j )
+        print()'''
+    build_array_table(tree,table,parent_node)
+    
 def to_node(content):
     curr_block=''
     start=False
@@ -164,14 +610,19 @@ def node_search_by_id(tree,node_id_list=[]):
                 break
     return selectedNodes 
 
-def node_search_by_child(tree,node_id_list=[]):
+def node_search_by_child(tree,node_id):
+    #print('node_search_by_child: searching for ',node_id)
     selectedNodes=[]
     for i in tree:
-        for j in node_id_list:
-            if j in i['children']:
-                selectedNodes.append(i)
-                break
-    return selectedNodes     
+        #for j in node_id:
+        if node_id in i['children']:
+            selectedNodes.append( i )
+    if len(selectedNodes) > 1:
+        raise Exception( 'found more than 1 parent for ' , node_id, selectedNodes)
+    elif selectedNodes:
+        return selectedNodes[0]
+    else:
+        return None
 
 def node_search_by_name(tree,node_name_list=[],ignoreCase=False,partialmatch=False):
     selectedNodes=[]
@@ -209,9 +660,9 @@ def get_children(tree,node_id_list=[]):
             selectedNodes+=node_search_by_id( tree, i['children'] )
     return selectedNodes    
  
-def get_parent(tree,node_id_list=[])->str:
+def get_parent(tree,node_id):
     selectedNodes=[]
-    selectedNodes+=node_search_by_child(tree,node_id_list)
+    selectedNodes+=node_search_by_child(tree,node_id)
     return selectedNodes
     
 def is_item_in_list(item,item_list,partial=False):
@@ -249,9 +700,12 @@ def parse_command(tree,command,args_property):
     selectedNodes=tree
     prev_node = None
     for i in cmd:
-        cmd_parts=i.split(':')
+        cmd_parts=i.split('?')
         node=cmd_parts[0].split(',') if cmd_parts[0]!='' else []
         tag =cmd_parts[1].split(',') if len(cmd_parts)>1 and cmd_parts[1]!='' else []
+        if '*' in tag:
+            return tree
+        #print(node,tag)
         if node!=[]:
             curr_node_list  = node_search_by_name(selectedNodes,node,ignoreCase=True)
             curr_node_ids = list(map(lambda d:d['id'],curr_node_list))
@@ -298,21 +752,24 @@ def dive_mode(tree):
             selectedNodes= [childNodes[int(start)]]
         
 
-g_context=[]    
+g_context=[]
+g_global_tree=None    
 def search(args,filename):
+    global g_global_tree
     content=file_to_list(filename)
-    tree=to_node(content)
+    g_global_tree=to_node(content)
     global g_context
-    context=[ j.rstrip() for i in tree if i['id']=='seed' and 'tag' in i for j in i['tag']]
+    context=[ j.rstrip() for i in g_global_tree if i['id']=='seed' and 'tag' in i for j in i['tag']]
     g_context=[i.rstrip() for i in context]
     print("context is:",g_context)
     if args.search!='' and args.search is not None:
         args_property = args.property.split(',') if args.property != '' else ['name','tag']
         args_level = args.level
-        filtered_nodes = parse_command(tree,args.search,args_property)
+        filtered_nodes = parse_command(g_global_tree,args.search,args_property)
+        #print(filtered_nodes)
         displayTree(filtered_nodes)
     if args.dive=='true' and args.dive is not None:
-        dive_mode(tree)
+        dive_mode(g_global_tree)
         
 def main(args):
     files=[]
