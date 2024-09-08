@@ -22,6 +22,22 @@ a
 [11, 22, 33, 1, 2, 3, 4]
 ---
 [1,2]+(4, ) single element tuple needs comma at end
+
+@?#section#type@qa#pm@linebyline
+a=(1,2)
+a+=(3)
+options : 1. (1,2,3) 2.error 
+answer: 2
+! TypeError: 'int' object is not iterable  single element should have a , -> a+=(3,)
+
+@?#section#type@qa#pm@linebyline
+a=[1,2]
+a+=[3]
+options : 1. [1,2,3] 2.error 
+[1, 2, 3]
+answer: 1
+! it will work with both [3] and [3,]
+
 #?#box#calculatedX@-125#calculatedY@-45#children@#name@gotcha#id@1720904152#parent@#x@160#y@464
 a=([1,2,3],4)
 command: a[0]+=[55]

@@ -1,7 +1,7 @@
 #?#box#calculatedX@-342#calculatedY@-50#children@45,1682351746408,1680960041975,1680961042136,1680971872429,1682354751121#name@0:seed#id@seed#parent@#x@66#y@60#tag@sp1code
 sp1code
 
-#?#box#calculatedX@-330#calculatedY@22#children@66,1680957096037,1680957448228#name@1:schema#id@45#parent@#x@76#y@117#tag@schema#t_color@red
+#?#box#calculatedX@-330#calculatedY@22#children@66,1680957096037,1680957448228#name@1:schema#id@45#parent@#x@76#y@117#tag@schema#t_color@red#date@08jul2023
 schema
 
 #?#box#calculatedX@-322#calculatedY@95#children@#name@0:properties#id@1680957096037#parent@#x@82#y@176#t_color@red
@@ -10,6 +10,8 @@ spark need not infer
 spark need not read a chunk of file to infer 
 detect errors early
 define schema upfront for large files
+#?#link#id@seed#fn@h1b_1.txt
+#?#link#id@45#fn@h1b_1.txt
 
 #?#box#calculatedX@-198#calculatedY@95#children@#name@1:showschema#id@66#parent@#x@181#y@176
 df.printSchema() - pretty print 

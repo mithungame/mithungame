@@ -1,52 +1,82 @@
 import re 
 import sys
 import argparse
-from colorama import Fore,init
 import glob
 import os, platform
 if platform.system() == 'Windows': import msvcrt
 
-init(autoreset=True)
-
 g_clrs={
+    'default': {'white':[]},
     'kubernetes':{'magenta':['service','node','pod','container'],'yellow':['etcd','go','kubernetes','docker']},
-    'python':{'yellow':['for','if','elif','['],'red':['etcd','go','kubernetes','docker']}
+    'python':
+    {'yellow': "and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "),
+    'red':"ArithmeticError AssertionError AttributeError BaseException BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EnvironmentError Exception False FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError None NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError True TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning WindowsError ZeroDivisionError abs all any ascii bin bool breakpoint bytearray bytes callable chr classmethod compile complex copyright credits delattr dict dir divmod enumerate eval exec exit filter float format frozenset getattr globals hasattr hash help hex id input int isinstance issubclass iter len license list locals map max memoryview min next object oct open ord pow print property quit range repr reversed round set setattr slice sorted staticmethod str sum super tuple type vars zip".split(" ")}
     }
 
+
+def color_gate(func):
+    def inner(*arrs,**kwargs): # must have inner function for decorator
+        if args.vannangal == "false":
+            return arrs[0]
+        return func(*arrs, **kwargs)    
+    return(inner)
+
+g_color_context='default'
+def set_color_context():
+    global g_color_context
+    context_resolver=list(set(g_context).intersection(set(g_clrs.keys())))
+    g_color_context= context_resolver[0] if context_resolver else 'default'
+
+@color_gate
+def color_block( word, color):
+    """ just give color dont care of context or word or line or nothing , just color the block """
+    each_color = give_color(color,True)
+    return each_color['pre_control'] + word + each_color['post_control']
+    
+#only color functions should call this 
+def give_color(color,clear=False):
+    clear_value = '' 
+    if clear: clear_value = '\033[0m'
+    if color.upper() == "WHITE": 
+        return { 'pre_control' : '' , 'post_control':  '' }
+    else:
+        return { 'pre_control' : getattr(Fore,color) , 'post_control':  clear_value }
+
+@color_gate
+def color_word(word,context=False,color="WHITE"):
+    if not context:
+        each_color = give_color(color,True)
+        return each_color['pre_control'] + word + each_color['post_control']
+    else:
+        curr_clr='WHITE' 
+        for clr,value in g_clrs[g_color_context].items():
+            if word.lower() in  value:
+                curr_clr=clr.upper()
+                break
+        each_color = give_color(curr_clr,True)
+        return each_color['pre_control'] + word + each_color['post_control']
+
+@color_gate
+def color_line(line,context=False,color="WHITE") -> list:
+    words = list(re.split('(\W)', line))
+    colored_line = []
+    for word in words:
+        colored_line .append( color_word( word, context, color ) )
+    return colored_line
+
 def colored_print(text):
-    temp=[text]
-    #if g_context==[] or g_context[0] not in g_clrs.keys():
-    #    g_context.append('others')
-    if 1== 1: #else
-        context_resolver=list(set(g_context).intersection(set(g_clrs.keys())))
-        context_resolver= context_resolver[0] if context_resolver else None
-        line_parts = text.split('\n')
-        lines = []
-        for i in line_parts:
-            words = []
-            for j in [word for word in list(re.split('(\W)', i)) if word != '' ]:
-                if not context_resolver:
-                    words.append( j )
-                else:
-                    curr_clr='WHITE'
-                    for clr,value in g_clrs[context_resolver].items():
-                        #if j=="for":print(j,clr,j.lower() in value,value)
-                        if j.lower() in  value:
-                            curr_clr=clr.upper()
-                            break
-                    words.append( getattr(Fore,curr_clr) + j)
-            lines.append( words )
-    for i in lines:
+    lines = text.split('\n')
+    colored_line = ''
+    for line in lines:
+        colored_line = color_line(line, True)
         if args.modeofprint=='word': 
-            for j in i: 
-                print( j , end='')
+            for word in colored_line: 
+                print( word , end='')
                 input()
         else:
-            print( ''.join(i) )
+            print( ''.join(colored_line) )
             if args.modeofprint=='line': 
-                input()
-            
-            
+                input()   
     
 def file_to_list(filename):
     lines=[]
@@ -142,11 +172,10 @@ def build_partial_tree(tree,seed):
                     has_upstream = True
     return tree
 
-        
 def displayTree(tree):
     #print('calling display tree')
     res=[]
-    for i in tree: print(i['name'])
+    #for i in tree: print(i['name'])
     seed = node_search_by_id(g_global_tree,['seed'])[0]
     #parent_node = getNoParentNode(tree)
     #parent_node_ids = list ( set(map(lambda d:d['id'],parent_node)).difference({'seed'}) )
@@ -161,8 +190,10 @@ def displayTree(tree):
     res=dfs(tree,seed) 
     #print('dfs result is \n',res)
     #input()
-    showDFSOutput(res)
-    build_table(seed,tree)
+    if args.tree == 'false':
+        showDFSOutput(res)
+    else:
+        build_table(seed,tree)
 
 def get_index_of_table(item,lst: []):
     for n,i in enumerate(lst):
@@ -219,105 +250,8 @@ def build_table(parent_node,tree,child_key='_children'):
             i += [None] * ( max_cols - len(i) )
     print_table(tree,table,parent_node)
 
-'''def get_col_array( start_y, w_end, width, w_size, table, w_shift):
-    print('get_col_array' , ( start_y, w_end, width, w_size, w_shift))
-    #validate if the shift triggers a new start y
-    cols=[]
-    if w_end - w_shift <= 0 or w_end - w_shift > w_size or start_y > len(table[0]) or start_y < 0: # then recalculate shift and width 
-        print('activate block switch',w_end,w_shift)
-        if w_shift >= 0:
-            how_much_more_is_needed = w_end - w_shift 
-        else:
-            how_much_more_is_needed = abs(w_shift) - ( w_size - w_end )  
-        print('how_much_more_is_needed',how_much_more_is_needed)
-        abs_how_much_more_is_needed = abs( how_much_more_is_needed )
-        if how_much_more_is_needed <= 0 :
-            print('shifting right')
-            w_shift = abs_how_much_more_is_needed % w_size
-            start_y += ( abs_how_much_more_is_needed // w_size ) + 1
-        else:
-            print('shifting left')
-            w_shift = w_size - ( abs_how_much_more_is_needed % w_size )
-            start_y -= ( abs_how_much_more_is_needed // w_size ) + 1
-        w_end=w_size
-        print('new w_shift',w_shift)
-        print('new start_y',start_y)
-    if  start_y >= len(table[0]):
-        print(start_y,w_shift)
-        print( { 'col': cols, 'start_y' : start_y, 'w_end': w_size - w_shift})
-        return { 'col': cols, 'start_y' : start_y, 'w_end': w_size - w_shift}
-    w_start = 0 
-    curr_col = 0
-    first_block_size = 'inf'
-    while w_end < width:
-        temp_size = w_end if w_start == 0 else w_size
-        w_end = w_start + temp_size - w_shift 
-        if w_end > width: w_end = width
-        if start_y+curr_col < len(table[0]) and start_y+curr_col >= 0:
-            cols.append( { 'w_start': w_start, 'w_end': w_end, 'start_y': start_y, 'curr_col' : start_y+curr_col } )
-        #one time 
-        w_shift = 0
-        if first_block_size == 'inf' : first_block_size = w_end
-        #
-        w_start = w_end  
-        curr_col += 1
-        print(cols)
-        input()
-    return { 'col': cols, 'start_y' : start_y, 'w_end': first_block_size }
-
-def get_height_array( start_x , h_start, height, h_size, table, h_shift):
-    print('get_height_array', start_x , h_start, height, h_size, h_shift)
-    rows = []
-    #upwards , 
-    if  h_start - h_shift > 0 or ( h_start - h_shift )  <= - ( h_size ) or start_x > len(table) or start_x < 0: # then recalculate shift and width 
-        first_block_size = h_size + h_start
-        print('activate block switch',first_block_size,h_shift)
-        if h_shift >= 0:
-            how_much_more_is_needed = first_block_size - h_shift 
-        else:
-            print( 'h_shift' , h_shift , '- (', 'h_size', h_size , '-', 'first_block_size', first_block_size, ' )' )
-            how_much_more_is_needed = abs(h_shift) - ( h_size - first_block_size )  
-        print('how_much_more_is_needed',how_much_more_is_needed)
-        abs_how_much_more_is_needed = abs( how_much_more_is_needed )
-        if how_much_more_is_needed <= 0 : #pushing up
-            print('push up')
-            h_shift = abs_how_much_more_is_needed % h_size
-            start_x += ( abs_how_much_more_is_needed // h_size ) + 1
-        else:
-            print('pull down')
-            if abs_how_much_more_is_needed % h_size == 0:
-                h_shift = 0
-            else:
-                h_shift = h_size - ( abs_how_much_more_is_needed % h_size )
-            if abs_how_much_more_is_needed % h_size == 0:
-                start_x -= ( abs_how_much_more_is_needed // h_size ) 
-            else:
-                
-                start_x -= ( abs_how_much_more_is_needed // h_size ) + 1 
-        h_start = 0
-        print('new start x',start_x)
-        print('new h_shift',h_shift)
-        print('new h_Start always 0',h_start)
-    if start_x > len(table):
-        print(start_x,h_shift)
-        print( { 'row': rows, 'start_x' : start_x, 'h_start': 0})
-        return { 'row': rows, 'start_y' : start_y, 'h_start': 0}
-    h_start -= h_shift
-    curr_col = 0
-    first_block_start = 'inf'
-    while h_start < height:
-        if first_block_start == 'inf' : first_block_start = h_start
-        print('-------',h_start, first_block_start)
-        if start_x+curr_col >=0 and start_x+curr_col < len(table) :
-            rows.append( { 'h_start': h_start, 'curr_col' : start_x+curr_col } )
-        print(rows)
-        h_start += h_size 
-        curr_col += 1
-    print  ({  'row': rows , 'start_x': start_x, 'h_start': first_block_start } )
-    return {  'row': rows , 'start_x': start_x, 'h_start': first_block_start } 
-'''
 def solve_it( curr_arr_pos, first_block_in_scope , block_size, shift_value, total_size ):
-    print({'curr_arr_pos': curr_arr_pos, 'first_block_in_scope': first_block_in_scope, 'block_size': block_size, 'shift_value': shift_value, 'total_size': total_size})
+    #print({'curr_arr_pos': curr_arr_pos, 'first_block_in_scope': first_block_in_scope, 'block_size': block_size, 'shift_value': shift_value, 'total_size': total_size})
     values = []
     if shift_value > 0 : 
         how_much_can_curr_arr_give =  first_block_in_scope
@@ -362,14 +296,28 @@ def solve_it( curr_arr_pos, first_block_in_scope , block_size, shift_value, tota
         #print(values)
     return curr_arr_pos, values, first_block_in_scope
 
-def build_array_table(tree,table,start_node,height=30,width=100,w_size = 20  ,w_shift=0, h_shift=0, h_size = 2 , pre_dots = 1 , post_dots = 2 , child_key = '_children'):
+generated_node_ids = { 'ids': [ [ i+j, 2 ] for i in list('abcdefghijklmnopqrstuvwxyz0123456789') for j in list('abcdefghijklmnopqrstuvwxyz0123456789') ], 'curr_id': 0 }
+def generate_node_id():
+    global generate_node_ids
+    id_list = generated_node_ids['ids']
+    generate_value = id_list [ generated_node_ids['curr_id'] ][0]
+    if generated_node_ids['curr_id'] + 1  >= len( id_list ):
+        generated_node_ids['curr_id'] = 0
+    else:
+        generated_node_ids['curr_id'] += 1
+    return generate_value
+        
+
+
+def build_array_table(tree,table,start_node,height=30,width=150,w_size = 15  ,w_shift=0, h_shift=0, h_size = 1   , pre_dots = 1 , post_dots = 2 , child_key = '_children'):
     #print('===============',len(table),len(table[0]))
-    for i in table: print(len(i))
+    #for i in table: print(len(i))
     start_x, start_y = get_index_of_table( start_node , table )
-    #print("starting is ",start_x,start_y)
+    print("starting is ",start_x,start_y)
     first_w_block_in_scope = w_size
     first_h_block_in_scope = h_size
     option = ''
+    print("starting is ",start_x,start_y,first_w_block_in_scope,first_h_block_in_scope)
     while option != 'q':
         start_y, cols, first_w_block_in_scope = solve_it( start_y, first_w_block_in_scope, w_size, w_shift, width)
         start_x, rows, first_h_block_in_scope = solve_it( start_x, first_h_block_in_scope, h_size, h_shift, height)
@@ -379,8 +327,8 @@ def build_array_table(tree,table,start_node,height=30,width=100,w_size = 20  ,w_
         sum = 0
         for i in cols: sum += i['b']
         if sum != width:   raise Exception('sorry the cols size did not match')
-        #print(rows)
-        #print(cols)
+        print(rows)
+        print(cols)
         # fit the table to result 
         first_row = True
         first_col = True
@@ -396,29 +344,46 @@ def build_array_table(tree,table,start_node,height=30,width=100,w_size = 20  ,w_
                 #print('=====',each_row,running_width)
                 if ( each_row ==0 and first_row and given_block_height != h_size ) or ( each_row != 0 ):#print if hgt index is0 for given block except for first block which must be height size
                     if first_row: first_row = False
-                    print_row+=([' ']*width)
+                    #print_row+=([' ']*width)
+                    print_row += [ {'data':' '} for i in range(width) ]
                     running_width+=width
                 else:
                     for n_col,col in enumerate(cols):
-                        #print(col)
                         if row['p'] >= 0 and row['p'] < len(table) and col['p'] >=0 and col['p'] < len(table[0]) and table [ row['p'] ] [ col['p'] ]:
-                            name = table [ row['p'] ] [ col['p'] ] ['name']
+                            obj = table [ row['p'] ] [ col['p'] ]
+                            name =  obj['name']
+                            pre_dot_char = '-'
+                            post_dot_char = '-' if obj['_children'] else ' ' 
                             size_for_name = w_size - ( pre_dots + post_dots )
+                            if '_print_arr_name' not in obj: #note there is a possible bug that the ids assigned may get exhausted but 36 * 36 = 1000 nodes i am never going to have that much
+                                obj['_print_arr_name'] = generate_node_id()
+                            name = obj['_print_arr_name'] + ':' + name #give_color(name,'YELLOW')
                             name = name[0:size_for_name]
-                            name = '{:-^{size}s}'.format(name,size=size_for_name)
-                            name = '-'*pre_dots + name +  '-'*post_dots
+                            #name = '{:-^{size}s}'.format(name,size=size_for_name)
+                            # custom center justify 
+                            if len(name) >= size_for_name:
+                                pass 
+                            else :
+                                available_string_size = ( size_for_name - len(name ) ) // 2 
+                                available_string_odd_even = ( size_for_name - len(name ) ) % 2 
+                                #fill_before
+                                name = '-' * available_string_size + name 
+                                name += ( '-' if obj['_children'] else ' ' ) * (available_string_size + available_string_odd_even)
+                            name = '-'*pre_dots + name +  post_dot_char*post_dots
                             if n_col == 0 :
                                 name = name[-col['b']:]
                             else:
                                 name = name[0:col['b']]
-                            print_row+=name
-                            selected_visible_items.append( { 'obj': table [ row['p'] ] [ col['p'] ] , 'curr_row_in_table': n_row , 'curr_col_in_table': n_col,  'print_arr_row': running_height , 'print_arr_start': running_width, 'print_arr_end': running_width + len(name)  } )
+                            #print_row+=name
+                            print_row+= [{ 'data': each_letter } for each_letter in name ]
+                            selected_visible_items.append( { 'obj': obj , 'curr_row_in_table': n_row , 'curr_col_in_table': n_col,  'print_arr_row': running_height , 'print_arr_start': running_width, 'print_arr_end': running_width + len(name)  } )
                             running_width+=len(name)
                             #print(name,len(name),col ['b'])
                         else:
                             name=([' '] * col ['b'] )
                             #print(name,len(name),col ['b'])
-                            print_row+=name
+                            #print_row+=name
+                            print_row+= [{ 'data': each_letter } for each_letter in name ]
                             running_width+=len(name)
                 print_arr.append(print_row)
                 #print(print_row)
@@ -428,10 +393,15 @@ def build_array_table(tree,table,start_node,height=30,width=100,w_size = 20  ,w_
                 #print(''.join(print_row) )
                 running_height += 1
         fill_vertical_dots(tree,selected_visible_items, print_arr,width,height,h_size,w_size)
-        clear_screen_for_print()
+        #clear_screen_for_print()
         #print(h_shift,w_shift)
-        for i in print_arr:
-            print(''.join(i) )
+        for line in print_arr:
+            each_line=''
+            for letter in line:
+                if 'pre_color' in letter: line += letter['pre_color']
+                each_line += letter['data']
+                if 'post_color' in letter: line += letter['post_color']
+            print(each_line)
         
         '''i_h_shift = input('enter h_shift').rstrip()
         h_shift = int(i_h_shift) if i_h_shift else 0
@@ -439,26 +409,38 @@ def build_array_table(tree,table,start_node,height=30,width=100,w_size = 20  ,w_
         w_shift = int(i_w_shift) if i_w_shift else 0'''
         h_shift = w_shift = 0
         default_shift = 3
-        print(" i j k l for navigation, c for custom input")
+        pop_item = None
+        print(" i j k l for navigation, c for custom input , q for quit[press q without enter]")
         if platform.system() == 'Windows':
-            i_shift_value = msvcrt.getch().decode("utf-8")
+            i_ip_value = msvcrt.getch().decode("utf-8")
             shift_by_how_much = default_shift
-        if i_shift_value == 'c' or platform.system() != 'Windows' : # custom , then revert to normal input 
-            i_shift_value = input('enter shift').rstrip()
-            shift_by_how_much = int(i_shift_value[1:]) if i_shift_value[1:] else default_shift
-        if i_shift_value == 'i':
+        if i_ip_value == 'c' or platform.system() != 'Windows' : # custom , then revert to normal input 
+            i_ip_value = input('enter [ijkl][N] for moving, id for viewing, q for quit ').rstrip()
+            if i_ip_value[0] in ['i','j','k','l']:
+                shift_by_how_much = int(i_ip_value[1:]) if i_ip_value[1:] else default_shift
+                i_ip_value=i_ip_value[0]
+        if i_ip_value == 'q':
+            option = 'q'
+        if i_ip_value == 'i':
             h_shift = shift_by_how_much
-        if i_shift_value == 'k':
+        if i_ip_value == 'k':
             h_shift = - shift_by_how_much
-        if i_shift_value == 'j':
+        if i_ip_value == 'j':
             w_shift = shift_by_how_much
-        if i_shift_value == 'l':
+        if i_ip_value == 'l':
             w_shift = - shift_by_how_much
-            
+        if len(i_ip_value) == 2 :
+            for i in selected_visible_items:
+                if i['obj']['_print_arr_name']==i_ip_value:
+                    colored_print( i['obj']['data'] )
+                    break
+            input()
+                    
 def clear_screen_for_print():
     for i in range(os.get_terminal_size().lines): print()
+    #pass
     print('\033[{hgt}A'.format(hgt=os.get_terminal_size().lines+1),end='',flush=True)
-
+    
 def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_size,w_size, parent_non_visible_items=[],child_key = "_children",mode="children"): 
     #first it should add vertical bars for all items in visible area, then we ll collect all the items for which parents are not visible and do one mroe round. it might lead to recursive so using mode and just calling once
     #print("mode is ", mode )
@@ -466,9 +448,9 @@ def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_si
         item_to_loop = selected_visible_items
     else:
         item_to_loop = parent_non_visible_items
-    for i in selected_visible_items: print('selected_visible_items', i )
-    if mode == "parent":
-        for i in parent_non_visible_items: print('parent_items', i['obj']['id'],  i['obj']['name'] )
+    #for i in selected_visible_items: print('selected_visible_items', i )
+    #if mode == "parent":
+        #for i in parent_non_visible_items: print('parent_items', i['obj']['id'],  i['obj']['name'] )
     selected_ids = [ i['obj']['id'] for i in selected_visible_items]
     parent_not_visible_but_child_visible = []
     visited_parent_ids = []
@@ -478,7 +460,7 @@ def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_si
             parent_of_visible_item =  node_search_by_child ( tree, i['obj']['id'] )
             # if parent existis and  parent already identified ( many child can have same parent and add it multiple times ) and  parent is not already in visible
             # and if the current col(not the parent) is first column then the vertical bar wont be visible anyway
-            if parent_of_visible_item : print(i['obj']['name'] , parent_of_visible_item['id'], parent_of_visible_item , parent_of_visible_item['id'] not in visited_parent_ids , parent_of_visible_item['id'] not in selected_ids , i['curr_col_in_table'] ) 
+            #if parent_of_visible_item : print(i['obj']['name'] , parent_of_visible_item['id'], parent_of_visible_item , parent_of_visible_item['id'] not in visited_parent_ids , parent_of_visible_item['id'] not in selected_ids , i['curr_col_in_table'] ) 
             if parent_of_visible_item and parent_of_visible_item['id'] not in visited_parent_ids and parent_of_visible_item['id'] not in selected_ids and i['curr_col_in_table'] > 0: 
                 parent_not_visible_but_child_visible .append ( { 'obj':  parent_of_visible_item } )
                 visited_parent_ids.append( parent_of_visible_item['id'] )
@@ -488,6 +470,8 @@ def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_si
         #for each children what is the position in table 
         min_row = 0 
         max_row = 0 
+        min_row_found = False 
+        max_row_found = False 
         #print(i['obj']['name'])
         arr_start = None
         if not arr_start and mode == 'parent':
@@ -511,7 +495,7 @@ def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_si
                 size_on_lower_side = size_of_child_for_each_Side + h_size - ( h_size - 1 )
                 min_row = max ( 0, i['print_arr_row'] - size_on_upper_side )
                 max_row = min ( height, i['print_arr_row'] + size_on_lower_side )
-            print(min_row, max_row)
+            #print(min_row, max_row)
         else:
             for n,each_child_id in enumerate(given_item_child):
                 '''if not arr_start and mode == 'parent':
@@ -524,23 +508,32 @@ def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_si
                     if each_child_id in selected_ids :
                         temp_obj = [ temp  for temp in selected_visible_items if temp['obj']['id']==each_child_id ][0]
                         min_row = temp_obj['print_arr_row']
-                        print("found min row ",temp_obj)
+                        min_row_found = True 
+                        #print("found min row ",temp_obj)
                 if n == len( given_item_child ) - 1 :
                     max_row = min_row if len( given_item_child ) == 1 else height # if there only one child max row will be same as minrow which is zero
                     if each_child_id in  selected_ids   :
                         temp_obj = [ temp  for temp in selected_visible_items if temp['obj']['id']==each_child_id ][0]
                         max_row = temp_obj['print_arr_row'] + 1
-                        print("found max row ",temp_obj)
-                print(each_child_id,min_row,max_row)
+                        max_row_found = True 
+                        #print("found max row ",temp_obj)
+                #print(each_child_id,min_row,max_row)
             
         if mode == "parent":
             col_of_vertical_dots = arr_start - 1
         else:
             col_of_vertical_dots = i ['print_arr_end'] - 1 
-        print(min_row, max_row , col_of_vertical_dots , len(print_arr) , len(print_arr[0]) )
+        #print(min_row, max_row , col_of_vertical_dots , len(print_arr) , len(print_arr[0]) )
         for each_row_for_dot in range(min_row, max_row ):
-            print(each_row_for_dot , col_of_vertical_dots)
-            print_arr[ each_row_for_dot ][ col_of_vertical_dots] = '.'
+            #print(each_row_for_dot , col_of_vertical_dots)
+            if min_row_found and max_row > 1:
+                print_arr[ each_row_for_dot ][ col_of_vertical_dots]['data'] = '/'
+                min_row_found = False 
+            elif max_row_found and max_row > 1 and each_row_for_dot == max_row - 1:
+                print_arr[ each_row_for_dot ][ col_of_vertical_dots]['data'] = '\\'
+                max_row_found = False 
+            else:    
+                print_arr[ each_row_for_dot ][ col_of_vertical_dots]['data'] = '.'
     #one more call for parents 
     if mode == "children":
         fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_size,w_size,parent_not_visible_but_child_visible,child_key = "_children",mode="parent")
@@ -661,9 +654,7 @@ def get_children(tree,node_id_list=[]):
     return selectedNodes    
  
 def get_parent(tree,node_id):
-    selectedNodes=[]
-    selectedNodes+=node_search_by_child(tree,node_id)
-    return selectedNodes
+    return node_search_by_child(tree,node_id)
     
 def is_item_in_list(item,item_list,partial=False):
     item=item.lower()
@@ -727,9 +718,9 @@ def dive_mode(tree):
     while True:
         childNodes = get_children(tree, list(map(lambda d:d['id'],selectedNodes)))
         colored_print ( "===\n"+selectedNodes[0]['name'] + '\n'+ selectedNodes[0]['data'] +'===\n\n')
-        prevNode = get_parent(tree, list(map(lambda d:d['id'],selectedNodes)) ) 
+        prevNode = get_parent(tree,selectedNodes[0]['id']) 
         if len(childNodes) == 0:
-            start=input(getattr(Fore,'RED') + 'end of road e: to end b: to go back'+ Fore.RESET  ).rstrip()
+            start=input( color_block( 'end of road e: to end b: to go back', 'RED' )  ).rstrip()
             if start not in ['e','b'] or start == 'e':
                 print('bye..')
                 break
@@ -739,15 +730,15 @@ def dive_mode(tree):
             for n,i in enumerate(childNodes):
                 print(str(n)+'('+i['name']+')',end=' ')
             print()
-            if len(prevNode)>0:
-                print('Backward Node:(',prevNode[0]['name'],')')
+            if prevNode:
+                print('Backward Node:(',prevNode['name'],')')
             
-            start=input(getattr(Fore,'GREEN') + 'choose starting point: b for prev'+ Fore.RESET  )
+            start=input(color_block ( 'choose starting point: b for prev' , "GREEN" )  )
         if start=='b':
-            if len(prevNode)<1: #this has no parent so we cannot go back 
+            if not prevNode: #this has no parent so we cannot go back 
                 selectedNodes = selectedNodes
             else:
-                selectedNodes = [ prevNode[0] ]
+                selectedNodes = [ prevNode ]
         else:
             selectedNodes= [childNodes[int(start)]]
         
@@ -761,12 +752,13 @@ def search(args,filename):
     global g_context
     context=[ j.rstrip() for i in g_global_tree if i['id']=='seed' and 'tag' in i for j in i['tag']]
     g_context=[i.rstrip() for i in context]
+    set_color_context()
     print("context is:",g_context)
     if args.search!='' and args.search is not None:
         args_property = args.property.split(',') if args.property != '' else ['name','tag']
         args_level = args.level
         filtered_nodes = parse_command(g_global_tree,args.search,args_property)
-        #print(filtered_nodes)
+        input('Match found in:'+filename)
         displayTree(filtered_nodes)
     if args.dive=='true' and args.dive is not None:
         dive_mode(g_global_tree)
@@ -807,7 +799,7 @@ def main(args):
                 pass 
             else:
                 continue
-        print(Fore.YELLOW+ 'processing file:'+ filename)
+        print( color_block( 'processing file:'+ filename, 'YELLOW') )
         search(args,filename)
 
 
@@ -820,11 +812,13 @@ parser.add_argument("-p","--property", help="increase output verbosity", default
 parser.add_argument("-l","--level", help="increase output verbosity", default=100)
 parser.add_argument("-e","--expand", help="node data", default=100)
 parser.add_argument("-c","--choosenode", help="choosenode",nargs="?",default='false',const='true') #if just -c value 1 if nothing value false
-parser.add_argument("-m","--modeofprint", help="choosenode",nargs="?",default='read',const='line')
+parser.add_argument("-m","--modeofprint", help="modeofprint",nargs="?",default='read',const='line')
+parser.add_argument("-t","--tree", help="tree",nargs="?",default='false',const='true')
+parser.add_argument("-v","--vannangal", help="painttext with colors",nargs="?",default='false',const='true')
 args = parser.parse_args()    
 print(args)
 if __name__=="__main__":
+    if args.vannangal == "true":
+        from colorama import Fore,init
+        init(autoreset=True)
     main(args)
-    
-    
-

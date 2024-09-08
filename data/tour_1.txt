@@ -4,7 +4,7 @@ plan
 #?#box#calculatedX@175#calculatedY@-80#children@#name@0:properties#id@45#parent@#x@300#y@336
 feaw
 
-#?#box#calculatedX@562#calculatedY@-5#children@1694745097127#name@1:jaipurTrip#id@1694745032585#parent@#x@609#y@396
+#?#box#calculatedX@562#calculatedY@-5#children@1694745097127#name@1:jaipurTrips#id@1694745032585#parent@#x@609#y@396
 content
 
 #?#box#calculatedX@915#calculatedY@260#children@1694745109061,1694745252796,1694747651732#name@1:jaipur#id@1694745097127#parent@#x@892#y@608

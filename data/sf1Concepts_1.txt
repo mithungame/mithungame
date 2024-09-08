@@ -7,8 +7,9 @@ size x small  to 6x
 
 Gotcha:
 1. Increasing the size of a warehouse does not always improve "data loading" performance. 
-#?#box#calculatedX@475#calculatedY@165#children@1704786347678,1704786359487,1704786661708,1709548876390#name@1:types#id@1707559463#parent@#x@380#y@132
 
+#?#box#calculatedX@475#calculatedY@165#children@1704786347678,1704786359487,1704786661708,1709548876390#name@1:types#id@1707559463#parent@#x@380#y@132
+content
 #?#box#calculatedX@564#calculatedY@116#children@#name@1:standard#id@1704786347678#parent@#x@451#y@92
 content
 #?#box#calculatedX@564#calculatedY@156#children@#name@2:snowparkOptimized#id@1704786359487#parent@#x@451#y@124
@@ -125,7 +126,7 @@ https://docs.snowflake.com/en/user-guide/views-secure
 cannot see query of view except for authorised users
 cannot see query profile after execution even for owner 
 optimizations that expose data will not be applied 
-#?#box#calculatedX@337#calculatedY@313#children@1716306158#name@1:isViewSecure#id@1716308001#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@1:isViewSecure#id@1716308001#parent@#x@269#y@250
 For non-materialized views, check the IS_SECURE column in the Information Schema
 SHOW VIEWS LIKE 'myview';
 SHOW MATERIALIZED VIEWS LIKE 'my_mv';

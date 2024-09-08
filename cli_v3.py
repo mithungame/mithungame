@@ -4,6 +4,7 @@ import argparse
 import glob
 import os, platform
 import random
+import time
 if platform.system() == 'Windows': import msvcrt
 
 context_precedence = { 
@@ -719,7 +720,16 @@ def fill_surround_block(mode,table,cell_properties):
 
 def generate_cell_box_text(cell_obj, cell_properties):
     cell_text_obj = cell_obj
-    return cell_text_obj['name'] + "\n====\n" + cell_text_obj['data']
+    text = ''
+    text += cell_text_obj['name'] + "\n====\n"
+    text += cell_text_obj['data'] + "\n"
+    link_objs = cell_text_obj['links']
+    while link_objs:
+        i = link_objs.pop(0)
+        text += '<l:'+os.path.basename(i['_filename'])+'>'+':'+i['name']+':\n'
+        text += i['data']
+        if i['links']: link_objs =i['links'] + link_objs
+    return text
 
 def generate_cell_vertical_tree_text(cell_obj, cell_properties):
     cell_text_obj = cell_obj
@@ -1218,16 +1228,48 @@ def fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_si
     #one more call for parents 
     if mode == "children":
         fill_vertical_dots(tree,selected_visible_items, print_arr,width, height,h_size,w_size,parent_not_visible_but_child_visible,child_key,mode="parent")
-    
-def to_node(content):
+
+g_prevent_infinite_link_search=[]
+def to_node(content,filename,called_from_current_search=False):
+    '''filename wont change in current context so we cannot get it from g_context
+    called_from_current_search need to know how is calling to_node if its a link search calling it or a true search calling it . this is needed to avoid infinite loop when searching for link data
+    '''
     curr_block=''
     start=False
-    identified_hashquestionhash=False
+    identified_box_hash=False
     total_items=[]
     dict_items=dict()
+    global g_prevent_infinite_link_search
     for i in content:
-        if i[0:3]=='#?#':
-            identified_hashquestionhash=True
+        if i.startswith('#?#link') and identified_box_hash:
+            i = i.rstrip()
+            identified_box_hash=False
+            lnk = dict([ ( a.split('@')[0],a.split('@')[1].split(',') if ',' in a.split('@')[1] else a.split('@')[1])  for a in i.split('#') if '@' in a ])
+            lnk_nodeid = lnk['id'].rstrip()
+            lnk_basefilename = lnk['fn'].rstrip()
+            if lnk_basefilename not in g_prevent_infinite_link_search:
+                g_prevent_infinite_link_search.append(lnk_basefilename)
+            else:
+                raise Exception("call to filename:{} and nodeid:{} results in infinite link search loop".format(lnk_basefilename, lnk_nodeid))
+            lnk_filename=None
+            if lnk_basefilename in g_context['all_file_dict']:
+                lnk_filename = g_context['all_file_dict'][lnk_basefilename] 
+            else:
+                raise Exception("link error for node id:"+lnk_nodeid+" and temp_filename:"+lnk_basefilename)
+            if lnk_basefilename not in g_context: set_g_context(lnk_filename,False)
+            found=False
+            for each_node in g_context[lnk_basefilename]['tree']:
+                #print( each_node['id'] ,  temp_nodeid , type(each_node['id']), type(temp_nodeid))
+                if each_node['id'] == lnk_nodeid:
+                    #curr_block += each_node['data']
+                    dict_items['links'].append(each_node)
+                    found=True
+                    break
+            if not found: raise Exception("link referenced node not found filename and nodeid are:",lnk_filename,lnk_nodeid)
+        if i.startswith('#?#box'):
+            if called_from_current_search: g_prevent_infinite_link_search=[]#reset for each box only for current search file
+            i = i.rstrip()
+            identified_box_hash=True
             if start:
                 dict_items['data']=curr_block
                 curr_block=''
@@ -1235,7 +1277,7 @@ def to_node(content):
             else:
                 start=True 
             items=i.split('#')
-            dict_items=dict()
+            dict_items={'links':[],'_filename':filename}
             for j in items:
                 if '@' in j:
                     key=j.split('@')[0]
@@ -1243,7 +1285,8 @@ def to_node(content):
                     if key.lower() in ['parent','children','tag']:
                         value=value.split(',') if value.strip()!='' else []
                     dict_items[key]=value
-        elif identified_hashquestionhash:
+            #dict_items = dict([ ( a.split('@')[0],a.split('@')[1].split(',') if ',' in a.split('@')[1] else a.split('@')[1])  for a in i.split('#') if '@' in a ])
+        elif identified_box_hash:
             curr_block+=i
     dict_items['data']=curr_block
     curr_block=''
@@ -1380,8 +1423,6 @@ def dive_mode(tree):
         print(n,i['name'])
     start=int(input('choose diving point:'))
     selectedNodes=[curr_node_list[start]]
-    
-    
     while True:
         childNodes = get_children(tree, list(map(lambda d:d['id'],selectedNodes)))
         colored_print ( "===\n"+selectedNodes[0]['name'] + '\n'+ selectedNodes[0]['data'] +'===\n\n')
@@ -1409,17 +1450,31 @@ def dive_mode(tree):
         else:
             selectedNodes= [childNodes[int(start)]]
 
+def file_to_tree(filename,called_from_current_search=False):
+    content=file_to_list(filename)
+    return to_node(content,filename,called_from_current_search)
+
 g_context=dict()
 g_context['tree']=[]
-g_ephemeral_tree: list= [{'calculatedX': '0', 'calculatedY': '0', '_ephemeral_children': [], 'children': [] , 'name': 'seed', '_filename': 'dummyqwerty' , 'id': 'seed', 'parent': [], 'x': '0', 'y': '0', 'data': 'seed'}]
-def search(args,filename):
+g_ephemeral_tree: list= [{'calculatedX': '0', 'calculatedY': '0', '_ephemeral_children': [], 'children': [] , 'name': 'seed' , 'id': 'seed', 'parent': [], 'x': '0', 'y': '0', 'data': 'seed', '_filename':'dummy', }]
+def set_g_context(filename,change_current_context=False,called_from_current_search=False):
+    #print('===',args,filename)
     global g_context
-    g_context['filename']=filename
-    content=file_to_list(filename)
-    g_context['tree']=to_node(content)
-    context=[ j.rstrip() for i in g_context['tree'] if i['id']=='seed' and 'tag' in i for j in i['tag']]
-    g_context['context']=[i.rstrip() for i in context]
-    set_color_context()
+    base_file_name=os.path.basename(filename)
+    tree=file_to_tree(filename,called_from_current_search)
+    context=[ j.rstrip() for i in tree if i['id']=='seed' and 'tag' in i for j in i['tag']]
+    context=[i.rstrip() for i in context]
+    if change_current_context:
+        g_context['filename']=filename
+        g_context['basefilename']=base_file_name
+        g_context['tree']=tree
+        g_context['context']=context
+        set_color_context()
+    # maintain history also in g_context under key nodeid
+    g_context[base_file_name]={'filename': filename,'basefilename': base_file_name,'tree': tree,'context': context }
+    
+def search(filename):
+    set_g_context(filename,True,True)
     print("context is:",g_context['context'])
     if args.search!='' and args.search is not None:
         args_property = args.property.split(',') if args.property != '' else ['name','tag']
@@ -1430,37 +1485,51 @@ def search(args,filename):
             build_tree_from_result(filtered_nodes)
     if args.dive=='true' and args.dive is not None:
         dive_mode(g_context['tree'])
-        
-def main(args):
-    files=[]
-    file_list=[]
+
+def identify_files(key='all',filename=None):
+    files=file_list=[]
     if os.getcwd().startswith('C:\\Users\\mithu'):
-        file_list = {'reference' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\*[0-9].txt', # non recursive
-                    r'C:\Users\mithu\Downloads\track\projects\**\quickref.txt',# ** means recursive
+        base_dir='C:\\Users\\mithu'
+        file_list = {'reference' : [base_dir+r'\Downloads\track\projects\d3\core\data\*[0-9].txt', # non recursive
+                    base_dir+r'\Downloads\track\projects\**\quickref.txt',# ** means recursive
                     #r'G:\My Drive\Downloads\jarvis\tech\**\py*.txt' not all files are converted now
                     ],
-                'spark' : [r'C:\Users\mithu\Downloads\track\projects\d3\core\data\sp*.txt'],
-                'secret' : [r'C:\Users\mithu\Downloads\track\projects\d3\privateData\*[0-9].txt'],
-                'quickref' : [r'C:\Users\mithu\Downloads\track\**\*quickref*.txt'],
+                'spark' : [base_dir+r'\Downloads\track\projects\d3\core\data\sp*.txt'],
+                'secret' : [base_dir+r'\Downloads\track\projects\d3\privateData\*[0-9].txt'],
+                'quickref' : [base_dir+r'\Downloads\track\**\*quickref*.txt'],
                 }
     elif os.getcwd().startswith('/storage/emulated/0/download'):
         file_list = {'reference' : [r'/storage/emulated/0/download*[0-9].txt', 
                     ],
                 }       
-    if args.key and args.key in ('all'):
-        chosen_file_list = list({x for v in file_list.values() for x in v})
-    elif args.key is not None and args.key != '':
-        chosen_file_list = file_list[args.key.lower()]
+    file_path_list=dict()
+    for k,v in file_list.items():
+        files_per_key=[]
+        for i in v:
+            files_per_key+=glob.glob(i,recursive=True)
+        file_path_list[k]=files_per_key
+    all_files=[]
+    for v in file_path_list.values(): all_files+=v
+    all_file_dict=dict()
+    for i in all_files:
+        if os.path.basename(i) in all_file_dict and all_file_dict[os.path.basename(i)]!=i:  # second and condition sometimes multiple key may point to same file which is valid
+            raise Exception("\n"+i+" is already present in dict as "+all_file_dict[os.path.basename(i)]+"\nkeep file names unique even across folders \n this saves a lot of madness \n alternative was fileid but it requires opening file and looking into it \n having unique filename is painful but its pretty easy to look up for links")
+        all_file_dict[os.path.basename(i)]=i
+    g_context['all_file_dict']=all_file_dict
+    if key and key in ('all'):
+        chosen_file_list = all_files
+    elif key is not None and key != '':
+        chosen_file_list = file_path_list[key.lower()]
+    elif filename:
+        chosen_file_list=[filename]
     else:
-        chosen_file_list=[args.filename]
-    for i in chosen_file_list:
-        files+=glob.glob(i,recursive=True) 
+        raise Exception("No matching files")
+    return chosen_file_list
+
+def main(args):
+    files=identify_files(args.key,args.filename)
     #print(files)
     #dont make it complicated search each file individually
-    
-    files=list(set(files))
-    if args.key=='all' and args.filename is not None:
-        files = [ i for i in files if args.filename in os.path.basename(i) ]
     for filename in files:
         if args.filename is not None:
             if input('do you want to process this file:\n'+filename+'?\nenter y').rstrip() in ['y']:
@@ -1468,7 +1537,7 @@ def main(args):
             else:
                 continue
         print( color_word( 'processing file:'+ filename, 'YELLOW') )
-        search(args,filename)
+        search(filename)
 
 
 parser = argparse.ArgumentParser()

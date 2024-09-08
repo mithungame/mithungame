@@ -1,6 +1,6 @@
 #?#box#calculatedX@87#calculatedY@79#children@noparent,1719923185,1720903687,1720965089#name@seed#id@seed#parent@#x@87#y@79
 title
-#?#box#calculatedX@87#calculatedY@79#children@noparent#name@noparent#id@noparent#parent@#x@87#y@79
+#?#box#calculatedX@87#calculatedY@79#children@#name@noparent#id@noparent#parent@#x@87#y@79
 content
 #?#box#calculatedX@129#calculatedY@131#children@1719924057,1719923206,1720962322,1720962387,1720962434#name@network#id@1719923185#parent@#x@129#y@131
 title
