@@ -12,20 +12,26 @@ g_debug_dict={0: 'show_none', 1: 'show_func_names',2: 'show_func_name_and_params
 
 context_precedence = { 
 'snowflake': ['database'] ,
-'python': ['python']
+'python': ['python'] , 
+'aws': ['aws', 'network']
 }
 day_of_week={0:'mon', 1:'tue', 2:'wed', 3:'thu', 4:'fri', 5: 'sat', 6:'sun'}
 g_clrs={
     'default': {'white':[]},
     'kubernetes':{'magenta':['service','node','pod','container'],'yellow':['etcd']},
-    'general': {'magenta':
+    'general': {'green':
         'sql sql python java c c++ go docker kubernetes'.split(" ") +
-        'aws azure cloud'.split(" ") +
-        'oracle mongo dynamo redshift cassandra hive '.split(" ")
+        'amazon aws azure cloud'.split(" ") +
+        'oracle mongo dynamo redshift cassandra hive '.split(" ") + 
+        'network subnet vpc vpc firewall '.split(" ")
     },
     'python':
     {'yellow': "and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "),
-    'red':"ArithmeticError AssertionError AttributeError BaseException BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EnvironmentError Exception False FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError None NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError True TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning WindowsError ZeroDivisionError abs all any ascii bin bool breakpoint bytearray bytes callable chr classmethod compile complex copyright credits delattr dict dir divmod enumerate eval exec exit filter float format frozenset getattr globals hasattr hash help hex id input int isinstance issubclass iter len license list locals map max memoryview min next object oct open ord pow print property quit range repr reversed round set setattr slice sorted staticmethod str sum super tuple type vars zip".split(" ")}
+    'red':"ArithmeticError AssertionError AttributeError BaseException BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EnvironmentError Exception False FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError None NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError True TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning WindowsError ZeroDivisionError abs all any ascii bin bool breakpoint bytearray bytes callable chr classmethod compile complex copyright credits delattr dict dir divmod enumerate eval exec exit filter float format frozenset getattr globals hasattr hash help hex id input int isinstance issubclass iter len license list locals map max memoryview min next object oct open ord pow print property quit range repr reversed round set setattr slice sorted staticmethod str sum super tuple type vars zip".split(" ")
+    },
+    'aws':
+    {'yellow': "ec2".split(" ")
+    }
     }
 
 def color_gate(func):
@@ -265,7 +271,7 @@ def link_calendar_tree_from_all_searched_files(calendar_objs):
     search_all()
     for each_file in g_context['chosen_file_list']:
         each_file=os.path.basename(each_file)
-        for each_obj in g_context[each_file]['tree']:
+        for each_obj in g_context[each_file]['tree']: # this is directly reading from tree not filtered tree dont change immediately see how it goes
             for obj in calendar_objs:
                 match = False
                 if 'date' in each_obj:
@@ -953,7 +959,7 @@ def generate_cell_box_text(cell_obj, cell_properties):
     #temp_dfs_print(i)
     for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node)):
         if n!=0: # first loop is actual parent subsequent are link data
-            text+='<lnk>:{}:{}\n{}'.format(i['_filename'],i['id'],i['data'])
+            text+='<lnk>:{}:{}\n{}'.format(i['_filename'],i['name'],i['data'])
         else:
             text+='{}\n'.format(i['data'])
     return text
