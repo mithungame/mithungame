@@ -1,7 +1,5 @@
-#?#box#calculatedX@226#calculatedY@286#children@noparent,1720818415#name@0:seed#id@seed#parent@#x@280#y@228
+#?#box#calculatedX@226#calculatedY@286#children@1720818415#name@0:seed#id@seed#parent@#x@280#y@228
 title
-#?#box#calculatedX@226#calculatedY@286#children@#name@noparent#id@noparent#parent@#x@280#y@228
-content
 #?#box#calculatedX@226#calculatedY@286#children@1720818535#name@easy#id@1720818415#parent@#x@280#y@228
 content
 #?#box#calculatedX@226#calculatedY@286#children@1720818581#name@2sum#id@1720818535#parent@#x@280#y@228

@@ -1,6 +1,4 @@
-#?#box#calculatedX@108#calculatedY@98#children@noparent,1720961599#name@0:seed#id@seed#parent@#x@86#y@78#tag@dwh
-content
-#?#box#calculatedX@108#calculatedY@98#children@#name@noparent#id@noparent#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@1720961599#name@0:seed#id@seed#parent@#x@86#y@78#tag@dwh
 content
 #?#box#calculatedX@108#calculatedY@98#children@1720961623,1720961660,1720961704,1720961745,1720961816,1720961854#name@types#id@1720961599#parent@#x@86#y@78
 content

@@ -1,18 +1,11 @@
 #?#box#calculatedX@226#calculatedY@286#children@45,1712464776749,1712640915627,1713707071#name@0:seed#id@seed#parent@#x@280#y@228#tag@kafka
 title
+#?#box#calculatedX@336#calculatedY@195#children@#name@xxx#id@9999#parent@#x@368#y@156
+sss
 #?#box#calculatedX@336#calculatedY@195#children@66,1712330435713,1712330830657#name@0:ksqldb#id@45#parent@#x@368#y@156
-ksqlDB is
-the event streaming database
-
-In Kafka, you store a collection of events in a 
-topic
-Each event can contain any 
-raw bytes 
-
-In ksqlDB, you store events in a 
-stream
-stream is a topic with a strongly 
-defined schema
+ksqlDB is ~*event streaming~* database
+In Kafka, you store a collection of events in a ~*topic~*, Each event can contain any ~*raw bytes ~*
+In ksqlDB, you store events in a ~*stream~* which is a ~*topic~* with a ~*strongly defined schema~*
 #?#box#calculatedX@542#calculatedY@82#children@1712330229481#d_visibility@hidden#name@0:declareStream#id@66#parent@#x@533#y@65
 
 CREATE STREAM readings (

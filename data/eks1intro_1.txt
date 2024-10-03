@@ -1,7 +1,5 @@
-#?#box#calculatedX@87#calculatedY@79#children@noparent,1720807813,#name@seed#id@seed#parent@#x@87#y@79#tag@eks
+#?#box#calculatedX@87#calculatedY@79#children@1720807813,#name@seed#id@seed#parent@#x@87#y@79#tag@eks
 title
-#?#box#calculatedX@87#calculatedY@79#children@#name@noparent#id@noparent#parent@#x@87#y@79
-content
 #?#box#calculatedX@87#calculatedY@79#children@1720807844,1720809170,1720809368#name@eks#id@1720807813#parent@#x@87#y@79
 content
 #?#box#calculatedX@87#calculatedY@79#children@1720807954,1720808085,1720808085#name@docker#id@1720807844#parent@#x@87#y@79

@@ -288,7 +288,7 @@ def link_calendar_tree_from_all_searched_files(calendar_objs):
                     else:
                         raise Exception('Incorrect date format',each_file,each_obj)
                     if match: 
-                        obj['_links'].append({'id': each_obj['id'], 'filename': os.path.basename(each_obj['_filename']) })
+                        obj['data'].append({'type': 'link', 'id': each_obj['id'], 'filename': os.path.basename(each_obj['_filename']) })
 
 @debug_gate
 @node_gate
@@ -309,7 +309,7 @@ def build_calendar_tree(year, seed, filename):
         id += 1 
         str_id = str(id)
         curr_formatted_day=curr_day.strftime('%d%b%Y').lower()
-        obj = {'name': curr_formatted_day, 'id': str_id, 'parent': [], 'x': '-1', 'y': '-1', 'tag': [], 'data': '', '_children': [], '_links': [] , '_filename': filename, '_day_obj': curr_day}
+        obj = {'name': curr_formatted_day, 'id': str_id, 'parent': [], 'x': '-1', 'y': '-1', 'tag': [], 'data': [], '_children': [] , '_filename': filename, '_day_obj': curr_day}
         if not week:
             seed['_children'].append( str_id )
         else:
@@ -330,7 +330,7 @@ def build_calendar_tree_from_result(year):
     if len(str(year))!=4: raise Exception('Provide year in 4 digit format yyyy')
     filename='cal'+str(year)
     if filename  not in g_context:
-        seed = {'name': 'seed', 'id': 'seed', 'parent': [], 'x': '-1', 'y': '-1', 'data': '', 'children': [] , '_filename': filename, '_links': [], '_children': [] ,'_day_obj': datetime(9999,1,1)}
+        seed = {'name': 'seed', 'id': 'seed', 'parent': [], 'x': '-1', 'y': '-1', 'data': [], 'children': [] , '_filename': filename, '_children': [] ,'_day_obj': datetime(9999,1,1)}
         tree = build_calendar_tree(year,seed, filename)
     else:
         tree = g_context[filename]['tree']
@@ -345,7 +345,7 @@ def build_tree_from_result(tree,mode='tree'):
     #for i in tree: print(i['name'])
     active_file = g_context['basefilename']
     seed = node_search_by_id(g_context[active_file]['tree'],['seed'])[0]
-    #parent_node = getNoParentNode(tree)
+     #parent_node = getNoParentNode(tree)
     #parent_node_ids = list ( set(map(lambda d:d['id'],parent_node)).difference({'seed'}) )
     #if seed not in result seed must be added as root 
     #seed['children']=[ i for i in parent_node_ids ] # clear out existing children we are building new graph
@@ -367,6 +367,8 @@ def build_tree_from_popup(node):
         else:
             g_ephemeral_tree[-1]['_ephemeral_children'].append(node['id'])
         g_ephemeral_tree.append(node)
+    print(g_ephemeral_tree)
+    input()
 
 @debug_gate
 def tree_display(tree,seed,mode): #dont use g_context here , it gets into the are of table context, initialize True will do it False wont do it None will check if its already done and not do it if so
@@ -487,14 +489,15 @@ def initialize_popup_params(g_screen_obj):
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
-    g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}
+    g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}#dont add vertical character difficult to copy
     command_options= { 'i j k l': "scroll", #not command option keys must be space separated
         'c': 'close popup and show tree', 
         'q' : "q for quit"
         } 
     height = os.get_terminal_size().lines 
     width  = os.get_terminal_size().columns
-    table_properties={'height': height - int( height * .20 ),'width': width - int(width * .5) , 'default_color': 'WHITE'}
+    #table_properties={'height': height - int( height * .20 ),'width': width - int(width * .5) , 'default_color': 'WHITE'}
+    table_properties={'height': height - int( height * .20 ),'width': width  , 'default_color': 'WHITE'} #keep full width it erases tree behind anyway
     #table_properties={'height': -1,'width': -1 , 'default_color': 'WHITE'}
     g_screen_obj[mode]['table_properties']=table_properties
     g_screen_obj[mode]['command_options']=command_options    
@@ -503,6 +506,7 @@ g_screen_obj=dict()
 g_clear_screen_first_time=True
 @debug_gate
 def screen_coordinator(mode, data_table=None ,context_properties=None): #except for mode all other params should be used only for initialization
+    if mode not in g_context['accepted_mode']: raise Exception("the mode {} is not one of the accepted values {}".format(mode,g_context['accepted_mode']))
     global g_clear_screen_first_time
     if g_clear_screen_first_time and args.screencontrol=="true":
         g_clear_screen_first_time=False
@@ -711,13 +715,16 @@ def refresh_popup_print_table(command_properties):
 def hide_children(obj,tree,key='children'):
     all_children=get_all_children(tree,[obj['id']],key)
     hidden_child_name = key + '_hidden' # need to separate hidden children for normal and ephemeral
-    if '_hidden_children' in obj:
+    if hidden_child_name in obj:
         obj[key]=obj[hidden_child_name]
+        obj['name']=obj['_hidden_name']
         del(obj[hidden_child_name])
     else:
         obj[hidden_child_name]=obj[key]
+        obj['_hidden_name']=obj['name']
+        obj['name']='x|'+obj['name']
         obj[key]=[]
-    print(obj)
+    #print(obj)
 
 @debug_gate
 def refresh_tree_print_table(mode, command_properties, command_dict):
@@ -928,36 +935,51 @@ def fetch_links(filename,id):
             return item 
 
 @debug_gate
-def find_cycle_and_update_data(link,status,assumed_status,track_stack=[]):
-    status[ link['filename']+link['id'] ] = True 
-    assumed_status[ link['filename']+link['id'] ] = True 
-    node = fetch_links(link['filename'],link['id'])
-    #print(node)
-    #input('node is {} {} {}'.format(link['filename'], node['id'], node['_links']))
-    #print(status,assumed_status)
-    for each_link in node['_links']:
-        #print('processing link',each_link)
-        track_stack.append(each_link)
-        if each_link['filename']+each_link['id'] not in status:
-            curr_data = find_cycle_and_update_data(each_link,status,assumed_status,track_stack)
-            if '_temp_link_data' in node:
-                node['_temp_link_data'].append(curr_data)
-            else:
-                node['_temp_link_data']=[curr_data]
-            #input('found data in recursion curr node {} now has {}'.format(link['filename'], [i['_filename']+i['name'] for i in node['_temp_link_data']] ))
-        elif each_link['filename']+each_link['id'] in assumed_status:
-            if  assumed_status[each_link['filename']+each_link['id']]:
-                raise Exception('cycle when connecting the following path:{}'.format(track_stack))
-            else:
-                curr_data = fetch_links(each_link['filename'],each_link['id'])
-                if '_temp_link_data' in node:
-                    node['_temp_link_data'].append(curr_data)
+def nested_links_to_dfs_flat_array(node,output,level=-1,seeing_for_first_time=True,is_root=True): #is top node means when a node is seen for first time it will be true when after travel graph comes back to it we will set it to false
+    for each_data in node['_resolved_data']:
+        if each_data['type'] == 'default':
+            output.append({'level': level,'is_root': is_root, 'seeing_for_first_time': seeing_for_first_time, 'data': each_data['txt'], '_filename': os.path.basename(node['_filename']), 'name': node['name']})
+        elif each_data['type'] == 'link':
+            nested_links_to_dfs_flat_array(each_data,output,level+1,True,False)
+        else:
+            raise Exception('Unknown type of data in nested_links_to_dfs_flat_array, its neither default not link {}'.format(each_data))
+        seeing_for_first_time = False
+    if not is_root:
+        output.append({'level': level, 'is_root': is_root, 'seeing_for_first_time': seeing_for_first_time, 'data': '<eol>\n', '_filename': os.path.basename(node['_filename']), 'name': node['name']})
+    return output
+
+@debug_gate
+def find_cycle_and_update_data(leaf,status,assumed_status,track_stack=[]):
+    #print('processing node', leaf)
+    status[ os.path.basename(leaf['_filename']) + leaf['id'] ] = True 
+    assumed_status[ os.path.basename(leaf['_filename']) + leaf['id'] ] = True 
+    #if '_resolved_data' not in leaf: leaf['_resolved_data']=[] this causes addition to data each time it is referenced
+    leaf['_resolved_data']=[]
+    for each_data in leaf['data']:
+        #print("processing each data",each_data)
+        if each_data['type'] == 'default':
+            #print('appending data',each_data)
+            leaf['_resolved_data'].append(each_data)
+        elif each_data['type'] == 'link':
+            node = fetch_links(each_data['filename'],each_data['id'])
+            track_stack.append({'filename': os.path.basename(node['_filename']),'id': node['id']})
+            #print('identified link',node)
+            if each_data['filename']+each_data['id'] not in status:
+                res_obj = find_cycle_and_update_data(node,status,assumed_status,track_stack)
+                #print('res_obj is ',res_obj)
+                leaf['_resolved_data'].append({**each_data,**res_obj})
+            elif each_data['filename']+each_data['id'] in assumed_status:
+                if  assumed_status[each_data['filename']+each_data['id']]:
+                    raise Exception('cycle when connecting the following path:{}'.format(track_stack))
                 else:
-                    node['_temp_link_data']=[curr_data] 
+                    res_obj = fetch_links(each_data['filename'],each_data['id'])
+                    leaf['_resolved_data'].append({**each_data,**res_obj})
                 #input('found data already visited but not cycle curr node {} now has {}'.format(link['filename'], [i['_filename']+i['name'] for i in node['_temp_link_data']] ))
-    assumed_status[ link['filename']+link['id'] ] = False 
-    #print(status,assumed_status)
-    return node
+            assumed_status[  each_data['filename']+each_data['id'] ] = False 
+            #print(status,assumed_status)
+    #print('final',leaf)
+    #print(track_stack)
+    return leaf
     
 def temp_dfs_print(node):
     #print( '===', node['_filename'],node['id'] )
@@ -967,27 +989,43 @@ def temp_dfs_print(node):
 
 @debug_gate
 def resolve_links_and_data(node):
+    #print("resolving node",node)
     #print(node)
     # if you resolved already dont resolve again because then the resolved text keep on appending 
-    if '_temp_link_data' in node: return node
+    if '_resolved_data' in node: return node
     status = dict()
     assumed_status = dict()
-    #print('...',node)
-    for i in [{'filename': os.path.basename(node['_filename']), 'id': node['id']}]:
-        #print('starting resolution : ', i)
-        data = find_cycle_and_update_data(i,status,assumed_status)
-        return data
+    data = find_cycle_and_update_data(node,status,assumed_status)
+    #input()
+    return data
 
 @debug_gate
 def generate_cell_box_text(cell_obj, cell_properties):
     text = ''
     root_link_node = resolve_links_and_data(cell_obj)
     #temp_dfs_print(i)
-    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node)):
-        if n!=0: # first loop is actual parent subsequent are link data
-            text+='<lnk>:{}:{}\n{}'.format(i['_filename'],i['name'],i['data'])
+    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
+        print([i], i['data'].split('\n'))
+        level_adjusted_text = ''
+        #.join([ ' '*i['level']+temp+'\n' if temp != '' else '\n'   ])
+        if i['data'] == '':
+            level_adjusted_text += ' '*i['level']
         else:
-            text+='{}\n'.format(i['data'])
+            each_line = i['data'].split('\n')
+            for n,each_word in enumerate(each_line):
+                if n+1 == len(each_line) and each_word == '' : # a\n will give ['a',''] dont want to add \n for 2 index so it becomes a\n\n
+                    pass#dont do anything 
+                else:
+                    level_adjusted_text += ( ' '*i['level'] + each_word + '\n' )
+        print([level_adjusted_text])
+        if i['is_root']:
+            text+='{}'.format(level_adjusted_text)
+        elif i['seeing_for_first_time']: # first loop is actual parent subsequent are link data
+            text+=' '*i['level']+'<lnk>:{}:{}\n{}'.format(i['_filename'],i['name'],level_adjusted_text)
+        else:
+            text+='{}'.format(level_adjusted_text)
+        #print([text])
+    #print([text])
     return text
 
 @debug_gate
@@ -1038,6 +1076,8 @@ def generate_cell_tree_text(cell_obj, cell_properties):
 
 @debug_gate
 def generate_cell_calendar_text(cell_obj, cell_properties):
+    #print(cell_obj)
+    #input()
     cell_text_obj = cell_obj
     name = cell_text_obj['name']
     active_obj = g_screen_obj['active_obj']
@@ -1072,35 +1112,30 @@ def generate_cell_calendar_text(cell_obj, cell_properties):
     name = pre_dot_char * pre_dots + name +  post_dot_char*post_dots
     text = ''
     root_link_node = resolve_links_and_data(cell_obj)
-    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node)):
+    '''for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
         if n!=0: # first loop is actual parent subsequent are link data
             text+='{} '.format(i['name'])
         else:
-            pass # when a linked array returns it always contains the root data, so since we already use root data as the main showing name no need to show again
+            pass # when a linked array returns it always contains the root data, so since we already use root data as the main showing name no need to show again'''
+    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
+        if not i['is_root']: # first loop is actual parent subsequent are link data
+            text+='{} '.format(i['name'])
+        else:
+            pass
+    #print('======',name+text)
     return name + text
 
 @debug_gate
-def nested_links_to_dfs_flat_array(root_link_node):
-    linked_stack = [root_link_node]
-    output=[]
-    while linked_stack:
-        i=linked_stack.pop(0)
-        output.append(i)
-        if '_temp_link_data' in i:
-            linked_stack=i['_temp_link_data']+linked_stack
-    '''for i in output:
-        print(i)
-        print(i['name'])
-        input()'''
-    return output
-
-@debug_gate
 def highlight_cell_tree_text(colored_text,cell_properties,cell_obj):
-    #print('<><><><>',colored_text)
+    #print('<><><><>',cell_obj)
     highlighted_word=cell_properties['highlight']
     text=''
-    text += cell_obj['name'] + ' '
-    text += cell_obj['data']
+    root_link_node = resolve_links_and_data(cell_obj)
+    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
+        text+='{} '.format(i['name'])
+        text+='{} '.format(i['data'])
+    #print(text)
+    #input()
     found=False
     if highlighted_word:
         for each_highlighted_word in highlighted_word.split(','):
@@ -1117,8 +1152,12 @@ def highlight_cell_tree_text(colored_text,cell_properties,cell_obj):
 
 @debug_gate
 def highlight_cell_calendar_text(colored_text,cell_properties):
-    for each_nested_item in nested_links_to_dfs_flat_array(cell_properties['obj']):
-        if highlight_cell_tree_text(colored_text,cell_properties,each_nested_item): break
+    #print('////////',cell_properties)
+    '''for each_nested_item in nested_links_to_dfs_flat_array(cell_properties['obj'],[]):
+        print(each_nested_item)
+        input('+++')
+        if highlight_cell_tree_text(colored_text,cell_properties,each_nested_item): break'''
+    highlight_cell_tree_text(colored_text,cell_properties,cell_properties['obj'])
 
 @debug_gate
 def color_cell_tree_text(text,cell_properties):
@@ -1688,13 +1727,14 @@ def to_node(content,filename):
             identified_box_hash=True
             seen_link_atleast_once=False
             if start:
-                dict_items['data']=curr_block
-                curr_block=''
+                if curr_block:
+                    dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
+                    curr_block=''
                 total_items.append(dict_items)
             else:
                 start=True 
             items=i.split('#')
-            dict_items={'_links':[],'_filename':filename}
+            dict_items={'_filename':filename}
             for j in items:
                 if '@' in j:
                     key=j.split('@')[0]
@@ -1702,6 +1742,7 @@ def to_node(content,filename):
                     if key.lower() in ['parent','children','tag']:
                         value=value.split(',') if value.strip()!='' else []
                     dict_items[key]=value
+            dict_items['data']=[]
             #dict_items = dict([ ( a.split('@')[0],a.split('@')[1].split(',') if ',' in a.split('@')[1] else a.split('@')[1])  for a in i.split('#') if '@' in a ])
         elif i.startswith('#?#link') and identified_box_hash:
             seen_link_atleast_once=True
@@ -1714,11 +1755,13 @@ def to_node(content,filename):
             else:
                 raise Exception("link error for node id:"+lnk_nodeid+" and temp_filename:"+lnk_basefilename)
             set_g_context(lnk_filename,False)
-            dict_items['_links'].append({'id':lnk_nodeid,'filename':lnk_basefilename})
+            if curr_block:
+                dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
+                curr_block=''
+            dict_items['data'].append({ 'type': 'link', 'id':lnk_nodeid, 'filename':lnk_basefilename })
         elif identified_box_hash:
-            if seen_link_atleast_once and i.lstrip().rstrip(): raise Exception("Text after a link section will be discarded, if i have to fix this i need to convert data part to array ec : text link link text , link is an array of objects where to place the text then link needs to be coded in, so i need to make the data an array object , \nKEEP IT SIMPLE, \nNO TEXT AFTER  LINK\nnodeid:{} filename:{}".format(dict_items['id'],filename))
             curr_block+=i
-    dict_items['data']=curr_block
+    if curr_block: dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
     curr_block=''
     total_items.append(dict_items)
     return(total_items)
@@ -1730,7 +1773,8 @@ def file_to_tree(filename):
 
 g_context=dict()
 g_context['tree']=[]
-g_ephemeral_tree: list= [{'calculatedX': '0', 'calculatedY': '0', '_ephemeral_children': [], 'children': [] , 'name': 'seed' , 'id': 'seed', 'parent': [], 'x': '0', 'y': '0', 'data': 'seed', '_filename':'dummy', }]
+g_context['accepted_mode']=['tree','ephemeral_tree','calendar','popup']
+g_ephemeral_tree: list= [{'calculatedX': '0', 'calculatedY': '0', '_ephemeral_children': [], 'children': [] , 'name': 'seed' , 'id': 'seed', 'parent': [], 'x': '0', 'y': '0', 'data': [{'type': 'default', 'txt': 'seed'}], '_filename':'dummy', }]
 @debug_gate
 def set_g_context(filename=None,change_current_context=False,tree=None):
     base_file_name=os.path.basename(filename)

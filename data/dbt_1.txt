@@ -22,6 +22,6 @@ content
 #?#box#calculatedX@617#calculatedY@250#children@#name@1: config invalidate_hard_deletes=True,#id@1699935948374#parent@#type@bubble#x@493#y@200
 content
 #?#box#calculatedX@622#calculatedY@290#children@#name@2:dbt_valid_to will be set to the current snapshot time#id@1699935978601#parent@#type@bubble#x@497#y@232
-content
+content 
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
 root Node

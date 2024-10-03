@@ -1,8 +1,5 @@
-#?#box#calculatedX@108#calculatedY@98#children@noparent#name@seed#id@seed#parent@#x@86#y@78#tag@hindi
+#?#box#calculatedX@108#calculatedY@98#children@#name@seed#id@seed#parent@#x@86#y@78#tag@hindi
 content
-#?#box#calculatedX@108#calculatedY@98#children@#name@noparent#id@noparent#parent@#x@86#y@78
-content
-
 #?#box#calculatedX@108#calculatedY@98#children@#name@hindi1#id@1721210332#parent@#x@86#y@78
 i did not see the three of them from morning
 aaje maenae subhae se un theeno ko nahi dekha

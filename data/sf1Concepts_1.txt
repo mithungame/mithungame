@@ -1,53 +1,66 @@
-#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1716306061,1714328151#name@0:seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187
+#?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1716306061,1714328151#name@seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187#priority@2
 title
 
-#?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@1:warehouse#id@1704786298378#parent@#d_visibility@hidden#x@292#y@160
-warehouse, is a cluster of compute resources 
-size x small  to 6x 
-
-Gotcha:
-1. Increasing the size of a warehouse does not always improve "data loading" performance. 
-
-#?#box#calculatedX@475#calculatedY@165#children@1704786347678,1704786359487,1704786661708,1709548876390#name@1:types#id@1707559463#parent@#x@380#y@132
+#?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@warehouse#id@1704786298378#parent@#d_visibility@hidden#x@292#y@160
+https://docs.snowflake.com/en/user-guide/warehouses-overview
+warehouse, is a ~*cluster of compute resources ~*
+smallest size ~*x small~* largest size  ~*6x ~*
+warehouse be resized at ~*any time~* ... even ~*while running~*
+Increasing the size of a warehouse does not always improve ~*"data loading"~* performance
+Data loading performance is influenced more by the ~*number of files~* being loaded and the ~*size of each file~* than the size of the warehouse.
+#?#box#calculatedX@475#calculatedY@165#children@1704786347678,1704786359487,1704786661708,1709548876390#name@types#id@1707559463#parent@#x@380#y@132
 content
-#?#box#calculatedX@564#calculatedY@116#children@#name@1:standard#id@1704786347678#parent@#x@451#y@92
-content
-#?#box#calculatedX@564#calculatedY@156#children@#name@2:snowparkOptimized#id@1704786359487#parent@#x@451#y@124
-Snowpark workloads can be run on both Standard and Snowpark-optimized warehouses. Snowpark-optimized warehouses are recommended for workloads that have large memory requirements such as ML training use cases
-#?#box#calculatedX@560#calculatedY@189#children@#name@3:SuspendAndResume#id@1704786661708#parent@#x@448#y@151
-Auto-suspend and auto-resume apply to "entire" warehouse and not to the individual clusters in the warehouse.
+#?#box#calculatedX@564#calculatedY@116#children@#name@standard#id@1704786347678#parent@#x@451#y@92
+what is the ? node ? core ? ram gb ? gb disk of x small 
+1 node 8 core 16 gb ram 200 gb hard disk , for small multiple all details by 2
+note:
+This info is from a blog post and i cannot find in snowflake page
+
+#?#box#calculatedX@564#calculatedY@156#children@#name@snowparkOptimized#id@1704786359487#parent@#x@451#y@124
+https://docs.snowflake.com/en/user-guide/warehouses-snowpark-optimized
+Snowpark-optimized warehouses let you configure the available ~*memory resources~*, ~*CPU architecture~* on a single-node instance for your workloads
+Snowpark-optimized warehouse provides ~*16x~* memory per node compared to a standard warehouse
+Snowpark workloads can be run on both ~*Standard~* and ~*Snowpark-optimized warehouses~*
+Snowpark-optimized warehouses are recommended for workloads that have ~*large memory requirements~* such as ML training use cases
+
+https://docs.snowflake.com/en/user-guide/warehouses-snowpark-optimized
+Snowpark-optimized warehouses let you configure the available ~*memory resources~*, ~*CPU architecture~* on a single-node instance for your workloads
+Snowpark-optimized warehouse provides ~*16x~* memory per node compared to a standard warehouse
+Snowpark workloads can be run on both ~*Standard~* and ~*Snowpark-optimized warehouses~*
+Snowpark-optimized warehouses are recommended for workloads that have ~*large memory requirements~* such as ML training use cases
+#?#box#calculatedX@560#calculatedY@189#children@#name@SuspendAndResume#id@1704786661708#parent@#x@448#y@151
+Auto-suspend and auto-resume apply to ~*"entire" warehouse~* and not to the ~*individual clusters~* in the warehouse.
 
 For a multi-cluster warehouse:
+Auto-suspend only occurs when the ~*minimum number of clusters~* is running and there ~*is no activity~* for the specified period of time. The minimum is typically ~*1 (cluster)~*, but could be more than 1.
 
-Auto-suspend only occurs when the minimum number of clusters is running and there is no activity for the specified period of time. The minimum is typically 1 (cluster), but could be more than 1.
-
-Auto-resume only applies when the entire warehouse is suspended (i.e. no clusters are running).
-#?#box#calculatedX@564#calculatedY@241#children@1709548990743,1709548997137#d_visibility@hidden#name@4:multicluster#id@1709548876390#parent@#x@451#y@192
+Auto-resume only applies when the ~*entire warehouse~* is ~*suspended~* (i.e. ~*no clusters are running~*).
+#?#box#calculatedX@564#calculatedY@241#children@1709548990743,1709548997137#d_visibility@hidden#name@multicluster#id@1709548876390#parent@#x@451#y@192
 A multi-cluster warehouse is defined by specifying the following properties:
 
-Maximum number of clusters, greater than 1 (up to 10).
+Maximum number of clusters, greater than 1 (up to ~*10~*).
 
 Minimum number of clusters, equal to or less than the maximum (up to 10).
-#?#box#calculatedX@697#calculatedY@244#children@#name@1:maximized#id@1709548990743#parent@#x@557#y@195
-same value for both maximum and minimum number of clusters
-use when large numbers of concurrent user sessions and/or queries and the numbers do not fluctuate significantly
-#?#box#calculatedX@698#calculatedY@278#children@1709549178164#name@2:autoscale#id@1709548997137#parent@#x@558#y@222
+#?#box#calculatedX@697#calculatedY@244#children@#name@maximized#id@1709548990743#parent@#x@557#y@195
+same value for both ~*maximum~* and ~*minimum~* number of clusters
+use when large numbers of ~*concurrent user sessions~* and/or queries and the numbers do not fluctuate significantly
+#?#box#calculatedX@698#calculatedY@278#children@1709549178164#name@autoscale#id@1709548997137#parent@#x@558#y@222
 different values for maximum and minimum number of clusters
-#?#box#calculatedX@811#calculatedY@278#children@1709549302125,1709549307931#name@1:scalingPolicy#id@1709549178164#parent@#x@648#y@222
-scaling policy only applies to auto scale mode
-#?#box#calculatedX@940#calculatedY@277#children@#name@1:standard#id@1709549302125#parent@#x@752#y@221
-favor starting additional clusters over conserving credits.
-#?#box#calculatedX@943#calculatedY@298#children@#name@2:economy#id@1709549307931#parent@#x@754#y@238
-Conserves credits by favoring keeping running clusters fully-loaded rather than starting additional clusters
-may result in query queueing
-#?#box#calculatedX@491#calculatedY@325#children@1709550035930,1709550115666#name@2:queryAccelerationService#id@1709549875289#parent@#x@392#y@260
-improve overall warehouse performance by reducing the impact of outlier queries
-offloading portions of the query processing work to shared compute resources
+#?#box#calculatedX@811#calculatedY@278#children@1709549302125,1709549307931#name@scalingPolicy#id@1709549178164#parent@#x@648#y@222
+scaling policy only applies to ~*auto scale~* mode
+#?#box#calculatedX@940#calculatedY@277#children@#name@standard#id@1709549302125#parent@#x@752#y@221
+favor starting ~*additional clusters~* over conserving credits.
+#?#box#calculatedX@943#calculatedY@298#children@#name@economy#id@1709549307931#parent@#x@754#y@238
+Conserves credits by favoring ~*keeping running clusters fully-loaded~* rather than starting additional clusters
+may result in ~*query queueing~*
+#?#box#calculatedX@491#calculatedY@325#children@1709550035930,1709550115666#name@queryAccelerationService#id@1709549875289#parent@#x@392#y@260
+improve overall warehouse performance by reducing the impact of ~*outlier queries~*
+offloading portions of the query processing work to ~*shared compute resources~*
 
-examples = basically scenarios where parallelism can improve performance
-Ad hoc analytics, unpredictable data volume per query, large scans and selective filters.
-#?#box#calculatedX@702#calculatedY@327#children@#name@1:ineligibleQueries#id@1709550035930#parent@#x@561#y@261
-OVERALL CANDIDATES - Large Scan few selections
+examples = basically scenarios where ~*parallelism~* can improve performance
+Ad hoc analytics, unpredictable data volume per query, ~*large scans~* and ~*selective filters~*.
+#?#box#calculatedX@702#calculatedY@327#children@#name@ineligibleQueries#id@1709550035930#parent@#x@561#y@261
+OVERALL CANDIDATES - ~*Large Scan few selections~*
 
 There are not enough partitions. If there are not enough partitions to scan, the benefits of query acceleration are offset by the latency in acquiring resources for the query acceleration service.
 
@@ -58,17 +71,17 @@ The filters are not selective enough. Alternatively, the GROUP BY expression has
 The query includes a LIMIT clause but does not have an ORDER BY clause.
 
 The query includes functions that return nondeterministic results (for example, SEQ or RANDOM).
-#?#box#calculatedX@705#calculatedY@370#children@#name@2:IdentifyCandidates#id@1709550115666#parent@#x@564#y@296
+#?#box#calculatedX@705#calculatedY@370#children@#name@IdentifyCandidates#id@1709550115666#parent@#x@564#y@296
 SELECT PARSE_JSON(SYSTEM$ESTIMATE_QUERY_ACCELERATION('8cd54bf0-1651-5b1c-ac9c-6a9582ebd20f'));
 
 Query the QUERY_ACCELERATION_ELIGIBLE View
-#?#box#calculatedX@337#calculatedY@313#children@1704787008261,1704787113672,1713612732#name@2:Concepts#id@1704786809287#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1704787008261,1704787113672,1713612732#name@Concepts#id@1704786809287#parent@#x@269#y@250
 content
-#?#box#calculatedX@326#calculatedY@368#children@1707563377,1707563378#name@1:microPartitions#id@1704787008261#parent@#x@260#y@294
+#?#box#calculatedX@326#calculatedY@368#children@1707563377,1707563378#name@microPartitions#id@1704787008261#parent@#x@260#y@294
 contiguous units of storage
 50 MB and 500 MB of "uncompressed data"
 "Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
-#?#box#calculatedX@489#calculatedY@378#children@#name@2:Clustering#id@1704787113672#parent@#x@391#y@302
+#?#box#calculatedX@489#calculatedY@378#children@#name@Clustering#id@1704787113672#parent@#x@391#y@302
 manual clustering Disabled
 create table cluster by <key>
 Data within micro partition is ordered by key
@@ -85,7 +98,7 @@ micro parition 3 - G TO Z
 To view/monitor the clustering metadata for a table, Snowflake provides the following system functions:
 SYSTEM$CLUSTERING_DEPTH
 SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
-#?#box#calculatedX@489#calculatedY@378#children@#name@2:zeroclone#id@1713612732#parent@#x@391#y@302
+#?#box#calculatedX@489#calculatedY@378#children@#name@zeroclone#id@1713612732#parent@#x@391#y@302
 clone utilizes --- because it shares all the existing micro-partitions of the original table at the time it was cloned
 no data storage
 rows can then be added, deleted, or updated in the clone --- from the original table
@@ -93,15 +106,48 @@ independently
 Each change to the clone results in --- that are owned exclusively by the clone and are protected through CDP.
 new micro-partitions
 clones can be cloned, with no limitations which results in a n-level hierarchy of cloned objects each with their own portion of shared and independent data storage
-#?#box#calculatedX@337#calculatedY@313#children@1713613122,1716306157#name@3:objects#id@1716306061#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1713613122,1716306157#name@objects#id@1716306061#parent@#x@269#y@250
 content
-#?#box#calculatedX@337#calculatedY@313#children@1713613123#name@1:tables#id@1713613122#parent@#x@269#y@250
-1. Internal - Temporary , Transient, Permanent
+#?#box#calculatedX@337#calculatedY@313#children@1726663852,1713613123#name@tables#id@1713613122#parent@#x@269#y@250
+what are the types of snowflake tables?
+1. Internal
+    Temporary , Transient, Permanent
 2. External 
 3. Iceberg
-#?#box#calculatedX@337#calculatedY@313#children@1713613124,1713613125,1713613126#name@1:internal#id@1713613123#parent@#x@269#y@250
+4. dynamic
+#?#box#calculatedX@337#calculatedY@313#children@1726663991#name@dynamic#id@1726663852#parent@#x@269#y@250
+what is dynamic table ?
+specify the query used to transform the data from one or more base objects or dynamic tables. 
+how is it refreshed ?
+An automated refresh process executes this query regularly and updates the dynamic table with the changes made to the base objects.
+can it reference transient table  ?
+if time travel > 0
+create dynamic Iceberg tables?
+yes *Snowflake-managed Iceberg tables
+cost?
+1. virtual warehouses ( run queries against base objects  )
+2. Cloud Services compute (  identify changes in underlying base objects and whether the virtual warehouse needs to be invoked )
+3. storage to store the materialized results
+Time Travel and fail-safe storage for dynamic tables ?
+yes
+can dynamic table be suspended?
+yes. Suspended dynamic tables dont incur additional costs beyond standard storage fees and dont consume compute resources
+scheduled jobs that interact with the suspended table might consume compute resources
+incremental or full refresh?
+can be set at time of creation, if not set - auto ( snowflake decides after looking at query )
+#?#box#calculatedX@337#calculatedY@313#children@#name@ddl#id@1726663991#parent@#x@269#y@250#tag@ddl
+https://docs.snowflake.com/en/user-guide/dynamic-tables-create#syntax-for-creating-dynamic-tables
+example
+CREATE OR REPLACE DYNAMIC TABLE product
+  TARGET_LAG = '20 minutes'
+  WAREHOUSE = mywh
+  REFRESH_MODE = auto
+  INITIALIZE = on_create
+  AS
+    SELECT product_id, product_name FROM staging_table;
+#?#box#calculatedX@337#calculatedY@313#children@1713613124,1713613125,1713613126#name@internal#id@1713613123#parent@#x@269#y@250
 content
-#?#box#calculatedX@337#calculatedY@313#children@#name@2:temporary#id@1713613124#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@temporary#id@1713613124#parent@#x@269#y@250
 Temporary tables only exist within the session
 you can create temporary and non-temporary tables with the same name within the same schema.
 temporary table takes precedence in the session over any other table with the same name in the same schema.
@@ -109,44 +155,44 @@ temporary table takes precedence in the session over any other table with the sa
 CREATE TEMPORARY TABLE mytemptable (id NUMBER, creation_date DATE);
 Time travel 0 or 1 ( default )
 fail safe 0
-#?#box#calculatedX@337#calculatedY@313#children@#name@2:transient#id@1713613125#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@transient#id@1713613125#parent@#x@269#y@250
 Transient tables are similar to permanent tables with the key difference that they do not have a Fail-safe period
 
 CREATE TRANSIENT TABLE mytranstable (id NUMBER, creation_date DATE);
 Time travel 0 or 1 ( default )
 fail safe 0
-#?#box#calculatedX@337#calculatedY@313#children@#name@3:permanent#id@1713613126#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@permanent#id@1713613126#parent@#x@269#y@250
 time travel 0 to 90 (default is configurable)
 fail safe 7
-#?#box#calculatedX@337#calculatedY@313#children@1716306158,1716308000#name@2:views#id@1716306157#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1716306158,1716308000#name@views#id@1716306157#parent@#x@269#y@250
 content
-#?#box#calculatedX@337#calculatedY@313#children@1716308001#name@2:secure#id@1716308000#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1716308001#name@secure#id@1716308000#parent@#x@269#y@250
 https://docs.snowflake.com/en/user-guide/views-secure
 
 cannot see query of view except for authorised users
 cannot see query profile after execution even for owner 
 optimizations that expose data will not be applied 
-#?#box#calculatedX@337#calculatedY@313#children@#name@1:isViewSecure#id@1716308001#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@isViewSecure#id@1716308001#parent@#x@269#y@250
 For non-materialized views, check the IS_SECURE column in the Information Schema
 SHOW VIEWS LIKE 'myview';
 SHOW MATERIALIZED VIEWS LIKE 'my_mv';
 
-#?#box#calculatedX@337#calculatedY@313#children@1716306159,1716306160#name@3:materialized#id@1716306158#parent@#x@269#y@250
-useful when 
-output row is less compare to base table 
+#?#box#calculatedX@337#calculatedY@313#children@1716306159,1716306160#name@materialized#id@1716306158#parent@#x@269#y@250
+useful when
+output row is less compare to base table
 data calculaltion is process resource intensive
-query is on external table which might have slower performance 
+query is on external table which might have slower performance
 base table dont change frequently
 
 GUARANTEE
 Data accessed through materialized views is always current
-#?#box#calculatedX@337#calculatedY@313#children@#name@1:limits#id@1716306159#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@limits#id@1716306159#parent@#x@269#y@250
 https://docs.snowflake.com/en/user-guide/views-materialized#limitations-on-creating-materialized-views
 ONLY FEW COVERED HERE , SEE LINK FOR MORE 
 A materialized view can query only a single table.
 Joins, including self-joins, are not supported.
 A materialized view cannot include UDF,Window,HAVING,ORDER BY,LIMIT , many aggregate function ETC 
-#?#box#calculatedX@337#calculatedY@313#children@#name@2:gotcha#id@1716306160#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@gotcha#id@1716306160#parent@#x@269#y@250
 materialized view can be secure
 supports clustering on materialized view 
 can be suspended 
@@ -154,7 +200,7 @@ add column to base table does not reflect automatically
 update or drop column - recreate materialized view 
 without specifying a materialized view in a SQL statement query optimizer can automatically rewrite queries against the base table or regular views to use the materialized view instead.
 
-#?#box#calculatedX@337#calculatedY@313#children@1714328152#name@4:secureSharing#id@1714328151#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1714328152#name@secureSharing#id@1714328151#parent@#x@269#y@250
 Secure Data Sharing lets you share selected objects in a database in your account with other Snowflake accounts
 All database objects shared between accounts are read-only
 no actual data is copied or transferred between accounts
@@ -173,13 +219,13 @@ Iceberg tables
 Secure views
 Secure materialized views
 Secure user-defined functions (UDFs)
-#?#box#calculatedX@337#calculatedY@313#children@1714328153,1714328154,1714328155#name@1:options#id@1714328152#parent@#d_visibility@hidden#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@1714328153,1714328154,1714328155#name@options#id@1714328152#parent@#d_visibility@hidden#x@269#y@250
 You can share data in Snowflake using one of the following options:
 
 a Listing, in which you offer a share and additional metadata as a data product to one or more accounts,
 a Direct Share, in which you directly share specific database objects (a share) to another account in your region,
 a Data Exchange, in which you set up and manage a group of accounts and offer a share to that group
-#?#box#calculatedX@337#calculatedY@313#children@#name@1:directShare#id@1714328153#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@directShare#id@1714328153#parent@#x@269#y@250
 USE DATABASE d1;
 CREATE DATABASE ROLE r1;
 GRANT USAGE ON SCHEMA d1.s1 TO DATABASE ROLE d1.r1;
@@ -188,10 +234,10 @@ GRANT USAGE ON DATABASE d1 TO SHARE share1; -- even though we provide role we mu
 GRANT DATABASE ROLE d1.r1 TO SHARE share1;
 ALTER SHARE share1 ADD ACCOUNTS = org1.consumer1,org1.consumer2;
 
-#?#box#calculatedX@337#calculatedY@313#children@#name@1:listing#id@1714328154#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@listing#id@1714328154#parent@#x@269#y@250
 share to both public and private using snowflake app or listing on a market place 
 Charge consumers for access to the data in the share
-#?#box#calculatedX@337#calculatedY@313#children@#name@1:dataExchangeg#id@1714328155#parent@#x@269#y@250
+#?#box#calculatedX@337#calculatedY@313#children@#name@dataExchangeg#id@1714328155#parent@#x@269#y@250
 Data Exchange provides a data hub for securely collaborating around data with a selected group of members that you invite. 
 provide data to a specific group of consistent business partners taking part in the Data Exchange, such as internal departments in your company or vendors, suppliers, and partners external to your company
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259

@@ -1,6 +1,4 @@
-#?#box#calculatedX@108#calculatedY@98#children@noparent,1720955814,1720955333,1720952932,1720953745#name@0:seed#id@seed#parent@#x@86#y@78#tag@tp,timepass
-content
-#?#box#calculatedX@108#calculatedY@98#children@#name@noparent#id@noparent#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@1720955814,1720955333,1720952932,1720953745#name@0:seed#id@seed#parent@#x@86#y@78#tag@tp,timepass
 content
 #?#box#calculatedX@108#calculatedY@98#children@1720955835,1720955905#name@tech#id@1720955814#parent@#x@86#y@78
 content

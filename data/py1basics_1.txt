@@ -1,7 +1,5 @@
-#?#box#calculatedX@95#calculatedY@-350#children@noparent,45,1690875626919,1685259800875,1698726635873#name@seed#id@seed#parent@#tag@python#x@336#y@220
+#?#box#calculatedX@95#calculatedY@-350#children@45,1690875626919,1685259800875,1698726635873#name@seed#id@seed#parent@#tag@python#x@336#y@220
 pythonbasics
-#?#box#calculatedX@95#calculatedY@-350#children@#name@noparent#id@noparent#parent@#tag@python#x@336#y@220
-content
 #?#box#calculatedX@70#calculatedY@-125#children@1694957722984,1694847682128,1694957789130,1694959856281#name@basicOperation#id@45#parent@#tag@hi#x@316#y@400
 basicOperation
 #?#box#calculatedX@-73#calculatedY@-80#children@1685259883148,1685260199442,1685283245145,1690881098550#name@add#id@1694957722984#parent@#tag@hello#x@201#y@436
@@ -245,14 +243,14 @@ package folder - from ..database import Database
 
 from ..contact.email import send_mail
 #?#box#calculatedX@578#calculatedY@145#children@1685259919444,1685260059948,1698727713673#name@class#id@1685259800875#parent@#x@722#y@616
-__init__ is initializer
-__new__ is constructor rarely used
-class can be inside object, philiposc2p45
+~*__init__~* is initializer
+~*__new__~* is constructor rarely used
+class can be ~*inside object~*, philiposc2p45
 
 class Point:
     def __init__(self, x=0, y=0):
-        self.move(x, y)
-    def move(self, x, y):
+        self.move(x, y) #calling a function to set values can help the function to act like a setter 
+    def move(self, x, y): #this can also act like a value setter
         self.x = x
         self.y = y
     def reset(self):
@@ -264,22 +262,25 @@ print(point.x, point.y)
 #?#box#calculatedX@415#calculatedY@170#children@#name@dataclass#id@1685259919444#parent@#x@592#y@636
 (a small tuition) C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\dataclass.ipynb
 #?#box#calculatedX@410#calculatedY@235#children@#name@property#id@1685260059948#parent@#x@588#y@688
-setter,deleter,getter variable access will go via property method
-variable name and property name should not be same
+setter,deleter,getter variable access will go via ~*property method~*
+variable name and property name should ~*not be same~* , it will cause ~*infinite recursion~*
 eg use _name as variable and name as property
 #?#box#calculatedX@755#calculatedY@323#children@1698727725678,1698727967889#name@variables#id@1698727713673#parent@#x@864#y@758
 content
 #?#box#calculatedX@769#calculatedY@379#children@#name@global#id@1698727725678#parent@#x@875#y@803
+in case of items like ~*list~* or ~*dict~* no need to define ~*global~* keyword
+global keyword must be used when global variable is ~*modified~* not when ~*reading~*
+
 database = None
 
 def initialize_database():
     global database # dont need definition for use , only during assignment
     database = Database()
-#?#box#calculatedX@894#calculatedY@389#children@1698727984744#name@private#id@1698727967889#parent@#x@975#y@811
-_ or __
-_ can be directly accessed
-__ can be directly accessed only from with in class
-  outside class print(<object name>._<class name>__<var name>)
+#?#box#calculatedX@894#calculatedY@389#children@#name@private#id@1698727967889#parent@#x@975#y@811
+use ~* _ or __ ~* as prefix
+_ can be ~*directly accessed~*
+__ can be directly accessed only from ~*with in class~*
+  outside class ~* print(<object name>._<class name>__<var name>) ~*
 
 class SecretString:
     '''A not-at-all secure way to store a secret string.'''
@@ -292,7 +293,5 @@ class SecretString:
             return self.__plain_string   #<----------- self.__
         else:
             return ''
-#?#box#calculatedX@900#calculatedY@440#children@#name@no REAL privacy#id@1698727984744#parent@#type@bubble#x@980#y@852
-content
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@751#y@759
 root Node

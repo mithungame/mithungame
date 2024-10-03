@@ -4,6 +4,7 @@ import argparse
 import glob
 import os, platform
 import random
+import shutil
 import time
 from datetime import datetime, timedelta
 if platform.system() == 'Windows': import msvcrt
@@ -11,7 +12,8 @@ if platform.system() == 'Windows': import msvcrt
 g_debug_dict={0: 'show_none', 1: 'show_func_names',2: 'show_func_name_and_params'}
 
 context_precedence = { 
-'snowflake': ['database'] ,
+'snowflake': ['sql'] ,
+'sf': ['sql'] ,
 'python': ['python'] , 
 'aws': ['aws', 'network']
 }
@@ -22,25 +24,39 @@ g_clrs={
     'general': {'green':
         'sql sql python java c c++ go docker kubernetes'.split(" ") +
         'amazon aws azure cloud'.split(" ") +
-        'oracle mongo dynamo redshift cassandra hive '.split(" ") + 
+        'oracle mongo dynamo redshift cassandra hive iceberg'.split(" ") + 
         'network subnet vpc vpc firewall '.split(" ")
     },
     'python':
-    {'yellow': "and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" "),
-    'red':"ArithmeticError AssertionError AttributeError BaseException BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EnvironmentError Exception False FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError None NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError True TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning WindowsError ZeroDivisionError abs all any ascii bin bool breakpoint bytearray bytes callable chr classmethod compile complex copyright credits delattr dict dir divmod enumerate eval exec exit filter float format frozenset getattr globals hasattr hash help hex id input int isinstance issubclass iter len license list locals map max memoryview min next object oct open ord pow print property quit range repr reversed round set setattr slice sorted staticmethod str sum super tuple type vars zip".split(" ")
+    {'yellow': "assert async await break class continue def del elif else except finally global import lambda nonlocal pass raise return try while yield".split(" "),
+    'red':"ArithmeticError AssertionError AttributeError BaseException BlockingIOError BrokenPipeError BufferError BytesWarning ChildProcessError ConnectionAbortedError ConnectionError ConnectionRefusedError ConnectionResetError DeprecationWarning EOFError Ellipsis EnvironmentError Exception False FileExistsError FileNotFoundError FloatingPointError FutureWarning GeneratorExit IOError ImportError ImportWarning IndentationError IndexError InterruptedError IsADirectoryError KeyError KeyboardInterrupt LookupError MemoryError ModuleNotFoundError NameError None NotADirectoryError NotImplemented NotImplementedError OSError OverflowError PendingDeprecationWarning PermissionError ProcessLookupError RecursionError ReferenceError ResourceWarning RuntimeError RuntimeWarning StopAsyncIteration StopIteration SyntaxError SyntaxWarning SystemError SystemExit TabError TimeoutError True TypeError UnboundLocalError UnicodeDecodeError UnicodeEncodeError UnicodeError UnicodeTranslateError UnicodeWarning UserWarning ValueError Warning WindowsError ZeroDivisionError abs all any ascii bin bool breakpoint bytearray bytes callable chr classmethod compile complex copyright credits delattr dict dir divmod enumerate eval exec exit filter float format frozenset getattr globals hasattr hash help hex id input int isinstance issubclass iter len license list locals map max memoryview min next object open ord pow print property quit range repr reversed round set setattr slice sorted staticmethod str sum super tuple type vars zip".split(" ")
     },
     'aws':
     {'yellow': "ec2".split(" ")
+    },
+    'sf':
+    {'yellow': "clone dynamic micropartition temporary transient permanent ".split(" ")
+    },
+    'sql':
+    {'cyan': "database databases materialization table tables view views".split(" ")
     }
     }
-
+g_stop_words=['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 'am', 'an', 'and', 'any', 'are', 'aren', "aren't", 'as', 'at', 'be', 'because', 'been', 'before', 'being', 'below', 'between', 'both', 'but', 'by', 'can', 'couldn', "couldn't", 'd', 'did', 'didn', "didn't", 'do', 'does', 'doesn', "doesn't", 'doing', 'don', 'dont', "don't", 'down', 'during', 'each', 'few', 'for', 'from', 'further', 'had', 'hadn', "hadn't", 'has', 'hasn', "hasn't", 'have', 'haven', "haven't", 'having', 'he', 'her', 'here', 'hers', 'herself', 'him', 'himself', 'his', 'how', 'i', 'if', 'in', 'into', 'is', 'isn', "isn't", 'it', "it's", 'its', 'itself', 'just', 'll', 'm', 'ma', 'me', 'mightn', "mightn't", 'more', 'most', 'mustn', "mustn't", 'my', 'myself', 'needn', "needn't", 'no', 'nor', 'not', 'now', 'o', 'of', 'off', 'on', 'once', 'only', 'or', 'other', 'our', 'ours', 'ourselves', 'out', 'over', 'own', 're', 's', 'same', 'shan', "shan't", 'she', "she's", 'should', "should've", 'shouldn', "shouldn't", 'so', 'some', 'such', 't', 'than', 'that', "that'll", 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'there', 'these', 'they', 'this', 'those', 'through', 'to', 'too', 'under', 'until', 'up', 've', 'very', 'was', 'wasn', "wasn't", 'we', 'were', 'weren', "weren't", 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why', 'will', 'with', 'won', "won't", 'wouldn', "wouldn't", 'y', 'you', "you'd", "you'll", "you're", "you've", 'your', 'yours', 'yourself', 'yourselves']
+'''g_priority={
+1: {  3  :'GREEN' , 7 : 'YELLOW' , 14 :'BLUE'  , 21: 'MAGENTA', 3000: 'RED'}, # important
+2: {  7  :'GREEN' , 10: 'YELLOW' , 14 :'BLUE'  , 21: 'MAGENTA', 3000: 'RED'}, # something like snowflake
+3: {  10 :'GREEN' , 14: 'YELLOW' , 21 :'BLUE'  , 30: 'MAGENTA', 3000: 'RED'}, # something like hive
+4: {  14 :'GREEN' , 18: 'YELLOW' , 28 :'BLUE'  , 30: 'MAGENTA', 3000: 'RED'}, # something like gk
+5: {  20 :'WHITE' , 30: 'WHITE'  , 40 :'WHITE'  , 45: 'WHITE'  , 3000: 'WHITE'} # default 
+}'''
+g_priority=[ 'RED' , 'BLUE' , 'YELLOW' , 'GREEN' ]
    
 def node_gate(func):
     def inner(*arrs,**kwargs): # must have inner function for decorator
         result = func(*arrs, **kwargs)    
         for i in result:
             for key in i:
-                if not key.startswith('_') and key not in ['id','calculatedX','calculatedY','children','name','id','parent','x','y','tag','data','date','t_color','d_visibility','type','meta','fileid']:
+                if not key.startswith('_') and key not in ['id','calculatedX','calculatedY','children','name','id','parent','x','y','tag','data','date','t_color','d_visibility','type','meta','fileid','priority']:
                     raise Exception ('A node key seen "{}" "{}:{}" which is not existing currently'.format(key,i['_filename'],i['id']))
         return result
     return(inner)
@@ -64,12 +80,24 @@ def debug_gate(func):
         return result
     return(inner)
 
-g_color_context='default'
+g_color_context=[]
 def set_color_context():
     global g_color_context
-    context_resolver=list(set(g_context['context']).intersection(set(g_clrs.keys())))
-    g_color_context= context_resolver[0] if context_resolver else 'default'
-
+    g_color_context=[]
+    color_search_order_list=[]
+    if 'context' in g_context: color_search_order_list += g_context['context']
+    for i in color_search_order_list: # check match 
+        for k,v in context_precedence.items(): # search each item 
+            if i == k: # if context match
+                for each in v: # loop each item of context_precedence_value
+                    if each not in color_search_order_list:
+                        color_search_order_list.append(each)
+    #context_resolver=list(set(g_context['context']).intersection(set(g_clrs.keys())))
+    color_search_order_list+=['default']
+    for i in color_search_order_list:
+        if i in g_clrs.keys():
+            g_color_context.append(i)
+    print('color context order is',g_color_context)
     
 #only color functions should call this 
 def give_color(color,clear=True):
@@ -104,10 +132,14 @@ class color_word:
             self.colored_obj= give_color(self.color)
         else:
             curr_clr=self.color
-            for clr,value in list({**g_clrs[g_color_context],**g_clrs['general']}.items()):
-                if self.word.lower() in  value:
-                    curr_clr=clr.upper()
-                    break
+            for each in g_color_context+['general']:
+                found=False
+                for clr,value in list(g_clrs[each].items()):
+                    if self.word.lower() in  value:
+                        curr_clr=clr.upper()
+                        found=True
+                        break
+                if found: break
             self.colored_obj= give_color(curr_clr)
         self.colored_obj['word']=self.word
     def __str__(self):
@@ -203,7 +235,7 @@ def showDFSOutput(res):
         return
     n=-1
     for i in res:
-        #print(i)
+        #print(i['name'],i['_level'])
         n+=1
         if i['_level']<=int(args.level):
             if args.expand=='node':
@@ -288,7 +320,7 @@ def link_calendar_tree_from_all_searched_files(calendar_objs):
                     else:
                         raise Exception('Incorrect date format',each_file,each_obj)
                     if match: 
-                        obj['_links'].append({'id': each_obj['id'], 'filename': os.path.basename(each_obj['_filename']) })
+                        obj['data'].append({'type': 'link', 'id': each_obj['id'], 'filename': os.path.basename(each_obj['_filename']) })
 
 @debug_gate
 @node_gate
@@ -309,7 +341,7 @@ def build_calendar_tree(year, seed, filename):
         id += 1 
         str_id = str(id)
         curr_formatted_day=curr_day.strftime('%d%b%Y').lower()
-        obj = {'name': curr_formatted_day, 'id': str_id, 'parent': [], 'x': '-1', 'y': '-1', 'tag': [], 'data': '', '_children': [], '_links': [] , '_filename': filename, '_day_obj': curr_day}
+        obj = {'name': curr_formatted_day, 'id': str_id, 'parent': [], 'x': '-1', 'y': '-1', 'tag': [], 'data': [], '_children': [] , '_filename': filename, '_day_obj': curr_day}
         if not week:
             seed['_children'].append( str_id )
         else:
@@ -330,7 +362,7 @@ def build_calendar_tree_from_result(year):
     if len(str(year))!=4: raise Exception('Provide year in 4 digit format yyyy')
     filename='cal'+str(year)
     if filename  not in g_context:
-        seed = {'name': 'seed', 'id': 'seed', 'parent': [], 'x': '-1', 'y': '-1', 'data': '', 'children': [] , '_filename': filename, '_links': [], '_children': [] ,'_day_obj': datetime(9999,1,1)}
+        seed = {'name': 'seed', 'id': 'seed', 'parent': [], 'x': '-1', 'y': '-1', 'data': [], 'children': [] , '_filename': filename, '_children': [] ,'_day_obj': datetime(9999,1,1)}
         tree = build_calendar_tree(year,seed, filename)
     else:
         tree = g_context[filename]['tree']
@@ -339,54 +371,77 @@ def build_calendar_tree_from_result(year):
     return filename
 
 @debug_gate
-def build_tree_from_result(tree,mode='tree'):
+def build_tree_from_result(tree,seed, mode='tree') -> None:
     #print('calling display tree')
     res=[]
     #for i in tree: print(i['name'])
-    active_file = g_context['basefilename']
-    seed = node_search_by_id(g_context[active_file]['tree'],['seed'])[0]
-    #parent_node = getNoParentNode(tree)
+     #parent_node = getNoParentNode(tree)
     #parent_node_ids = list ( set(map(lambda d:d['id'],parent_node)).difference({'seed'}) )
     #if seed not in result seed must be added as root 
     #seed['children']=[ i for i in parent_node_ids ] # clear out existing children we are building new graph
     #parent_node = seed
     #the tree generated here is actually disconnected example if a child in 3rd level is selccted and grand parent is selected it is not attached to grand parent so we are going to attach it to closest ancestor
     if 'seed' not in [ i['id'] for i in tree  ]: tree.insert(0,seed)
-    g_context[active_file]['filtered_tree'] = build_partial_tree(tree,seed)
+    g_context[g_context['basefilename']]['filtered_tree'] = build_partial_tree(tree,seed)
     #print(g_context[active_file]['filtered_tree'][0])
-    tree_display(g_context[active_file]['filtered_tree'], seed , mode)
 
 @debug_gate
 def build_tree_from_popup(node):
     global g_ephemeral_tree
-    if node['id']+g_context['filename'] not in [ i['id']+i['_filename'] for i in g_ephemeral_tree]: 
-        node['_filename']=g_context['filename']
-        node['_ephemeral_children']=[]
-        if len(g_ephemeral_tree)%5==0:
-            g_ephemeral_tree[0]['_ephemeral_children'].append(node['id'])
+    #check if already present 
+    is_exist=False
+    for i in g_ephemeral_tree:
+        if len(i['data'])>1: raise Exception('Ephemeral node can point to only one node {}'.format(i))
+        link_data=i['data'][0]
+        if link_data['type']=="link": #seed will have default type
+            if node['id']+g_context['filename'] == link_data['id']+i['_filename']: #note id is link_data's id filename comes from node because link will have base filename
+                is_exist=True 
+                input('Node already pinned in ephemeral tree')
+                break
+    if not is_exist:
+        filename=g_context['filename']
+        id =  str(int(time.time()))
+        data = {'type': 'link', 'id': node['id'], 'filename': os.path.basename(node['_filename']) }
+        obj = {'name': node['name'], 'id': id, 'parent': [], 'x': '-1', 'y': '-1', 'tag': [], 'data': [data], 'children':[] ,'_children': [] , '_filename': filename }
+        if len(g_ephemeral_tree)>1 and (len(g_ephemeral_tree)-1)%3==0:#>1 accomodates seed
+            #g_ephemeral_tree[0]['_ephemeral_children'].append(node['id'])
+            g_ephemeral_tree[0]['children'].append(id)
+            g_ephemeral_tree[0]['_children'].append(id)
         else:
-            g_ephemeral_tree[-1]['_ephemeral_children'].append(node['id'])
-        g_ephemeral_tree.append(node)
+            #g_ephemeral_tree[-1]['_ephemeral_children'].append(node['id'])
+            g_ephemeral_tree[-1]['children'].append(id)
+            g_ephemeral_tree[-1]['_children'].append(id)
+        g_ephemeral_tree.append(obj)
+    #print(g_ephemeral_tree)
+    #input()
 
 @debug_gate
 def tree_display(tree,seed,mode): #dont use g_context here , it gets into the are of table context, initialize True will do it False wont do it None will check if its already done and not do it if so
     if args.tree == 'false':
         result_dfs=dfs(tree,seed) 
         #showDFSOutput(result_dfs)
-        screen_coordinator('vertical_tree',result_dfs ,{ 'base_data': tree, 'start_node': seed })
+        return screen_coordinator('vertical_tree',result_dfs ,{ 'base_data': tree, 'start_node': seed })
     elif args.tree == "true":
-        child_key = "_children" if mode in ["tree","calendar"] else "_ephemeral_children" 
+        #child_key = "_children" if mode in ["tree","calendar"] else "_ephemeral_children" 
+        child_key = "_children"
         data_table = build_data_table_from_tree(seed,tree,child_key)
-        screen_coordinator(mode,data_table ,{ 'base_data': tree, 'child_key': child_key, 'start_node': seed })
+        return screen_coordinator(mode,data_table ,{ 'base_data': tree, 'child_key': child_key, 'start_node': seed })
+
+def pick_random_selected_item():
+    who_is_on_screen = g_screen_obj['active_obj']
+    active_obj = g_screen_obj[who_is_on_screen]
+    selected_visible_items = active_obj['state_of_table']['selected_visible_items']
+    rand_obj = random.choices(selected_visible_items)
+    return rand_obj
 
 @debug_gate
 def popup_display(id):
     who_is_on_screen = g_screen_obj['active_obj']
     active_obj = g_screen_obj[who_is_on_screen]
     selected_visible_items = active_obj['state_of_table']['selected_visible_items']
-    popup_obj={"name": 'NO ACTIVE ITEM', "data": 'error'}
+    popup_obj={"name": 'NO ACTIVE ITEM', "_filename": "_popup", "id": "-1", "data": [{ 'type': 'default', 'txt': 'error'}] }
     if id is None:
-        rand_obj = random.choices(selected_visible_items)
+        rand_obj = pick_random_selected_item() #random.choices(selected_visible_items)
         if rand_obj: popup_obj=rand_obj[0]['obj']
     for i in selected_visible_items:
         if i['obj']['_print_arr_name']==id:
@@ -426,7 +481,12 @@ def display_table(clear_screen = True, cursor_pos = None):
         no_of_lines_printed+=1
     words=''
     for k,v in command_options.items():
-        words+=k+": "+v+' '
+        words+=k+":
+        "+v+' '
+    if len(words) > os.get_terminal_size().columns:
+        pass 
+    else:
+        words += ' ' * ( os.get_terminal_size().columns - len(words) ) 
     lines+=words+'\n'
     no_of_lines_printed+=1
     for _ in range(os.get_terminal_size().lines - no_of_lines_printed - 5): lines+=(' '*os.get_terminal_size().columns)+'\n'
@@ -445,7 +505,7 @@ def initiate_params(g_screen_current_obj):
 @debug_gate
 def initialize_tree_params(g_screen_obj):
     '''only initialize params must be here anything that changes should not be here only STATIC'''
-    command_options = { 'i j k l': "scroll", 'q' : "q for quit", "p": "popup" , "r": "rndm", "h" : "highlight", "m": "minimize", "x" : "hide child" }
+    command_options = { 'i j k l': "scroll", 'q' : "quit", "p": "popup" , "s": "random", "h" : "highlight", "m": "minimize", "x" : "hide"}
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
@@ -454,11 +514,15 @@ def initialize_tree_params(g_screen_obj):
     #height = 5
     #width = 30
     if mode == "tree" : 
-        command_options = { **command_options,  **{ 'n': 'move to next file', "e": "show ephemeral tree", "c": "calendar" } }
+        command_options = { **command_options,  **{ 'n': 'next', "e": "ephemeral", "c": "calendar" , "r": "reload", "v": "visited on"} }
         table_properties={'height':height,'width':width,'w_size':20,'h_size' : 1,'pre_dots' : 1,'post_dots' : 2, 'pre_dot_char': '-', 'post_dot_char': '-', 'pre_fill_name': '-', 'post_fill_name': '-', 'default_color': 'YELLOW' }
     elif mode == "ephemeral_tree":
         command_options = { **command_options, **{ 'b': "Go back to normal tree" } }
         table_properties={'height':height,'width':width,'w_size':15,'h_size' : 1,'pre_dots' : 0,'post_dots' : 1, 'pre_dot_char': ' ', 'post_dot_char': ' ', 'pre_fill_name': ' ', 'post_fill_name': ' ', 'default_color': 'GREEN' }
+    elif mode == "vertical_tree":
+        command_options = { 'q' : "q for quit", "p": "popup" , "r": "rndm",  "h" : "highlight"}
+        command_options = { **command_options,  **{ 'n': 'move to next file' } }
+        table_properties={'height':-1,'width':-1,'default_color': 'YELLOW', 'w_size':100,'h_size' : 1 }
     elif mode == "calendar":
         command_options = { **command_options, **{ 'b': "Go back to normal tree" } }
         table_properties={'height':height,'width':width,'w_size':width//7,'h_size' : 10,'pre_dots' : 0,'post_dots' : 1, 'pre_dot_char': ' ', 'post_dot_char': ' ', 'pre_fill_name': ' ', 'post_fill_name': ' ', 'default_color': 'GREEN' }
@@ -468,7 +532,7 @@ def initialize_tree_params(g_screen_obj):
 @debug_gate
 def initialize_vertical_tree_params(g_screen_obj):
     '''only initialize params must be here anything that changes should not be here only STATIC'''
-    command_options = { 'q' : "q for quit", "p": "popup" , "r": "rndm"}
+    command_options = { 'q' : "q for quit", "p": "popup" , "s": "some pop",  "h" : "highlight"}
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
@@ -487,14 +551,18 @@ def initialize_popup_params(g_screen_obj):
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
-    g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}
+    g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}#dont add vertical character difficult to copy
     command_options= { 'i j k l': "scroll", #not command option keys must be space separated
-        'c': 'close popup and show tree', 
-        'q' : "q for quit"
+        'n' : 'next line',
+        'm' : 'next word',
+        'c' : 'x popup show tree', 
+        'r' : 'remember',
+        'q' : "quit"
         } 
     height = os.get_terminal_size().lines 
     width  = os.get_terminal_size().columns
-    table_properties={'height': height - int( height * .20 ),'width': width - int(width * .5) , 'default_color': 'WHITE'}
+    #table_properties={'height': height - int( height * .20 ),'width': width - int(width * .5) , 'default_color': 'WHITE'}
+    table_properties={'height': height - int( height * .20 ),'width': width  , 'default_color': 'WHITE'} #keep full width it erases tree behind anyway
     #table_properties={'height': -1,'width': -1 , 'default_color': 'WHITE'}
     g_screen_obj[mode]['table_properties']=table_properties
     g_screen_obj[mode]['command_options']=command_options    
@@ -503,38 +571,51 @@ g_screen_obj=dict()
 g_clear_screen_first_time=True
 @debug_gate
 def screen_coordinator(mode, data_table=None ,context_properties=None): #except for mode all other params should be used only for initialization
+    if mode not in g_context['accepted_mode']: raise Exception("the mode {} is not one of the accepted values {}".format(mode,g_context['accepted_mode']))
     global g_clear_screen_first_time
     if g_clear_screen_first_time and args.screencontrol=="true":
         g_clear_screen_first_time=False
         for _ in range(os.get_terminal_size().lines): print()
     #parts that need to be refreshed each time
     g_screen_obj['active_obj']=None
-    command_properties = { 'w_shift': 0, 'h_shift': 0, 'option': '', 'default_shift': 3, 'highlight': None}
-    if mode in [ 'calendar','tree', 'ephemeral_tree' ]:
+    command_properties = { 'w_shift': 0, 'h_shift': 0, 'option': '', 'default_shift': 3}
+    if mode in [ 'calendar','tree', 'ephemeral_tree', 'vertical_tree' ]:
         g_screen_obj['active_obj']= mode
         if ( mode not in g_screen_obj):
             initialize_tree_params(g_screen_obj)
         g_screen_obj[mode] = {**g_screen_obj[mode],**{  'data_table': data_table,'context_properties': context_properties, 'table_to_be_printed': None }}
+        g_screen_obj[mode]['command_properties'] = tree_command_properties = { **command_properties, **{ 'highlight': None } } 
         #print(data_table)
         #print(context_properties.keys())
         #input()
         command_options=g_screen_obj[mode]['command_options']
         command_dict={ 'command': None, 'command_attribute' : None}
-        while command_properties['option'] != 'n':
-            g_screen_obj[mode]['table_to_be_printed'] = refresh_tree_print_table(mode, command_properties, command_dict)
+        while tree_command_properties['option'] not in  ['n','r']:
+            height = os.get_terminal_size().lines - 8
+            width  = os.get_terminal_size().columns
+            g_screen_obj[mode]['table_properties']['height']=height
+            g_screen_obj[mode]['table_properties']['width']=width
+            g_screen_obj[mode]['table_to_be_printed'] = refresh_tree_print_table(mode, tree_command_properties, command_dict)
+            g_screen_obj[mode]['command_properties'] = tree_command_properties
+            g_screen_obj[mode]['command_dict'] = command_dict
             command = display_table()
             command_attribute = None
             if command in ['c','p','h','x'] and command in command_options: # custom , then revert to normal input 
-                if command in ['p', 'x']: command_attribute = input('enter id seen in screen <id>:<name> ').rstrip()
+                if command in ['p']: 
+                    if tree_command_properties['highlight'] and '_print_arr_name' in tree_command_properties['highlight']:
+                        command_attribute = tree_command_properties['highlight']['_print_arr_name']
+                    else:
+                        command_attribute = input('enter id seen in screen <id>:<name> ').rstrip()
+                if command in ['x']: command_attribute = input('enter id seen in screen <id>:<name> ').rstrip()
                 if command == 'c': command_attribute = input('enter year:').rstrip()
                 if command == 'h': command_attribute = input('enter comma separated text').rstrip()
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
-            tree_screen_action_on_command(command_dict,command_properties,command_options)
+            tree_screen_action_on_command(command_dict,tree_command_properties,command_options)
             #reset per cycle 
-            if command not in ['i','j','k','l','p','h']: command_properties['highlight']=None
+            if command_dict['command'] not in ['i','j','k','l','p','h','v']: tree_command_properties['highlight']=None
         #teardown
-        del(g_screen_obj[mode])
-    if mode in [ 'vertical_tree' ]:
+        if command!="r": del(g_screen_obj[mode]) #do not tear down when it is just a reload
+    '''if mode in [ 'vertical_tree' ]:
         g_screen_obj['active_obj']= mode
         if ( mode not in g_screen_obj):
             initialize_vertical_tree_params(g_screen_obj)
@@ -553,25 +634,41 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
             vertical_tree_screen_action_on_command(command_dict,command_properties,command_options)
         #teardown
-        del(g_screen_obj[mode])
+        del(g_screen_obj[mode])'''
     if mode == 'popup':
         g_screen_obj['active_obj']='popup'
         if ( mode not in g_screen_obj):
             initialize_popup_params(g_screen_obj)
         g_screen_obj[mode] = {**g_screen_obj[mode],**{'data_table': data_table,'context_properties': context_properties, 'table_to_be_printed': None }}        
+        g_screen_obj[mode]['command_properties'] = popup_command_properties = { **command_properties } 
         #print(context_properties)
         if context_properties['who_is_on_screen'] == 'tree':
             g_screen_obj[mode]['command_options']={**g_screen_obj[mode]['command_options'] , **{'p': "pin"} }
         else:
             if 'p' in g_screen_obj[mode]['command_options']: del( g_screen_obj[mode]['command_options']['p'] )
         command_options=g_screen_obj[mode]['command_options']
-        while command_properties['option'] != 'q':
-            g_screen_obj[mode]['table_to_be_printed'] = refresh_popup_print_table(command_properties)
+        command_dict={ 'command': None, 'command_attribute' : None}
+        while popup_command_properties['option'] != 'q':
+            height = os.get_terminal_size().lines - 8
+            width  = os.get_terminal_size().columns
+            g_screen_obj[mode]['table_properties']['height']=height
+            g_screen_obj[mode]['table_properties']['width']=width
+            g_screen_obj[mode]['table_to_be_printed'] = refresh_popup_print_table(popup_command_properties, command_dict)
             command = display_table(False,{'x':0 , 'y': 3})
             #command = display_table()
             command_attribute = None
+            if command in ['r']: 
+                next_visit_in = input('enter next_visit_in days - 0:remove enter:retain').rstrip().lstrip()
+                if not next_visit_in: next_visit_in = 9999
+                next_visit_in = int(next_visit_in)
+                command_attribute = { 'id': context_properties['base_data']['id'] , 
+                                      'next_visit_in' : next_visit_in, 
+                                      'filename' : os.path.basename( context_properties['base_data']['_filename'].split('.')[0] ) 
+                                    }
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
-            popup_screen_action_on_command(command_dict,command_properties,command_options, context_properties)
+            popup_screen_action_on_command(command_dict,popup_command_properties,command_options, context_properties)
+        del(g_screen_obj[mode])
+    return g_screen_obj
 
 @debug_gate
 def popup_screen_action_on_command(command_dict, command_properties,command_options, context_properties):
@@ -584,11 +681,19 @@ def popup_screen_action_on_command(command_dict, command_properties,command_opti
     if command not in valid_command_options: return
     if command == 'q':
         sys.exit(0)
+    if command == 'n': #handled in refresh_popup_print_table
+        return  
+    if command == 'w': #handled in refresh_popup_print_table
+        return 
     if command == 'c':
-        g_screen_obj['popup']['state_of_table'] = { 'start_x': 0, 'start_y': 0 } # state must be reset, after trying ways to do it in refresh pop this seems the best way else its challengig
+        #g_screen_obj['popup']['state_of_table'] = { 'start_x': 0, 'start_y': 0 } # state must be reset, after trying ways to do it in refresh pop this seems the best way else its challengig
         command_properties['option'] = 'q'
         return
-    if command in ['p']:
+    if command == 'r':
+        #g_screen_obj['popup']['state_of_table'] = { 'start_x': 0, 'start_y': 0 } # state must be reset, after trying ways to do it in refresh pop this seems the best way else its challengig
+        memory_controller( 'update', **command_attribute )
+        return   
+    if command in ['v']:
         obj = context_properties['base_data']
         build_tree_from_popup( obj )
     if command in ['i', 'j', 'k', 'l']:
@@ -612,7 +717,7 @@ def vertical_tree_screen_action_on_command(command_dict, command_properties,comm
     if command == 'b': 
         command_properties['option'] = 'n'
         return
-    if command in [ 'p','r']: 
+    if command in [ 'p','s']: 
         last_active_obj = g_screen_obj['active_obj']
         #print('==**===',last_active_obj)
         popup_display( command_attribute )
@@ -641,17 +746,30 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
     if command not in valid_command_options: return
     command_properties['h_shift'] = 0
     command_properties['w_shift'] = 0
-    if command == 'q': sys.exit(0)
+    if command == 'q': end_action()
     if command == 'b': 
         command_properties['option'] = 'n'
         return
+    if command == 'r': # its equiavalent to n which quits but main_coordinator will deal with him
+        command_properties['option'] = 'r'
+        return
     if command == 'h': 
-        command_properties['highlight']=command_attribute
+        command_properties['highlight']= { 'mode': 'txt', 'param': command_attribute }
+        return
+    if command == 'v': #will be handled in generate_cell_tree_text
+        command_dict['command']='h'
+        command_properties['highlight']= { 'mode': 'date', 'param': None } 
+        return
+    if command == 's': 
+        pop_rand_obj = pick_random_selected_item()[0]['obj']
+        command_dict['command']='h'
+        command_properties['highlight']= { 'mode': 'id', 'param': pop_rand_obj['id'], '_print_arr_name': pop_rand_obj['_print_arr_name'] } # _print_arr_name is used for subsequent popup
+        #print(command_dict,command_properties)
         return
     if command in [ 'm', 'x' ]: 
         #will be taken care by refresh_tree_print_table
         return
-    if command in [ 'p','r']: 
+    if command in [ 'p']: 
         last_active_obj = g_screen_obj['active_obj']
         #print('==**===',last_active_obj)
         popup_display( command_attribute )
@@ -692,7 +810,7 @@ def command_effect():
     pass
 
 @debug_gate
-def refresh_popup_print_table(command_properties):
+def refresh_popup_print_table(command_properties, command_dict):
     global g_screen_obj
     g_screen_tree_obj = g_screen_obj['popup']
     data_table = g_screen_tree_obj['data_table']
@@ -700,27 +818,50 @@ def refresh_popup_print_table(command_properties):
     context_properties = g_screen_tree_obj['context_properties']
     cell_properties = g_screen_tree_obj['cell_properties']
     if 'state_of_table' not in  g_screen_tree_obj:
-        g_screen_tree_obj['state_of_table'] = { 'start_x': 0, 'start_y': 0 }
+        g_screen_tree_obj['state_of_table'] = { 'start_x': 0, 'start_y': 0 , 'word': 99999, 'line': -1, 'total_word_in_line': -1}
+    #print(g_screen_tree_obj['state_of_table'])
+    if command_dict['command']=='n':  
+        if g_screen_tree_obj['state_of_table']['word'] < g_screen_tree_obj['state_of_table']['total_word_in_line']:
+            g_screen_tree_obj['state_of_table']['word'] = 99999
+        else:
+            g_screen_tree_obj['state_of_table']['line'] += 1
+    if command_dict['command']=='w':  
+        if g_screen_tree_obj['state_of_table']['word'] >= g_screen_tree_obj['state_of_table']['total_word_in_line']:
+            g_screen_tree_obj['state_of_table']['word'] = 0
+            g_screen_tree_obj['state_of_table']['line'] += 1
+        else:
+            g_screen_tree_obj['state_of_table']['word'] += 1
     state_of_table = g_screen_tree_obj['state_of_table']
     print_table, new_state_of_table = build_popup_array_table(state_of_table, data_table,table_properties,command_properties,cell_properties)
     #print_table=[''.join(line) for line in print_table]
     g_screen_tree_obj['state_of_table'] = { **state_of_table, **new_state_of_table}
+    #print(g_screen_tree_obj['state_of_table'])
     return print_table
 
 @debug_gate
 def hide_children(obj,tree,key='children'):
     all_children=get_all_children(tree,[obj['id']],key)
     hidden_child_name = key + '_hidden' # need to separate hidden children for normal and ephemeral
-    if '_hidden_children' in obj:
+    if hidden_child_name in obj:
         obj[key]=obj[hidden_child_name]
+        obj['name']=obj['_hidden_name']
         del(obj[hidden_child_name])
     else:
         obj[hidden_child_name]=obj[key]
+        obj['_hidden_name']=obj['name']
+        obj['name']='x|'+obj['name']
         obj[key]=[]
-    print(obj)
+    #print(obj)
 
 @debug_gate
-def refresh_tree_print_table(mode, command_properties, command_dict):
+def refresh_tree_print_table(mode, *args):
+    if mode == "vertical_tree":
+        return refresh_vertical_tree_print_table(mode, *args)
+    else:
+        return refresh_graph_tree_print_table(mode, *args)
+
+@debug_gate
+def refresh_graph_tree_print_table(mode, command_properties, command_dict):
     global g_screen_obj
     g_screen_tree_obj = g_screen_obj[mode]
     data_table = g_screen_tree_obj['data_table']
@@ -759,8 +900,9 @@ def refresh_tree_print_table(mode, command_properties, command_dict):
     return print_table
 
 @debug_gate
-def refresh_vertical_tree_print_table(command_properties):
+def refresh_vertical_tree_print_table(mode, command_properties, command_dict):
     global g_screen_obj
+    #print(command_properties,command_dict)
     g_screen_tree_obj = g_screen_obj['vertical_tree']
     data_table = g_screen_tree_obj['data_table']
     table_properties = g_screen_tree_obj['table_properties']
@@ -928,36 +1070,51 @@ def fetch_links(filename,id):
             return item 
 
 @debug_gate
-def find_cycle_and_update_data(link,status,assumed_status,track_stack=[]):
-    status[ link['filename']+link['id'] ] = True 
-    assumed_status[ link['filename']+link['id'] ] = True 
-    node = fetch_links(link['filename'],link['id'])
-    #print(node)
-    #input('node is {} {} {}'.format(link['filename'], node['id'], node['_links']))
-    #print(status,assumed_status)
-    for each_link in node['_links']:
-        #print('processing link',each_link)
-        track_stack.append(each_link)
-        if each_link['filename']+each_link['id'] not in status:
-            curr_data = find_cycle_and_update_data(each_link,status,assumed_status,track_stack)
-            if '_temp_link_data' in node:
-                node['_temp_link_data'].append(curr_data)
-            else:
-                node['_temp_link_data']=[curr_data]
-            #input('found data in recursion curr node {} now has {}'.format(link['filename'], [i['_filename']+i['name'] for i in node['_temp_link_data']] ))
-        elif each_link['filename']+each_link['id'] in assumed_status:
-            if  assumed_status[each_link['filename']+each_link['id']]:
-                raise Exception('cycle when connecting the following path:{}'.format(track_stack))
-            else:
-                curr_data = fetch_links(each_link['filename'],each_link['id'])
-                if '_temp_link_data' in node:
-                    node['_temp_link_data'].append(curr_data)
+def nested_links_to_dfs_flat_array(node,output,level=-1,seeing_for_first_time=True,is_root=True): #is top node means when a node is seen for first time it will be true when after travel graph comes back to it we will set it to false
+    for each_data in node['_resolved_data']:
+        if each_data['type'] == 'default':
+            output.append({'level': level,'is_root': is_root, 'seeing_for_first_time': seeing_for_first_time, 'data': each_data['txt'], '_filename': os.path.basename(node['_filename']), 'name': node['name']})
+        elif each_data['type'] == 'link':
+            nested_links_to_dfs_flat_array(each_data,output,level+1,True,False)
+        else:
+            raise Exception('Unknown type of data in nested_links_to_dfs_flat_array, its neither default not link {}'.format(each_data))
+        seeing_for_first_time = False
+    if not is_root:
+        output.append({'level': level, 'is_root': is_root, 'seeing_for_first_time': seeing_for_first_time, 'data': '<eol>\n', '_filename': os.path.basename(node['_filename']), 'name': node['name']})
+    return output
+
+@debug_gate
+def find_cycle_and_update_data(leaf,status,assumed_status,track_stack=[]):
+    #print('processing node', leaf)
+    status[ os.path.basename(leaf['_filename']) + leaf['id'] ] = True 
+    assumed_status[ os.path.basename(leaf['_filename']) + leaf['id'] ] = True 
+    #if '_resolved_data' not in leaf: leaf['_resolved_data']=[] this causes addition to data each time it is referenced
+    leaf['_resolved_data']=[]
+    for each_data in leaf['data']:
+        #print("processing each data",each_data)
+        if each_data['type'] == 'default':
+            #print('appending data',each_data)
+            leaf['_resolved_data'].append(each_data)
+        elif each_data['type'] == 'link':
+            node = fetch_links(each_data['filename'],each_data['id'])
+            track_stack.append({'filename': os.path.basename(node['_filename']),'id': node['id']})
+            #print('identified link',node)
+            if each_data['filename']+each_data['id'] not in status:
+                res_obj = find_cycle_and_update_data(node,status,assumed_status,track_stack)
+                #print('res_obj is ',res_obj)
+                leaf['_resolved_data'].append({**each_data,**res_obj})
+            elif each_data['filename']+each_data['id'] in assumed_status:
+                if  assumed_status[each_data['filename']+each_data['id']]:
+                    raise Exception('cycle when connecting the following path:{}'.format(track_stack))
                 else:
-                    node['_temp_link_data']=[curr_data] 
+                    res_obj = fetch_links(each_data['filename'],each_data['id'])
+                    leaf['_resolved_data'].append({**each_data,**res_obj})
                 #input('found data already visited but not cycle curr node {} now has {}'.format(link['filename'], [i['_filename']+i['name'] for i in node['_temp_link_data']] ))
-    assumed_status[ link['filename']+link['id'] ] = False 
-    #print(status,assumed_status)
-    return node
+            assumed_status[  each_data['filename']+each_data['id'] ] = False 
+            #print(status,assumed_status)
+    #print('final',leaf)
+    #print(track_stack)
+    return leaf
     
 def temp_dfs_print(node):
     #print( '===', node['_filename'],node['id'] )
@@ -967,33 +1124,73 @@ def temp_dfs_print(node):
 
 @debug_gate
 def resolve_links_and_data(node):
+    #print("resolving node",node)
     #print(node)
     # if you resolved already dont resolve again because then the resolved text keep on appending 
-    if '_temp_link_data' in node: return node
+    if '_resolved_data' in node: return node
     status = dict()
     assumed_status = dict()
-    #print('...',node)
-    for i in [{'filename': os.path.basename(node['_filename']), 'id': node['id']}]:
-        #print('starting resolution : ', i)
-        data = find_cycle_and_update_data(i,status,assumed_status)
-        return data
+    data = find_cycle_and_update_data(node,status,assumed_status)
+    #input()
+    return data
 
 @debug_gate
 def generate_cell_box_text(cell_obj, cell_properties):
     text = ''
     root_link_node = resolve_links_and_data(cell_obj)
+    title = root_link_node['name'] + "\n" + '---------------\n'
     #temp_dfs_print(i)
-    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node)):
-        if n!=0: # first loop is actual parent subsequent are link data
-            text+='<lnk>:{}:{}\n{}'.format(i['_filename'],i['name'],i['data'])
+    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
+        #print([i], i['data'].split('\n'))
+        level_adjusted_text = ''
+        #.join([ ' '*i['level']+temp+'\n' if temp != '' else '\n'   ])
+        if i['data'] == '':
+            level_adjusted_text += ' '*i['level']
         else:
-            text+='{}\n'.format(i['data'])
-    return text
+            each_line = i['data'].split('\n')
+            for n,each_word in enumerate(each_line):
+                if n+1 == len(each_line) and each_word == '' : # a\n will give ['a',''] dont want to add \n for 2 index so it becomes a\n\n
+                    pass#dont do anything 
+                else:
+                    level_adjusted_text += ( ' '*i['level'] + each_word + '\n' )
+        #print([level_adjusted_text])
+        if i['is_root']:
+            text+='{}'.format(level_adjusted_text)
+        elif i['seeing_for_first_time']: # first loop is actual parent subsequent are link data
+            text+=' '*i['level']+'<lnk>:{}:{}\n{}'.format(i['_filename'],i['name'],level_adjusted_text)
+        else:
+            text+='{}'.format(level_adjusted_text)
+        #print([text])
+    #print([text])
+    if cell_properties['line']>=0:
+        show_hide_text=''
+        for n,line in enumerate(text.split('\n')):
+            #show_hide_text += ( ' '.join([ re.sub('.','-',i)  if random.randint(1,10) in [1,2,3] and i not in g_stop_words else i for i in list(re.split('\W', line)) ])  ) + '\n'
+            if n <= cell_properties['line']:
+                if  cell_properties['line'] == n : #do only for last line
+                    words_list = list(re.split(' ', line))
+                    cell_properties['total_word_in_line'] = len(words_list) - 1 #array type calculation
+                    for m,word in enumerate(words_list):
+                        if m <= cell_properties['word']:
+                            show_hide_text += word
+                        else:
+                            show_hide_text += re.sub('[^\s]','x',word )
+                        if len(words_list)-1 == m: 
+                            show_hide_text += '\n'
+                        else:
+                            show_hide_text += ' '
+                else:       
+                    show_hide_text += line + '\n'
+            else:
+                show_hide_text += re.sub('[^\s]','x',line) + '\n'
+    else:
+        show_hide_text = text
+    return title + show_hide_text
 
 @debug_gate
 def generate_cell_vertical_tree_text(cell_obj, cell_properties):
     cell_text_obj = cell_obj
-    return cell_text_obj['_print_arr_name']+' '*cell_text_obj['_level']+cell_text_obj['name']
+    return (cell_text_obj['_print_arr_name'].ljust(3))+'  '*cell_text_obj['_level']+cell_text_obj['name']
 
 @debug_gate
 def generate_cell_default_text(cell_obj, cell_properties):
@@ -1001,9 +1198,24 @@ def generate_cell_default_text(cell_obj, cell_properties):
     return cell_text_obj['name']
 
 @debug_gate
+def gather_cell_tree_text(cell_obj, cell_properties):
+    base_file_name = os.path.basename( cell_obj['_filename'] )
+    if cell_properties['highlight']:
+        if cell_properties['highlight']['mode']=="date":
+            for i in g_context['remember_list']:
+                if i['filename'] == base_file_name.split('.')[0] and i['id'] == cell_obj['id']:
+                    #return datetime.strftime(i['last_visited_date'],'%d%b%Y')
+                    cell_properties['_next_visit_in'] = i['next_visit_in']
+                    cell_properties['_date_lag'] = (datetime.now() - i['last_visited_date'] ).days # +1 to include the day getting subracted
+                    return str( cell_properties['_date_lag'] )
+            cell_properties['_date_lag'] = 9999
+            return '9999'
+    else:
+        return cell_obj['name']
+
+@debug_gate
 def generate_cell_tree_text(cell_obj, cell_properties):
     cell_text_obj = cell_obj
-    name = cell_text_obj['name']
     active_obj = g_screen_obj['active_obj']
     table_properties=g_screen_obj[active_obj]['table_properties']
     context_properties=g_screen_obj[active_obj]['context_properties']
@@ -1021,7 +1233,7 @@ def generate_cell_tree_text(cell_obj, cell_properties):
     size_for_name = w_size - ( pre_dots + post_dots )
     if '_print_arr_name' not in obj: #note there is a possible bug that the ids assigned may get exhausted but 36 * 36 = 1000 nodes i am never going to have that much
         obj['_print_arr_name'] = generate_node_id()
-    name = obj['_print_arr_name'] + ':' + name #give_color(name,'YELLOW')
+    name = obj['_print_arr_name'] + ':' + gather_cell_tree_text(cell_obj, cell_properties) #give_color(name,'YELLOW')
     name = name[0:size_for_name]
     #name = '{:-^{size}s}'.format(name,size=size_for_name)
     # custom center justify 
@@ -1038,6 +1250,8 @@ def generate_cell_tree_text(cell_obj, cell_properties):
 
 @debug_gate
 def generate_cell_calendar_text(cell_obj, cell_properties):
+    #print(cell_obj)
+    #input()
     cell_text_obj = cell_obj
     name = cell_text_obj['name']
     active_obj = g_screen_obj['active_obj']
@@ -1071,54 +1285,92 @@ def generate_cell_calendar_text(cell_obj, cell_properties):
         name += ( post_fill_name if obj[child_key] else ' ' ) * (available_string_size + available_string_odd_even)
     name = pre_dot_char * pre_dots + name +  post_dot_char*post_dots
     text = ''
+    unique_names = []
     root_link_node = resolve_links_and_data(cell_obj)
-    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node)):
+    '''for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
         if n!=0: # first loop is actual parent subsequent are link data
             text+='{} '.format(i['name'])
         else:
-            pass # when a linked array returns it always contains the root data, so since we already use root data as the main showing name no need to show again
+            pass # when a linked array returns it always contains the root data, so since we already use root data as the main showing name no need to show again'''
+    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
+        #print(i)
+        if not i['is_root']: # first loop is actual parent subsequent are link data
+            #text+='{} '.format(i['name'])
+            if ( i['name'], i['_filename'] ) not in unique_names:
+                unique_names.append( ( i['name'], i['_filename'] ) )
+        else:
+            pass
+    #print('======',name+text)
+    text = ' '.join([i[0] for i in unique_names])
     return name + text
 
 @debug_gate
-def nested_links_to_dfs_flat_array(root_link_node):
-    linked_stack = [root_link_node]
-    output=[]
-    while linked_stack:
-        i=linked_stack.pop(0)
-        output.append(i)
-        if '_temp_link_data' in i:
-            linked_stack=i['_temp_link_data']+linked_stack
-    '''for i in output:
-        print(i)
-        print(i['name'])
-        input()'''
-    return output
-
+def priority_color( cell_properties): #not even naming it cell because this access g_context which no cell block does
+    date_lag = cell_properties['_date_lag']
+    '''if date_lag == 9999 or priority == 5:
+        return 'WHITE'''
+    if date_lag == 9999:  return 'WHITE'
+    next_visit_in = cell_properties['_next_visit_in']
+    bands =  [ round(i/ ( len(g_priority) - 1 ),2) for i in range( len(g_priority) ) ] #[1.0, 0.67, 0.33, 0.0]
+    bands.reverse()
+    #print(bands, date_lag)
+    for n,i in enumerate(bands):
+        if round( date_lag / next_visit_in , 2 ) >= i : 
+            break
+    return g_priority[n]
+    '''date_toleration = sorted(g_priority[priority])
+    for n, curr_date_toleration in enumerate(date_toleration):
+        curr_date_toleration_adjusted_for_confidence = curr_date_toleration +  ( date_toleration[ min ( n + confidence , len(date_toleration) - 1 ) ]  if confidence > 0  else 0 )
+        if date_lag <= curr_date_toleration_adjusted_for_confidence:
+            return g_priority[priority][curr_date_toleration]'''
+    
 @debug_gate
 def highlight_cell_tree_text(colored_text,cell_properties,cell_obj):
-    #print('<><><><>',colored_text)
-    highlighted_word=cell_properties['highlight']
+    #print('<><><><>',cell_properties)
+    highlight_properties=cell_properties['highlight']
     text=''
-    text += cell_obj['name'] + ' '
-    text += cell_obj['data']
+    root_link_node = resolve_links_and_data(cell_obj)
+    for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
+        text+='{} '.format(i['name'])
+        text+='{} '.format(i['data'])
+    #print(text)
+    #input()
     found=False
-    if highlighted_word:
-        for each_highlighted_word in highlighted_word.split(','):
-            #input(each_highlighted_word)
-            #input(text)
-            if each_highlighted_word.lower() in text.lower():
-                found=True
+    highlight_color = 'RED'
+    if highlight_properties:
+        if highlight_properties['mode'] == 'txt':
+            for each_highlighted_word in highlight_properties['param'].split(','):
+                #input(each_highlighted_word)
+                #input(text)
+                if each_highlighted_word.lower() in text.lower():
+                    found=True
+        if highlight_properties['mode'] == 'id' and cell_obj['id'] == highlight_properties['param']:
+            found=True
+        if highlight_properties['mode'] == 'date':
+            found=True
+            highlight_color = priority_color( cell_properties )
         if found:
             for line in colored_text:
                 for n,word in enumerate(line.colored_obj):
-                    line.colored_obj[n] = color_word(word.colored_obj['word'],'RED')
+                    line.colored_obj[n] = color_word(word.colored_obj['word'],highlight_color)
             return True
     return False
 
 @debug_gate
 def highlight_cell_calendar_text(colored_text,cell_properties):
-    for each_nested_item in nested_links_to_dfs_flat_array(cell_properties['obj']):
-        if highlight_cell_tree_text(colored_text,cell_properties,each_nested_item): break
+    #print('////////',cell_properties)
+    '''for each_nested_item in nested_links_to_dfs_flat_array(cell_properties['obj'],[]):
+        print(each_nested_item)
+        input('+++')
+        if highlight_cell_tree_text(colored_text,cell_properties,each_nested_item): break'''
+    highlighted_word=cell_properties['highlight']
+    if highlighted_word:
+        if highlighted_word['mode'] == 'id' and cell_properties['obj']['id'] == highlighted_word['param']:
+            for line in colored_text:
+                for n,word in enumerate(line.colored_obj):
+                    line.colored_obj[n] = color_word(word.colored_obj['word'],'RED')
+        else:
+            highlight_cell_tree_text(colored_text,cell_properties,cell_properties['obj'])
 
 @debug_gate
 def color_cell_tree_text(text,cell_properties):
@@ -1140,6 +1392,8 @@ def color_cell_calendar_text(text,cell_properties):
 @debug_gate
 def color_cell_default_text(text,cell_properties):
     colored_text = color_text(text,'WHITE',True).colored_obj
+    #print(cell_properties)
+    highlight_cell_tree_text(colored_text,cell_properties,cell_properties['obj'])
     return colored_text
 
 @debug_gate
@@ -1305,7 +1559,7 @@ def build_cell_block(cell_properties):
     '''for i in print_arr:
         print(''.join(i))
     #input()'''
-    return print_arr
+    return { **cell_properties, **{'print_arr': print_arr } }
 
 @debug_gate
 def build_popup_array_table(state_of_table, table,table_properties,command_properties,cell_properties):
@@ -1313,14 +1567,18 @@ def build_popup_array_table(state_of_table, table,table_properties,command_prope
     width = table_properties['width']
     init_x = state_of_table['start_x'] + command_properties['w_shift']
     init_y = state_of_table['start_y'] + command_properties['h_shift']
-    cell_block = build_cell_block({ **cell_properties, **{'obj':table[0], 'width': width , 'height': height, 'w_shift': init_x, 'h_shift': init_y }} )
+    line = state_of_table['line']
+    word = state_of_table['word']
+    total_word_in_line = state_of_table['total_word_in_line']
+    cell_block_res = build_cell_block({ **cell_properties, **{'obj':table[0], 'width': width , 'height': height, 'w_shift': init_x, 'h_shift': init_y, 'line': line, 'word' : word, 'total_word_in_line': total_word_in_line}} )
+    cell_block = cell_block_res['print_arr']
     '''for y in range(height):
         for x in range(width):
             if check_if_range_in_table(cell_block,y-init_y,x-init_x):
                 #print(init_y,y,y-init_y,init_x,x,x-init_x)
                 #print(cell_block[y-init_y][x-init_x])
                 print_arr[y][x]=cell_block[y-init_y][x-init_x]'''
-    return cell_block, { 'start_x': init_x, 'start_y': init_y } 
+    return cell_block, { 'start_x': init_x, 'start_y': init_y, 'total_word_in_line': cell_block_res['total_word_in_line'] } 
 
 @debug_gate
 def build_vertical_tree_array_table(state_of_table, table, table_properties, command_properties, context_properties, cell_properties):
@@ -1329,12 +1587,16 @@ def build_vertical_tree_array_table(state_of_table, table, table_properties, com
     width = table_properties['width']
     w_size = table_properties['w_size']
     h_size = table_properties['h_size']
+    highlight=command_properties['highlight']
     selected_visible_items=[]
     for n,i in enumerate(table):
-        #print(i['name'],i)
-        selected_visible_items.append( { 'obj': i } )
-        i['_print_arr_name']=str(n)
-        print_arr+=(build_cell_block({ **cell_properties, **{'obj': i, 'width': w_size , 'height': h_size  }} ))
+        #print(i['name'],i['_level'])
+        if i['_level'] <= int(args.level):
+            selected_visible_items.append( { 'obj': i } )
+            i['_print_arr_name']=str(n)
+            cell_block_res = build_cell_block({ **cell_properties, **{'obj': i, 'width': w_size , 'height': h_size, 'highlight': highlight   }} )
+            cell_block = cell_block_res['print_arr']
+            print_arr+=(cell_block)
     return print_arr, { 'selected_visible_items': selected_visible_items}
 
 @debug_gate
@@ -1377,7 +1639,8 @@ def build_tree_array_table(state_of_table, table, table_properties, command_prop
             if row['p'] >= 0 and row['p'] < len(table) and col['p'] >=0 and col['p'] < len(table[0]) and table [ row['p'] ] [ col['p'] ]:
                 #print(s_x,end_x)
                 obj = table [ row['p'] ] [ col['p'] ]
-                cell_block = build_cell_block({ **cell_properties, **{'obj': obj, 'width': w_size , 'height': h_size, 'highlight': highlight  }} )
+                cell_block_res = build_cell_block({ **cell_properties, **{'obj': obj, 'width': w_size , 'height': h_size, 'highlight': highlight  }} )
+                cell_block = cell_block_res['print_arr']
                 curr_cell_block_y = cell_block_s_y = h_size - row['b'] if first_row else 0 
                 curr_cell_block_x = cell_block_s_x = w_size - col['b'] if first_col else 0 
                 #print(curr_cell_block_x,curr_cell_block_y)
@@ -1671,7 +1934,7 @@ def dive_mode(tree):
             selectedNodes= [childNodes[int(start)]]
 
 @node_gate
-def to_node(content,filename):
+def to_node(content,filename,reload):
     '''filename wont change in current context so we cannot get it from g_context
     called_from_current_search need to know how is calling to_node if its a link search calling it or a true search calling it . this is needed to avoid infinite loop when searching for link data
     '''
@@ -1688,13 +1951,14 @@ def to_node(content,filename):
             identified_box_hash=True
             seen_link_atleast_once=False
             if start:
-                dict_items['data']=curr_block
-                curr_block=''
+                if curr_block:
+                    dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
+                    curr_block=''
                 total_items.append(dict_items)
             else:
                 start=True 
             items=i.split('#')
-            dict_items={'_links':[],'_filename':filename}
+            dict_items={'_filename':filename}
             for j in items:
                 if '@' in j:
                     key=j.split('@')[0]
@@ -1702,6 +1966,7 @@ def to_node(content,filename):
                     if key.lower() in ['parent','children','tag']:
                         value=value.split(',') if value.strip()!='' else []
                     dict_items[key]=value
+            dict_items['data']=[]
             #dict_items = dict([ ( a.split('@')[0],a.split('@')[1].split(',') if ',' in a.split('@')[1] else a.split('@')[1])  for a in i.split('#') if '@' in a ])
         elif i.startswith('#?#link') and identified_box_hash:
             seen_link_atleast_once=True
@@ -1713,36 +1978,42 @@ def to_node(content,filename):
                 lnk_filename = g_context['all_file_dict'][lnk_basefilename] 
             else:
                 raise Exception("link error for node id:"+lnk_nodeid+" and temp_filename:"+lnk_basefilename)
-            set_g_context(lnk_filename,False)
-            dict_items['_links'].append({'id':lnk_nodeid,'filename':lnk_basefilename})
+            set_g_context(lnk_filename,False,reload)
+            if curr_block:
+                dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
+                curr_block=''
+            dict_items['data'].append({ 'type': 'link', 'id':lnk_nodeid, 'filename':lnk_basefilename })
         elif identified_box_hash:
-            if seen_link_atleast_once and i.lstrip().rstrip(): raise Exception("Text after a link section will be discarded, if i have to fix this i need to convert data part to array ec : text link link text , link is an array of objects where to place the text then link needs to be coded in, so i need to make the data an array object , \nKEEP IT SIMPLE, \nNO TEXT AFTER  LINK\nnodeid:{} filename:{}".format(dict_items['id'],filename))
             curr_block+=i
-    dict_items['data']=curr_block
+    if curr_block: dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
     curr_block=''
     total_items.append(dict_items)
     return(total_items)
 
 @debug_gate
-def file_to_tree(filename):
+def file_to_tree(filename,reload=False):
     content=file_to_list(filename)
-    return to_node(content,filename)
+    return to_node(content,filename,reload)
 
 g_context=dict()
 g_context['tree']=[]
-g_ephemeral_tree: list= [{'calculatedX': '0', 'calculatedY': '0', '_ephemeral_children': [], 'children': [] , 'name': 'seed' , 'id': 'seed', 'parent': [], 'x': '0', 'y': '0', 'data': 'seed', '_filename':'dummy', }]
+g_context['accepted_mode']=['tree','ephemeral_tree','calendar','popup', 'vertical_tree']
+g_ephemeral_tree: list= [{'calculatedX': '0', 'calculatedY': '0', 'children': [] , '_children': [], 'name': 'seed' , 'id': 'seed', 'parent': [], 'x': '0', 'y': '0', 'data': [{'type': 'default', 'txt': 'seed'}], '_filename':'dummy', }]
 @debug_gate
-def set_g_context(filename=None,change_current_context=False,tree=None):
+def set_g_context(filename=None,change_current_context=False,tree=None,reload=False):
     base_file_name=os.path.basename(filename)
-    if base_file_name not in g_context: 
+    if reload or base_file_name not in g_context: 
         g_context[base_file_name]=dict()
         g_context[base_file_name]['filename']=filename # these two lines must be above tree calculation its an indicator that this is currently being processed,if this indicator is not there program will think its not processed and leads to recursion
         g_context[base_file_name]['basefilename']=base_file_name
-        if not tree: tree=file_to_tree(filename)
+        if not tree: tree=file_to_tree(filename,reload)
         context=[ j.rstrip() for i in tree if i['id']=='seed' and 'tag' in i for j in i['tag']]
         context=[i.rstrip() for i in context]
+        #priority= [ int(i['priority'].rstrip()) if 'priority' in i else 5 for i in tree if i['id']=='seed' ][0]
+        #if priority > 5 : raise Exception('Max allowed value for priority is 5')
         g_context[base_file_name]['tree']=tree
         g_context[base_file_name]['context']=context
+        #g_context[base_file_name]['priority']=priority
     if change_current_context: set_g_current_context(filename)
     #print('set_g_context finished for file {}: {}'.format(base_file_name,g_context[base_file_name].keys()))
    # maintain history also in g_context under key nodeid
@@ -1755,6 +2026,7 @@ def set_g_current_context(filename):
         g_context['basefilename']=base_file_name
         g_context['tree']=g_context[base_file_name]['tree']
         g_context['context']=g_context[base_file_name]['context']
+        #g_context['priority']=g_context[base_file_name]['priority']
         print("context is:",g_context['context'])
         set_color_context()
 
@@ -1762,36 +2034,35 @@ def set_g_current_context(filename):
 def search_all():
     for i in g_context['chosen_file_list']:
         base_file_name = os.path.basename(i)
-        search( i , set_curr_context=False, tree_show=False,prompt_each_match=False)
+        search( i , set_curr_context=False,prompt_each_match=False)
     print('All files searched')
 
 @debug_gate
-def search(filename,set_curr_context=True,tree_show=True,prompt_each_match=True):
+def search(filename,set_curr_context=True,prompt_each_match=True,reload=False) -> None:
     base_file_name=os.path.basename(filename)
     filtered_nodes=[]
     print('searching {}'.format(base_file_name))
-    set_g_context(filename,set_curr_context)
-    if 'searched' not in g_context[base_file_name] or not g_context[base_file_name]['searched']: 
+    set_g_context(filename=filename,change_current_context=set_curr_context,tree=None,reload=reload)
+    if reload or ( 'searched' not in g_context[base_file_name] or not g_context[base_file_name]['searched'] ): 
         print('search was not completed earlier for  {} initiating search'.format(base_file_name))
         g_context[base_file_name]['searched']=True
+        g_context[base_file_name]['filtered_nodes']=filtered_nodes
         if args.search!='' and args.search is not None:
             args_property = args.property.split(',') if args.property != '' else ['name','tag']
             args_level = args.level
             filtered_nodes = parse_command(g_context[base_file_name]['tree'],args.search,args_property)
             if filtered_nodes:
                 g_context[base_file_name]['filtered_nodes']=filtered_nodes
-                print('Match found in:'+filename)
+                if not reload: print('Match found in:'+filename)
                 if prompt_each_match: input()
-    if tree_show: 
-        build_tree_from_result(g_context[base_file_name]['filtered_nodes'])
     '''if args.dive=='true' and args.dive is not None:
         dive_mode(g_context['tree']) this should not be in search it should be outside disabling for now'''
     
 @debug_gate
 def identify_files(key='all',filename=None):
     files=file_list=[]
-    if os.getcwd().startswith('C:\\Users\\mithu'):
-        base_dir='C:\\Users\\mithu'
+    base_dir=g_context['base_dir']
+    if base_dir.startswith('C:\\Users\\mithu'):
         file_list = {'reference' : [base_dir+r'\Downloads\track\projects\d3\core\data\*[0-9].txt', # non recursive
                     base_dir+r'\Downloads\track\projects\**\quickref.txt',# ** means recursive
                     #r'G:\My Drive\Downloads\jarvis\tech\**\py*.txt' not all files are converted now
@@ -1800,8 +2071,8 @@ def identify_files(key='all',filename=None):
                 'secret' : [base_dir+r'\Downloads\track\projects\d3\privateData\*[0-9].txt'],
                 'quickref' : [base_dir+r'\Downloads\track\**\*quickref*.txt'],
                 }
-    elif os.getcwd().startswith('/storage/emulated/0/download'):
-        file_list = {'reference' : [r'/storage/emulated/0/download*[0-9].txt', 
+    elif base_dir.startswith('/storage/emulated/0/download'):
+        file_list = {'reference' : [ base_dir+r'*[0-9].txt', 
                     ],
                 }       
     file_path_list=dict()
@@ -1823,14 +2094,117 @@ def identify_files(key='all',filename=None):
     elif key is not None and key != '':
         chosen_file_list = file_path_list[key.lower()]
     elif filename:
-        chosen_file_list=[filename]
+        if filename[0] == '*' and filename[-1] == '*':
+            chosen_file_list = [ all_file_dict[temp] for temp in all_file_dict.keys() if filename[1:-1] in temp ]
+        else:
+            chosen_file_list=[filename]
     else:
         raise Exception("No matching files")
     g_context['chosen_file_list']=list(set(chosen_file_list))
-    return chosen_file_list
+    return g_context['chosen_file_list'] #each time the search order will be different so dont introduce shuffle
+
+def reload_coordinator(filename):
+    search(filename,set_curr_context=True,prompt_each_match=False,reload=True)  
+    
+def main_coordinator(filename, command=None):
+    search(filename)
+    while command != 'n':
+        seed = node_search_by_id(g_context[g_context['basefilename']]['tree'],['seed'])[0]
+        build_tree_from_result(g_context[g_context['basefilename']]['filtered_nodes'], seed)
+        res = tree_display(g_context[g_context['basefilename']]['filtered_tree'], seed , mode='tree')
+        last_active_obj=res['active_obj']
+        if last_active_obj in res:
+            command = res[last_active_obj]['command_properties']['option']
+            if command=='r':
+                reload_coordinator(filename)
+        else:
+            command='n'
+
 
 @debug_gate
+def memory_controller(mode='read',**kwargs):
+    #print(kwargs)
+    base_dir=g_context['base_dir']
+    file_name = "remember.csv"
+    if base_dir.startswith('C:\\Users\\mithu'): file_name=os.path.join(base_dir, r'Downloads\track\projects\d3\core\data\meta', file_name )
+    if base_dir.startswith('/storage/emulated/0/download'): file_name=os.path.join(base_dir, file_name )
+    headers="filename|id|last_visited_date|next_visit_in".split('|')
+    file_name=os.path.join(base_dir,file_name)
+    if mode == "read":
+        read_memory_file(file_name,headers)
+    elif mode=='write':
+        write_memory_file(file_name,headers, g_context['remember_list'])
+    elif mode == 'update':
+        #print(kwargs)
+        if kwargs['next_visit_in'] == 99:
+            #print('no action')
+            return
+        n = -1
+        match_found = False
+        time_now = datetime.now()
+        for n,i in enumerate(g_context['remember_list']):
+            if i['filename'] == kwargs['filename'] and i['id'] == kwargs['id']:
+                match_Found = True
+                if kwargs['next_visit_in'] == 0: #if exists then break out and deal with it there
+                    #print('found match zero next_visit_in')
+                    break
+                else:
+                    i['next_visit_in'] = kwargs['next_visit_in']
+                    i['last_visited_date'] = time_now
+                    #print('found match and updating',i)
+                    return
+        if kwargs['next_visit_in'] == 0 and match_Found: #could have been in loop but dont feel comfortable doing while looping
+            #print('removing',g_context['remember_list'][n])
+            g_context['remember_list'].pop( n )
+        else:
+            #print('adding',  dict(zip(headers,[ kwargs['filename'], kwargs['id'] ,time_now , kwargs['confidence'] ]))  )
+            g_context['remember_list'].append(  dict(zip(headers,[ kwargs['filename'], kwargs['id'] ,time_now , kwargs['confidence'] ]))  )
+        
+@debug_gate
+def read_memory_file(file_name, headers):
+    remember_list=[]
+    start=True
+    with open(file_name,'r') as f:
+        for line in f:
+            line = line.rstrip()
+            curr_list = line.split('|')
+            if start:
+                if headers != curr_list: raise Exception("{} does not match with header detected in file".format(headers))
+                start=False
+            else:
+                curr_dict = dict(zip(headers,curr_list))
+                curr_dict['next_visit_in']=int( curr_dict['next_visit_in'] )
+                #if curr_dict['next_visit_in'] not in ( 1, 2, 3 ) : raise Exception("Allowed confidence values are 0 1 2 and 3 ,default high medium low")
+                curr_dict['last_visited_date'] = datetime.strptime( curr_dict['last_visited_date'].lower() ,'%d%b%Y')
+                if curr_dict['last_visited_date'] > datetime.now(): raise Exception("Last visited date cannot be in future: {} {}".format(curr_list[0],curr_list[1]))
+                remember_list.append( curr_dict )
+    g_context['remember_list'] = remember_list
+    #print(';;;;;;;;', g_context['remember_list'] ) 
+    
+@debug_gate
+def write_memory_file(file_name, headers, contents):
+    #print(file_name, headers, contents)
+    shutil.copy2( file_name, os.path.join( os.path.dirname(file_name) , os.path.basename(file_name).split('.')[0]+'_'+ datetime.strftime(datetime.now(),'%Y%m%d%H%M%S')+'.csv' ) ) #copy2 preserves metadata
+    with open(file_name,'w') as f:
+        f.write('|'.join(headers) + '\n' )
+        for d in contents:
+            text = []
+            for col in headers:
+                if col == 'next_visit_in': text.append( str( d['next_visit_in'] ) )
+                elif col == 'last_visited_date': text.append( datetime.strftime(d['last_visited_date'],'%d%b%Y') )
+                else: text.append( str( d[col] ) )
+            f.write('|'.join(text) + '\n' )
+
+@debug_gate
+def end_action():
+    if args.remember: memory_controller('write')
+    sys.exit(0)
+    
+@debug_gate
 def main(args):
+    if os.getcwd().startswith('C:\\Users\\mithu'): g_context['base_dir']='C:\\Users\\mithu'
+    elif os.getcwd().startswith('/storage/emulated/0/download'): g_context['base_dir']='/storage/emulated/0/download'
+    if args.remember: memory_controller('read')
     files=identify_files(args.key,args.filename)
     #print(files)
     #dont make it complicated search each file individually
@@ -1841,8 +2215,8 @@ def main(args):
             else:
                 continue
         print( color_text( 'processing file:'+ filename, 'YELLOW') )
-        search(filename)
-
+        main_coordinator(filename)
+    end_action()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-k","--key", help="search by key reference,nifi instead of file")
@@ -1851,15 +2225,18 @@ parser.add_argument("-s","--search", help="increase output verbosity")
 #parser.add_argument("-d","--dive", help="dive into tree ",nargs="?",default='false',const="true")
 parser.add_argument("-d","--debug", help="dive into tree ",nargs="?",default=0,const=1,type=int)
 parser.add_argument("-p","--property", help="increase output verbosity", default="name,tag")
-parser.add_argument("-l","--level", help="increase output verbosity", default=100)
-parser.add_argument("-e","--expand", help="node data", default=100)
+parser.add_argument("-l","--level", help="level of depth applies only to vertical_tree", default=100)
+#parser.add_argument("-e","--expand", help="node data", default=100) makes it look too complilcated not practical to use
 parser.add_argument("-c","--choosenode", help="choosenode",nargs="?",default='false',const='true') #if just -c value 1 if nothing value false
-parser.add_argument("-m","--modeofprint", help="modeofprint",nargs="?",default='read',const='line')
+#parser.add_argument("-m","--modeofprint", help="modeofprint",nargs="?",default='read',const='line')
 parser.add_argument("-t","--tree", help="tree",nargs="?",default='false',const='true')
 parser.add_argument("-v","--vannangal", help="painttext with colors",nargs="?",default='false',const='true')
 parser.add_argument("-sc","--screencontrol", help="ansii screencontrol",nargs="?",default='false',const='true')
+parser.add_argument("-r","--remember", help="load memory file",nargs="?",default='false',const='true')
 args = parser.parse_args()    
 print(args)
+
+g_program_start_time = time.time()
 if __name__=="__main__":
     if args.vannangal == "true":
         from colorama import Fore,init
