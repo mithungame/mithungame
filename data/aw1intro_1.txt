@@ -11,6 +11,8 @@ b 128.0.0.0 to 191.255.0.0     172.16.0.0 to 172.31.255.255   16 bits 16,382    
 c 192.0.0.0 to 223.255.255.0   192.168.0.0 to 192.168.255.255 24 bits 2,097,150 254  
 d 224.0.0.0 to 239.255.255.255       
 e 240.0.0.0 to 255.255.255.255 
+
+0.0.0.0/0 (IPv4) and ::/ (IPv6) means all possible ip address
 #?#box#calculatedX@161#calculatedY@203#children@1719923360,1719923445#name@vpc#id@1719923206#parent@#x@161#y@203
 Amazon Virtual Private Cloud (Amazon VPC)
   logically isolated virtual network
@@ -40,12 +42,23 @@ Isolated subnet – The subnet has no routes to destinations outside its VPC.
 #?#box#calculatedX@161#calculatedY@203#children@1719923879,1719923893#name@security#id@1719923810#parent@#x@161#y@203
 Every subnet that you create is automatically associated with the default network ACL for the VPC
 default network ACL allows all inbound and outbound traffic
-#?#box#calculatedX@161#calculatedY@203#children@#name@securitygroup#id@1719923879#parent@#x@161#y@203
-Security groups allow inbound and outbound traffic for associated resources, such as EC2 instances.
-I work on a per instance level , eg for EC2 , RDS
-if you attach me to VPC , RDS EC2 inherit those
-basically i act as a fire wall within network
+#?#box#calculatedX@161#calculatedY@203#children@1729451350#name@securitygroup#id@1719923879#parent@#x@161#y@203
+https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
+Security groups acts as ~*virtual firewall~* that allow inbound and outbound traffic for associated resources, such as EC2 instances.
+security group can be attached to ~*vpc~*, or ~*per instance level~* as ~*ec2 rds~*
 you still need to open the firewall port on the actual machine itself, SG just is a control mechanism
+Security groups are ~*stateful~*. 
+For example, if you send a request from an instance, the response traffic for that request is allowed to reach the instance regardless of the inbound security group rules. 
+Responses to allowed inbound traffic are allowed to leave the instance, regardless of the outbound rules
+You can specify the ~*source~*/~*destination~*, ~*port range~*, and ~*protocol~* for each inbound/outbound rule
+#?#box#calculatedX@161#calculatedY@203#children@#name@example#id@1729451350#parent@#x@161#y@203
+SUBNET A 
+INBOUND 
+198.1.0.0/24  TCP 22     <--- TCP 22 means ~*ssh connection~* , it allows inbound from specific address range 
+subnet A CIDR All All    <--- with in subnet A allow inbound from any port and protocol 
+
+OUTBOUND
+0.0.0.0/0    All All     <--- allows all traffic
 
 #?#box#calculatedX@161#calculatedY@203#children@#name@nacl#id@1719923893#parent@#x@161#y@203
 Network control access list

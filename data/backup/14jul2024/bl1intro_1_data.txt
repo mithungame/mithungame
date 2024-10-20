@@ -1,0 +1,77 @@
+name@0:seed
+title
+
+name@1:basics
+content
+
+name@1:Move
+delete cube
+
+create cube - shift A
+select cube - right click ( edit preferences )
+move in X Y Z direction - G+X G+Y G+Z
+
+name@2:rotate
+rotate cube
+
+R+X
+R+Y
+R+Z
+
+name@3:SphereCreate
+shift A
+mesh - > UV SPHERE
+
+name@1:torusOnsphere
+create torus 
+
+switch on magnet OR "control" during move
+set to face
+Align rotation to target
+stick torus on sphere
+experiment with vertex, edge etc
+
+DO SAME WITH CUBE AND TORUS
+
+name@4:monkeyrotate
+create monkey head
+shift D to duplicate
+
+arrange in all directions
+tilt them differently 
+
+Rotate 
+
+set to local
+transform pivot point - median axis
+it will rotate on its own axis  but on a median point
+transform pivot point - individual origin
+it will rotate on its own axis  but in its own place
+
+name@5:doorHinge
+create door
+
+rotate on z axis
+place cursor on hinge 
+object - set origin - origin to 3d cursor
+rotate - must rotate like a door
+
+
+go to edit mode 
+select vertex
+shift s
+cursor to selected
+go to object mode
+object - set origin - origin to 3d cursor
+
+name@6:focus
+create sphere and cube , click on sphere hit / then hit / again
+
+name@7:create table 
+after creating 
+hit control j for joining 
+hit z and see wireframe
+
+name@rootNode
+root Node
+

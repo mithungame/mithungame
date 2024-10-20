@@ -1,5 +1,7 @@
-#?#box#calculatedX@95#calculatedY@-350#children@45,1690875626919,1685259800875,1698726635873#name@seed#id@seed#parent@#tag@python#x@336#y@220
+#?#box#calculatedX@95#calculatedY@-350#children@noparent,45,1690875626919,1685259800875,1698726635873#name@seed#id@seed#parent@#tag@python#x@336#y@220
 pythonbasics
+#?#box#calculatedX@95#calculatedY@-350#children@#name@noparent#id@noparent#parent@#tag@python#x@336#y@220
+content
 #?#box#calculatedX@70#calculatedY@-125#children@1694957722984,1694847682128,1694957789130,1694959856281#name@basicOperation#id@45#parent@#tag@hi#x@316#y@400
 basicOperation
 #?#box#calculatedX@-73#calculatedY@-80#children@1685259883148,1685260199442,1685283245145,1690881098550#name@add#id@1694957722984#parent@#tag@hello#x@201#y@436
@@ -20,22 +22,6 @@ a
 [11, 22, 33, 1, 2, 3, 4]
 ---
 [1,2]+(4, ) single element tuple needs comma at end
-
-@?#section#type@qa#pm@linebyline
-a=(1,2)
-a+=(3)
-options : 1. (1,2,3) 2.error 
-answer: 2
-! TypeError: 'int' object is not iterable  single element should have a , -> a+=(3,)
-
-@?#section#type@qa#pm@linebyline
-a=[1,2]
-a+=[3]
-options : 1. [1,2,3] 2.error 
-[1, 2, 3]
-answer: 1
-! it will work with both [3] and [3,]
-
 #?#box#calculatedX@-125#calculatedY@-45#children@#name@gotcha#id@1720904152#parent@#x@160#y@464
 a=([1,2,3],4)
 command: a[0]+=[55]
@@ -137,34 +123,41 @@ write to file with new line
   - option-1 f.write('hello'+'\n')
   - option 2 - print('text',file=f) NOTE:This will not print to stdout and f is file handle
 #?#box#calculatedX@300#calculatedY@-260#children@1685247052308,1685247436558,1690875175553,1690875571098#name@itersAndgenrs#id@1690875626919#parent@#x@500#y@292
-iterators dont bring ~*all to memory~*, just iterates unlike ~*list comprehensions~* which brings everything to memory,calculates and produces results 
+iterators dont bring all to memory, just iterates unlike list comprehensions which brings everything to memory,calculates and produces results 
 C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
 #?#box#calculatedX@435#calculatedY@-420#children@#name@iterator#id@1685247052308#parent@#x@608#y@164
-any object whose class has a  ~* __iter__ ~* method which returns ~* self ~* and ~* __next__ ~* 
-even for loop internally calls ~*iterable~* which calls ~*iterator~* like java
+iterator(giant wheel,shop back) is
+any object whose class has a  __iter__ method and __next__
+which returns self 
+even for loop internally calls iterable which calls iterator like java
 #?#box#calculatedX@435#calculatedY@-365#children@#name@generator#id@1685247436558#parent@#x@608#y@208
-Every generator is an ~*iterator~*, but ~*not vice versa~*. 
+Every generator is an iterator, but not vice versa. 
 issubclass(types.GeneratorType, collections.Iterator)
 True
 
-A generator  function has one or more ~*yield~* expressions
+A generator  function has one or more yield expressions
 def gensquares(N):
     for i in range(N):
         yield i ** 2
 
-x = gensquares(4) #x is a ~*generator~* object
+x = gensquares(4) #x is a generator object
 x.__next__() or next(x)
-generators are their own ~*iterators~* and dont need ~*__iter__~* call before calling next
+generators are their own iterators and dont need __iter__ call before calling next
 
-~*generator expression~* is a shorter form of generator function
+generator expression is a shorter form of generator function
 (i*i for i in range(a, b)) 
 (c * 4 for c in 'SPAM')
 
-generators are ~*one time~* use 
+generators are one time use 
+
+jonah jobs(next)
+bowl(rice)
+---------
+generator
 #?#box#calculatedX@435#calculatedY@-310#children@#name@listcomprehension#id@1690875175553#parent@#x@608#y@252
-will bring ~*all to memory~*
+will bring all to memory
 [str(n) for n in range(10**100)]
-will ~*crash~*
+will crash
 
 a=[ i*i for i in a ]
 square numbers of even
@@ -172,13 +165,13 @@ a=[ i*i for i in a if i%2==0 ]
 square numbers if even else dont
  a=[ i*i if i%2==0 else i for i in a ]
 #?#box#calculatedX@435#calculatedY@-260#children@#name@map#id@1690875571098#parent@#x@608#y@292
-map maps a ~*function~* over an ~*iterable~*
-map is ~*lazy~*, iterates
+map maps a function over an iterable
+map is lazy, iterates
 a=map(str, range(10**100));next(a) <--- WONT CRASH
-speed comparison - ~*LIST COMPREHENSION~* > ~*MAP~* > ~*FOR LOOP~*
+speed comparison - LIST COMPREHENSION > MAP > FOR LOOP
 *depends on pattern and usage
-~*map~* and ~*list comprehensions~* run at C language speed
-for loop runs as ~*bytecode~* within the ~*PVM~*
+map and list comprehensions run at C language speed
+for loop runs as bytecode within the PVM
 
 --get ascii
 list(map(ord,'abc'))
@@ -188,38 +181,11 @@ list(map(str,[1,2,3]))
 ['1', '2', '3']
 --neg to pos
 list(map(abs, (-1, 0, 1)))
-#?#box#calculatedX@398#calculatedY@387#children@1698727851852,1698726653443,1698727216288#name@structure#id@1698726635873#parent@#x@578#y@809
-serious python - C1P7 P7 
-
-                docs-|--conf.py
-                |    |---quickstart.rst
-                |    |---index.rst
-                |
-                |
-foobar----------foobar-|---__init__.py
-                |      |---cli.py
-                |      |---storage.py
-                |      |---tests-|--------------__init__.py
-                |      |         |--------------test_storage.py  
-                |      |         |--------------test_cli.py
-                |      |---data
-                |     
-                |-setup.pyyie
-                
-                |-setup.cfg
-                |-README.rst
-
-The standard name for a Python ~*installation script~* is ~*setup.py~*, It comes with its companion ~*setup.cfg~*
-README.rst or README.txt for generic info
-rst means ~*reStructuredText format~*
-
-Other common top level directories are 
-~*BET~*
-bin for ~*binary scripts~* you’ve written that will be installed by setup.py
-etc for ~*sample configuration~* files
-tools for ~*shell scripts~* or related tools
-
-#?#box#calculatedX@334#calculatedY@533#children@1698726980289#name@bestPractices#id@1698727851852#parent@#x@527#y@926
+#?#box#calculatedX@398#calculatedY@387#children@1698726653443,1698726980289,1698727216288#name@connector#id@1698726635873#parent@#x@578#y@809
+content
+#?#box#calculatedX@325#calculatedY@458#children@1698727851852#name@module#id@1698726653443#parent@#x@520#y@866
+a .py file
+#?#box#calculatedX@334#calculatedY@533#children@#name@__name__#id@1698727851852#parent@#x@527#y@926
 if __name__ == "__main__":
     main() #always use this pattern else code will run on import
 #?#box#calculatedX@563#calculatedY@465#children@#name@docstrings#id@1698726980289#parent@#x@710#y@872
@@ -231,11 +197,9 @@ PEP8 line length 80 characters
 
 def move(self, x, y):
     "Move the point to a new location in 2D space."
-#?#box#calculatedX@325#calculatedY@458#children@#name@module#id@1698726653443#parent@#x@520#y@866
-a .py file
 #?#box#calculatedX@8#calculatedY@387#children@1698727225598,1698727337083,1698727518794#name@package#id@1698727216288#parent@#x@266#y@809
-~*__init__.py~* makes a directory a package
-keep __init__.py ~*empty~*
+__init__.py makes a directory a package
+keep __init__.py empty
 #?#box#calculatedX@-132#calculatedY@531#children@#name@SampleStructure#id@1698727225598#parent@#x@154#y@924
 parent_directory/
   main.py
@@ -265,14 +229,14 @@ package folder - from ..database import Database
 
 from ..contact.email import send_mail
 #?#box#calculatedX@578#calculatedY@145#children@1685259919444,1685260059948,1698727713673#name@class#id@1685259800875#parent@#x@722#y@616
-~*__init__~* is initializer
-~*__new__~* is constructor rarely used
-class can be ~*inside object~*, philiposc2p45
+__init__ is initializer
+__new__ is constructor rarely used
+class can be inside object, philiposc2p45
 
 class Point:
     def __init__(self, x=0, y=0):
-        self.move(x, y) #calling a function to set values can help the function to act like a setter 
-    def move(self, x, y): #this can also act like a value setter
+        self.move(x, y)
+    def move(self, x, y):
         self.x = x
         self.y = y
     def reset(self):
@@ -284,25 +248,22 @@ print(point.x, point.y)
 #?#box#calculatedX@415#calculatedY@170#children@#name@dataclass#id@1685259919444#parent@#x@592#y@636
 (a small tuition) C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\dataclass.ipynb
 #?#box#calculatedX@410#calculatedY@235#children@#name@property#id@1685260059948#parent@#x@588#y@688
-setter,deleter,getter variable access will go via ~*property method~*
-variable name and property name should ~*not be same~* , it will cause ~*infinite recursion~*
+setter,deleter,getter variable access will go via property method
+variable name and property name should not be same
 eg use _name as variable and name as property
 #?#box#calculatedX@755#calculatedY@323#children@1698727725678,1698727967889#name@variables#id@1698727713673#parent@#x@864#y@758
 content
 #?#box#calculatedX@769#calculatedY@379#children@#name@global#id@1698727725678#parent@#x@875#y@803
-in case of items like ~*list~* or ~*dict~* no need to define ~*global~* keyword
-global keyword must be used when global variable is ~*modified~* not when ~*reading~*
-
 database = None
 
 def initialize_database():
     global database # dont need definition for use , only during assignment
     database = Database()
-#?#box#calculatedX@894#calculatedY@389#children@#name@private#id@1698727967889#parent@#x@975#y@811
-use ~* _ or __ ~* as prefix
-_ can be ~*directly accessed~*
-__ can be directly accessed only from ~*with in class~*
-  outside class ~* print(<object name>._<class name>__<var name>) ~*
+#?#box#calculatedX@894#calculatedY@389#children@1698727984744#name@private#id@1698727967889#parent@#x@975#y@811
+_ or __
+_ can be directly accessed
+__ can be directly accessed only from with in class
+  outside class print(<object name>._<class name>__<var name>)
 
 class SecretString:
     '''A not-at-all secure way to store a secret string.'''
@@ -315,5 +276,7 @@ class SecretString:
             return self.__plain_string   #<----------- self.__
         else:
             return ''
+#?#box#calculatedX@900#calculatedY@440#children@#name@no REAL privacy#id@1698727984744#parent@#type@bubble#x@980#y@852
+content
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@751#y@759
 root Node

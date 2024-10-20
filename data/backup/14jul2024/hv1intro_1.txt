@@ -1,13 +1,11 @@
 #?#box#calculatedX@158#calculatedY@-2#children@45,1707711084815,1707711257961,1707711322017#name@0:seed#id@seed#parent@#x@86#y@78
-content
-#?#box#calculatedX@211#calculatedY@63#children@#name@1:intro#id@45#parent@#x@128#y@130#date@18sep2024#tag@zzz
+title
+#?#box#calculatedX@211#calculatedY@63#children@#name@1:intro#id@45#parent@#x@128#y@130
 Apache Hive is built on top of 
 Apache Hadoop
 hive Query execution via 
 Apache Tez, Apache Spark, or MapReduce 
 Procedural language with 
-
-#?#hint#tag@a,b,xxx#date@17sep2024
 HPL-SQL
 Sub-second query retrieval via 
 Hive LLAP, Apache YARN and Apache Slider

@@ -1,0 +1,50 @@
+#?#box#calculatedX@87#calculatedY@79#children@1719923185,1720903687#name@seed#id@seed#parent@#x@87#y@79
+title
+#?#box#calculatedX@129#calculatedY@131#children@1719924057,1719923206#name@network#id@1719923185#parent@#x@129#y@131
+title
+#?#box#calculatedX@161#calculatedY@203#children@1719924136#name@ip#id@1719924057#parent@#x@161#y@203
+content
+#?#box#calculatedX@161#calculatedY@203#children@#name@class#id@1719924136#parent@#x@161#y@203
+  Public IP Range               private ip range              Subnet  Networks  Hosts
+a 1.0.0.0 to 127.0.0.0         10.0.0.0 to 10.255.255.255     8 bits  126       16,777,214
+b 128.0.0.0 to 191.255.0.0     172.16.0.0 to 172.31.255.255   16 bits 16,382    65,534
+c 192.0.0.0 to 223.255.255.0   192.168.0.0 to 192.168.255.255 24 bits 2,097,150 254  
+d 224.0.0.0 to 239.255.255.255       
+e 240.0.0.0 to 255.255.255.255 
+#?#box#calculatedX@161#calculatedY@203#children@1719923360,1719923445#name@vpc#id@1719923206#parent@#x@161#y@203
+Amazon Virtual Private Cloud (Amazon VPC)
+  logically isolated virtual network
+vpc is per region 
+AWS Region is a physical location
+#?#box#calculatedX@161#calculatedY@203#children@#name@AvailabilityZones#id@1719923360#parent@#x@161#y@203
+An AWS Region is a physical location where we cluster data centers, known as Availability Zones.
+Availability Zone has independent power, cooling, and physical security, with redundant power, networking, and connectivity
+#?#box#calculatedX@161#calculatedY@203#children@1719923521,1719923810#name@subnet#id@1719923445#parent@#x@161#y@203
+A subnet is a range of IP addresses in your VPC
+#?#box#calculatedX@161#calculatedY@203#children@#name@types#id@1719923521#parent@#x@161#y@203
+Public subnet – The subnet has a direct route to an internet gateway
+Private subnet – The subnet does not have a direct route to an internet gateway. 
+  Resources in a private subnet require a NAT device to access the public internet.
+VPN-only subnet – The subnet has a route to a Site-to-Site VPN connection through a virtual private gateway. 
+  The subnet does not have a route to an internet gateway.
+Isolated subnet – The subnet has no routes to destinations outside its VPC. 
+  Resources in an isolated subnet can only access or be accessed by other resources in the same VPC.
+#?#box#calculatedX@161#calculatedY@203#children@1719923879,1719923893#name@security#id@1719923810#parent@#x@161#y@203
+Every subnet that you create is automatically associated with the default network ACL for the VPC
+default network ACL allows all inbound and outbound traffic
+#?#box#calculatedX@161#calculatedY@203#children@#name@securitygroup#id@1719923879#parent@#x@161#y@203
+Security groups allow inbound and outbound traffic for associated resources, such as EC2 instances.
+#?#box#calculatedX@161#calculatedY@203#children@#name@nacl#id@1719923893#parent@#x@161#y@203
+Network ACLs allow or deny inbound and outbound traffic at the subnet level. In most cases, security groups can meet your needs.
+#?#box#calculatedX@161#calculatedY@203#children@1720903805#name@users#id@1720903687#parent@#x@161#y@203
+types of AWS Users
+AWS account root user
+IAM Users
+IAM Roles
+IAM User groups
+#?#box#calculatedX@161#calculatedY@203#children@#name@instanceProfile#id@1720903805#parent@#x@161#y@203
+An instance profile is a container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts.
+
+If you use the AWS Management Console(not command line) to create a role for Amazon EC2, the console automatically creates an instance profile and gives it the same name as the role
+The console does not create an instance profile for a role that is not associated with Amazon EC2
+

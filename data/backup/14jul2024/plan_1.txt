@@ -1,0 +1,56 @@
+#?#box#calculatedX@200#calculatedY@158#children@45,1679033668989,1697021921966#name@0:seed#id@seed#parent@#x@380#y@266
+plan
+#?#box#calculatedX@102#calculatedY@246#children@#name@0:properties#id@45#parent@#x@301#y@336
+IT is the only way i can make money do whatever i want
+i dont seem to have business talent
+dont waste your time on anything else
+EVERYTHING IS A BYPRODUCT OF IT
+there is no time to do everything.
+#?#box#calculatedX@355#calculatedY@246#children@1679033718433,1679033800324#name@1:jobPlan#id@1679033668989#parent@#x@504#y@336
+jobPlan
+#?#box#calculatedX@247#calculatedY@335#children@#name@0:properties#id@1679033718433#parent@#x@417#y@408
+make money
+make money
+make money
+MONEY SOLVES MOST PROBLEMS THAT CAN BE SOLVED REST IS NOT UP TO US
+#?#box#calculatedX@426#calculatedY@335#children@1679033836558,1679033901170,1679033968609,1679034023481,1679034064740,1679034084267#name@1:JobsInDemand#id@1679033800324#parent@#x@560#y@408
+JobsInDemand
+#?#box#calculatedX@350#calculatedY@470#children@#name@0:Properties#id@1679033901170#parent@#x@500#y@516
+Dont waste time on front end
+GET GOOD IN PYTHON
+GET GOOD IT ETL/ELT
+ML is future slowly make a 5 year plan
+#?#box#calculatedX@486#calculatedY@409#children@#name@1:ApacheSparkAndHive#id@1679033836558#parent@#x@608#y@467
+working on it
+#?#box#calculatedX@486#calculatedY@440#children@#name@2:PYTHON#id@1679033968609#parent@#x@608#y@492
+GET REALLY GOOD AT PYTHON OVER NEXT 1 YEAR
+ADVANCED
+#?#box#calculatedX@491#calculatedY@467#children@#name@3:JavaAndMaven#id@1679034023481#parent@#x@612#y@513
+i have always been puzzled by this , dont dive deep just work on it and understand it totally , pom deployment dependencies and everything
+#?#box#calculatedX@493#calculatedY@504#children@#name@4:ETLTools#id@1679034064740#parent@#x@614#y@543
+SnapLogic,Talend,DataStage
+#?#box#calculatedX@494#calculatedY@531#children@#name@5:ML#id@1679034084267#parent@#x@615#y@564
+4 or 5 year plan
+#?#box#calculatedX@538#calculatedY@188#children@1697021941135#name@2:5YearPlan#id@1697021921966#parent@#x@650#y@290
+content
+#?#box#calculatedX@710#calculatedY@265#children@1697021906394#name@1:Tech#id@1697021941135#parent@#x@788#y@352
+content
+#?#box#calculatedX@774#calculatedY@352#children@1697022040555,1697022128128,1697022182258,1697022347505,1697022722469#name@2:wastedTime#id@1697021906394#parent@#x@839#y@421
+content
+#?#box#calculatedX@781#calculatedY@400#children@#name@0:angular#id@1697022040555#parent@#x@844#y@460
+even though good learning it never really benefitted me, i am not a front end developer cant do all
+infact the credit did not even come to me , it went to the fresher and others
+#?#box#calculatedX@781#calculatedY@425#children@#name@1:EditGraph#id@1697022128128#parent@#x@844#y@480
+i keep on diving into editing stuff, especially graph app , qa app and waste all my time
+but its not useful i could have used it to read AI ML or something
+#?#box#calculatedX@780#calculatedY@451#children@#name@2:readingCandCPlusPlus#id@1697022182258#parent@#x@844#y@500
+first of all it was no use to me 
+but i tried to create a whole pointer and word link like a neural network about pointers, now that was brutal waste of time
+#?#box#calculatedX@779#calculatedY@479#children@#name@3:DontWorkForNoRecognition#id@1697022347505#parent@#x@843#y@523
+my name didnt even come up for control m cli - i worked on something that did not have my name on it
+i put so much effort into nifi lib - vscode pytest etc . it was a good learning for me but i should not have put that much effort into it
+#?#box#calculatedX@780#calculatedY@505#children@#name@4:KaizenFailure#id@1697022722469#parent@#x@844#y@544
+for example i spent lot of time on multiprocessing python
+i did not document or follow up properly
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@711#y@399
+root Node

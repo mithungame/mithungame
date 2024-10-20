@@ -1,0 +1,31 @@
+name@0:seed
+#?#topic@nifi#tag@nifi
+
+name@1:snapshot
+url : https://docs.getdbt.com/docs/build/snapshots
+
+name@1:metafields
+dbt_valid_from
+dbt_valid_to - The most recent snapshot record will have dbt_valid_to set to null.
+dbt_scd_id - A unique key 
+dbt_updated_at	The timestamp of the source record when this snapshot row was inserted
+
+name@2:strategy
+content
+
+name@1:timestamp
+content
+ depends on updated_at ( parameterizable )
+
+name@2:check
+content
+ config - check_cols=['status', 'is_cancelled'],
+
+name@3:hardDelete
+content
+ config invalidate_hard_deletes=True,
+dbt_valid_to will be set to the current snapshot time
+
+name@rootNode
+root Node
+

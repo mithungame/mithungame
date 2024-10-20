@@ -1,0 +1,29 @@
+#?#box#calculatedX@279#calculatedY@234#children@1728901110#name@seed#id@seed#parent@#tag@redshift,rs#x@223#y@187#priority@2
+title
+
+#?#box#calculatedX@365#calculatedY@201#children@1728901979#name@intro#id@1728901110#parent@#x@292#y@160
+An Amazon Redshift data warehouse is an enterprise-class ~*relational database query and management system~*.
+
+#?#box#calculatedX@365#calculatedY@201#children@1728902021,1728902079,1728903632#name@architecture#id@1728901979#parent@#x@292#y@160
+https://docs.aws.amazon.com/redshift/latest/dg/c_high_level_system_architecture.html
+file:///C:\Users\mithu\Downloads\track\projects\d3\resources\redshiftArchitecture.png
+
+#?#box#calculatedX@365#calculatedY@201#children@#name@cluster#id@1728902021#parent@#x@292#y@160
+A cluster is composed of one or more ~*compute nodes~*. 
+If a cluster is provisioned with ~*two or more~* compute nodes, an additional ~*leader node~* coordinates the ~*compute nodes~* and handles ~*external communication~*. 
+Your client application interacts directly only with the ~*leader node~*. 
+The compute nodes are ~*transparent~* to external applications. why???
+
+#?#box#calculatedX@365#calculatedY@201#children@#name@leader#id@1728902079#parent@#x@292#y@160
+The leader node manages communications with ~*client programs~* and ~*compute nodes~*. 
+It parses and develops ~*execution plans~* for queries. 
+Based on execution plan, leader node ~*compiles code~*, distributes the compiled code to the ~*compute nodes~*, and assigns a portion of the ~*data~* to ~*each compute node~*.
+
+The leader node distributes SQL statements to the compute nodes only when a query references ~*tables~* that are stored on the compute nodes. 
+All other queries run ~*exclusively~* on the ~*leader node~*. 
+certain SQL functions work only on the leader node
+
+#?#box#calculatedX@365#calculatedY@201#children@#name@compute#id@1728903632#parent@#x@292#y@160
+The compute nodes run the ~*compiled code~* and send intermediate results back to the ~*leader node~* for final aggregation.
+Each compute node has its own dedicated ~*CPU and memory~*, which are determined by ~*the node type~*. 
+one can increase the compute capacity of a cluster by increasing the ~*number of nodes~*, upgrading the ~*node type~*, or both.

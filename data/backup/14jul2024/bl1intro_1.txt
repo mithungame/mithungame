@@ -9,9 +9,9 @@ content
 #?#box#calculatedX@291#calculatedY@297#children@#name@Move#id@45#parent@#x@232#y@257
 delete cube
 
-create cube - ~* shift A ~*
+create cube - shift A
 select cube - right click ( edit preferences )
-move in X Y Z direction - ~* G+X G+Y G+Z ~*
+move in X Y Z direction - G+X G+Y G+Z
 #?#box#calculatedX@293#calculatedY@328#children@#name@rotate#id@66#parent@#x@234#y@282
 rotate cube
 
@@ -532,7 +532,7 @@ in video there is subsurface color but there is no more in new blender
 use xyz to control the color 
 #?#box#calculatedX@296#calculatedY@401#children@1718571092,1718552974#name@gameBoy#id@1718542970#parent@#x@236#y@340
 content
-#?#box#calculatedX@296#calculatedY@401#children@#name@texture#id@1718552974#parent@#x@236#y@340
+#?#box#calculatedX@296#calculatedY@401#children@1718571092#name@texture#id@1718552974#parent@#x@236#y@340
 load gameboy_basic
 add texture for main piece 
 link it to button 

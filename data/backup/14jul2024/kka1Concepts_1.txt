@@ -1,11 +1,18 @@
 #?#box#calculatedX@226#calculatedY@286#children@45,1712464776749,1712640915627,1713707071#name@0:seed#id@seed#parent@#x@280#y@228#tag@kafka
 title
-#?#box#calculatedX@336#calculatedY@195#children@#name@xxx#id@9999#parent@#x@368#y@156
-sss
 #?#box#calculatedX@336#calculatedY@195#children@66,1712330435713,1712330830657#name@0:ksqldb#id@45#parent@#x@368#y@156
-ksqlDB is ~*event streaming~* database
-In Kafka, you store a collection of events in a ~*topic~*, Each event can contain any ~*raw bytes ~*
-In ksqlDB, you store events in a ~*stream~* which is a ~*topic~* with a ~*strongly defined schema~*
+ksqlDB is
+the event streaming database
+
+In Kafka, you store a collection of events in a 
+topic
+Each event can contain any 
+raw bytes 
+
+In ksqlDB, you store events in a 
+stream
+stream is a topic with a strongly 
+defined schema
 #?#box#calculatedX@542#calculatedY@82#children@1712330229481#d_visibility@hidden#name@0:declareStream#id@66#parent@#x@533#y@65
 
 CREATE STREAM readings (
@@ -18,23 +25,33 @@ CREATE STREAM readings (
     value_format = 'json'
 );
 #?#box#calculatedX@697#calculatedY@87#children@#name@1:behindScenes#id@1712330229481#parent@#x@657#y@69
-if topic does not exist ~*create topic~* and save metadata in a ~*local metadata store~*
-data is partitioned on ~*sensor~*
+if topic does not exist 
+create topic
+save metadata in a local 
+metadata store
+data is partitioned on sensor
 #?#box#calculatedX@541#calculatedY@136#children@1712330531996#d_visibility@hidden#name@1:insertrow#id@1712330435713#parent@#x@532#y@108
 INSERT INTO readings (sensor, location, reading) VALUES ('sensor-1', 'wheel', 45);
 
-In Kafka, you model an event as a ~*record~* and put it into a ~*topic~*
-In ksqlDB, you model an event as a ~*row~* and put it into a ~*stream~* 
-A row is just a record with ~*additional metadata~*
+In Kafka, you model an event as a --- and put it into a ---
+record,topic
+In ksqlDB, you model an event as a --- and put it into a ---. 
+row,stream
+A row is just a record with 
+additional metadata.
 #?#box#calculatedX@698#calculatedY@137#children@#name@1:behindScenes#id@1712330531996#parent@#x@658#y@109
 a request with the payload is sent to a ksqlDB server
 check schema
 reject malformed records
 use Kafka producer client to insert that record into the backing Kafka topic
-persisted on directly on the ~*broker~*, None of it lives in ~*ksqlDB servers~*
+persisted on directly on the broker
+None of it lives in ksqlDB servers
 #?#box#calculatedX@535#calculatedY@197#children@1712331421750#d_visibility@hidden#name@2:transformations#id@1712330830657#parent@#x@528#y@157
-kafka way - use ~*consumer~* to transform producer data, this is low level
-ksqldb way - issue a ~*persistent query~* to transform one stream into another using its SQL
+kafka way - use consumer to transform producer data
+this is low level
+
+ksqldb way - issue a persistent query to transform one stream into another using its SQL
+
 
 -- process from the beginning of each stream
 set 'auto.offset.reset' = 'earliest';
@@ -45,13 +62,16 @@ UCASE(location) AS location
 FROM readings
 EMIT CHANGES;
 #?#box#calculatedX@710#calculatedY@196#children@#name@1:behindScenes#id@1712331421750#parent@#x@668#y@156
-Persistent queries are little ~*stream processing programs~* that run indefinitely
+Persistent queries are little stream processing programs that run indefinitely
+ksqlDB server compiles query  to a physical execution plan as a Kafka Streams topology
+The topology runs as a daemon, reacting to new topic records as soon as they become available
+If you run ksqlDB as a cluster, the topology scales horizontally 
+all of the processing work happens on ksqlDB server; 
+no processing work happens on the Kafka brokers
+
 When a persistent query is created, it is assigned a generated name
-As each row passes through the persistent query, the ~*transformation logic~* is applied to create a new row
-ksqlDB server compiles query  to a physical execution plan as a ~*Kafka Streams topology~*
-The ~*topology~* runs as a daemon, reacting to ~*new topic records~* as soon as they become available
-If you run ksqlDB as a cluster, the topology scales ~*horizontally~*all of the processing work happens on ~*ksqlDB server~* and no processing work happens on the ~*Kafka brokers~*
-Persistent queries completely manage their ~*own processing progression~*, even in the presence of faults. ksqlDB durably maintains the ~*highest offset~* of each ~*input partition~*.
+As each row passes through the persistent query, the transformation logic is applied to create a new row
+Persistent queries completely manage their own processing progression, even in the presence of faults. ksqlDB durably maintains the highest offset of each input partition.
 #?#box#calculatedX@344#calculatedY@596#children@1714812975,1714813776#name@1:concepts#id@1713707071#parent@#x@375#y@476
 content
 #?#box#calculatedX@461#calculatedY@600#children@1713707072,1713707073#name@1:serde#id@1714812975#parent@#x@468#y@480
@@ -61,12 +81,11 @@ https://kafka.apache.org/10/documentation/streams/developer-guide/datatypes
 Every Kafka Streams application must provide Serdes (Serializer/Deserializer) for the data types of record keys and record values
 
 Option 1 - Properties
-create properties object which is key,value pair -> put(config name, serde name) 
 Properties settings = new Properties();
 settings.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 settings.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.Long().getClass().getName());
 
-override properties serdes in program 
+override properties serdes 
 final Serde<String> stringSerde = Serdes.String();
 final Serde<Long> longSerde = Serdes.Long();
 KStream<String, Long> userCountByRegion = ...;
@@ -80,14 +99,14 @@ final Serde<Long> longSerde = Serdes.Long();
 KStream<String, Long> userCountByRegion = ...;
 userCountByRegion.to("RegionCountsTopic", Produced.valueSerde(Serdes.Long()));
 #?#box#calculatedX@566#calculatedY@598#children@#name@1:default#id@1713707072#parent@#x@552#y@478
-<artifactId>kafka-clients</artifactId> artifact provides default serdes
-byte[] Serdes.ByteArray(), Serdes.Bytes() (see tip below)
-ByteBuffer Serdes.ByteBuffer()
-Double Serdes.Double()
-Integer Serdes.Integer()
-Long Serdes.Long()
-String Serdes.String()
-UUID Serdes.UUID()
+<artifactId>kafka-clients</artifactId> artifact provides default serdes 
+byte[]	Serdes.ByteArray(), Serdes.Bytes() (see tip below)
+ByteBuffer	Serdes.ByteBuffer()
+Double	Serdes.Double()
+Integer	Serdes.Integer()
+Long	Serdes.Long()
+String	Serdes.String()
+UUID	Serdes.UUID()
 
 example 
 streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,   Serdes.String().getClass().getName());
@@ -340,7 +359,7 @@ This behavior is independent of the configured timestamp extractor, i.e., using 
 https://kafka.apache.org/documentation/streams/developer-guide/testing.html#unit-testing-processors
 #?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004,1715941443#name@5:code#id@1713475712#parent@#x@465#y@359
 content
-#?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:egKStream#id@1713609003#parent@#x@762#y@356
+#?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:sampleKStream#id@1713609003#parent@#x@762#y@356
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
 #?#box#calculatedX@852#calculatedY@556#children@#name@1:setConfig#id@1713475713#parent@#x@781#y@444
 import java.util.Properties;

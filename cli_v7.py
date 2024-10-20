@@ -269,18 +269,18 @@ def showDFSOutput(res):
         pass
 
 @debug_gate
-def build_partial_tree(tree,seed):
+def build_partial_tree(tree, filtered_nodes, seed):
     seed['_children'] = [] # this has to be done at first cnt wait for its turn
-    for each_item in tree:
+    for each_item in filtered_nodes:
         v_each_item = each_item
         if each_item['id'] != 'seed':
             each_item['_children'] = []
             #print('processing item ',v_each_item['name'])
             has_upstream = False
             while not has_upstream:
-                parent = node_search_by_child(g_context['tree'], v_each_item['id'] ,  )
+                parent = node_search_by_child(tree, v_each_item['id'] ,  )
                 #lets say the current parent is not attached to anything and was not in list of selected items it will cause a problem
-                if parent and parent['id'] in [ i['id'] for i in tree] :
+                if parent and parent['id'] in [ i['id'] for i in filtered_nodes] :
                     if '_children' in parent :
                         parent['_children'] += [ each_item['id'] ]
                         #print('found parent for ',each_item['name'], ' it is ', parent['name'])
@@ -294,8 +294,8 @@ def build_partial_tree(tree,seed):
                     #print('found no parent for ',v_each_item['name'])
                     seed[ '_children' ] += [ each_item['id'] ]
                     has_upstream = True
-    #for i in tree: print(i['id'],end=' ')
-    return tree
+    #for i in filtered_nodes: print(i['id'],end=' ')
+    return filtered_nodes
 
 @debug_gate
 def link_calendar_tree_from_all_searched_files(calendar_objs):
@@ -305,24 +305,26 @@ def link_calendar_tree_from_all_searched_files(calendar_objs):
         each_file=os.path.basename(each_file)
         for each_obj in g_context[each_file]['tree']: # this is directly reading from tree not filtered tree dont change immediately see how it goes
             for obj in calendar_objs:
-                match = False
                 if 'date' in each_obj:
-                    if re.match("^[0-9][0-9]$",each_obj['date']):
-                        if each_obj['date'][:2].lower()==obj['name'][:2].lower(): match = True
-                    elif re.match("^[0-9][0-9][0-9][0-9]$",each_obj['date']):
-                        if each_obj['date'][-4:].lower()==obj['name'][-4:].lower(): match = True
-                    elif each_obj['date'].lower() in "jan,feb,mar,apr,jun,jul,aug,sep,oct,nov,dec".split(','):
-                        if each_obj['date'][2:5].lower()==obj['name'][2:5].lower(): match = True
-                    elif each_obj['date'].lower() in "mon,tue,wed,thu,fri,sat,sun".split(','):
-                        if each_obj['date'].lower()==day_of_week[obj['_day_obj'].weekday()]: match = True
-                    elif re.match("^[0-9][0-9](jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)$",each_obj['date']):
-                        if each_obj['date'][0:5].lower()==obj['name'][0:5].lower(): match = True
-                    elif re.match("^[0-9][0-9](jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)[0-9][0-9][0-9][0-9]$",each_obj['date']):
-                        if each_obj['date'].lower()==obj['name'].lower(): match = True
-                    else:
-                        raise Exception('Incorrect date format',each_file,each_obj)
-                    if match: 
-                        obj['data'].append({'type': 'link', 'id': each_obj['id'], 'filename': os.path.basename(each_obj['_filename']) })
+                    for each_date in each_obj['date']:
+                        match = False
+                        if re.match("^[0-9][0-9]$",each_date):
+                            if each_date[:2].lower()==obj['name'][:2].lower(): match = True
+                        elif re.match("^[0-9][0-9][0-9][0-9]$",each_date):
+                            if each_date[-4:].lower()==obj['name'][-4:].lower(): match = True
+                        elif each_date.lower() in "jan,feb,mar,apr,jun,jul,aug,sep,oct,nov,dec".split(','):
+                            if each_date[2:5].lower()==obj['name'][2:5].lower(): match = True
+                        elif each_date.lower() in "mon,tue,wed,thu,fri,sat,sun".split(','):
+                            if each_date.lower()==day_of_week[obj['_day_obj'].weekday()]: match = True
+                        elif re.match("^[0-9][0-9](jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)$",each_date):
+                            if each_date[0:5].lower()==obj['name'][0:5].lower(): match = True
+                        elif re.match("^[0-9][0-9](jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec)[0-9][0-9][0-9][0-9]$",each_date):
+                            if each_date.lower()==obj['name'].lower(): match = True
+                        else:
+                            raise Exception('Incorrect date format',each_file,each_obj)
+                        if match: 
+                            obj['data'].append({'type': 'link', 'id': each_obj['id'], 'filename': os.path.basename(each_obj['_filename']) })
+                            if 'tag' in each_obj: obj['tag'] = each_obj['tag'] #need this for search using tags
 
 @debug_gate
 @node_gate
@@ -373,7 +375,7 @@ def build_calendar_tree_from_result(year):
     return filename
 
 @debug_gate
-def build_tree_from_result(tree,seed, mode='tree') -> None:
+def build_tree_from_result(tree, filtered_nodes,seed, mode='tree') -> None:
     #print('calling display tree')
     res=[]
     #for i in tree: print(i['name'])
@@ -383,8 +385,8 @@ def build_tree_from_result(tree,seed, mode='tree') -> None:
     #seed['children']=[ i for i in parent_node_ids ] # clear out existing children we are building new graph
     #parent_node = seed
     #the tree generated here is actually disconnected example if a child in 3rd level is selccted and grand parent is selected it is not attached to grand parent so we are going to attach it to closest ancestor
-    if 'seed' not in [ i['id'] for i in tree  ]: tree.insert(0,seed)
-    g_context[g_context['basefilename']]['filtered_tree'] = build_partial_tree(tree,seed)
+    if 'seed' not in [ i['id'] for i in tree  ]: filtered_nodes.insert(0,seed)
+    return build_partial_tree(tree, filtered_nodes,seed)
     #print(g_context[active_file]['filtered_tree'][0])
 
 @debug_gate
@@ -426,6 +428,9 @@ def tree_display(tree,seed,mode): #dont use g_context here , it gets into the ar
     elif args.tree == "true":
         #child_key = "_children" if mode in ["tree","calendar"] else "_ephemeral_children" 
         child_key = "_children"
+        for i in tree:
+            if "d_visibility" in i.keys() and i["d_visibility"]=="hidden":
+                hide_children( i, tree , key=child_key )
         data_table = build_data_table_from_tree(seed,tree,child_key)
         return screen_coordinator(mode,data_table ,{ 'base_data': tree, 'child_key': child_key, 'start_node': seed })
 
@@ -490,7 +495,9 @@ def display_table(clear_screen = True, cursor_pos = None):
         words += ' ' * ( os.get_terminal_size().columns - len(words) ) 
     lines+=words+'\n'
     no_of_lines_printed+=1
-    for _ in range(os.get_terminal_size().lines - no_of_lines_printed - 5): lines+=(' '*os.get_terminal_size().columns)+'\n'
+    if args.screencontrol:
+        for _ in range(os.get_terminal_size().lines - no_of_lines_printed - 5): 
+            lines+=(' '*os.get_terminal_size().columns)+'\n'
     print(lines)
     command = ''
     if platform.system() == 'Windows':
@@ -515,7 +522,7 @@ def initialize_tree_params(g_screen_obj):
     #height = 5
     #width = 30
     if mode == "tree" : 
-        command_options = { **command_options,  **{ 'n': 'next', "e": "ephemeral", "c": "calendar" , "r": "reload", "v": "visited on"} }
+        command_options = { **command_options,  **{ 'n': 'next', "e": "ephemeral", "c": "calendar" , "r": "reload", "v": "visited on", "u": "unhide all"} }
         table_properties={'height':height,'width':width,'w_size':20,'h_size' : 1,'pre_dots' : 1,'post_dots' : 2, 'pre_dot_char': '-', 'post_dot_char': '-', 'pre_fill_name': '-', 'post_fill_name': '-', 'default_color': 'WHITE' }
     elif mode == "ephemeral_tree":
         command_options = { **command_options, **{ 'b': "Go back to normal tree" } }
@@ -575,7 +582,7 @@ g_clear_screen_first_time=True
 def screen_coordinator(mode, data_table=None ,context_properties=None): #except for mode all other params should be used only for initialization
     if mode not in g_context['accepted_mode']: raise Exception("the mode {} is not one of the accepted values {}".format(mode,g_context['accepted_mode']))
     global g_clear_screen_first_time
-    if g_clear_screen_first_time and args.screencontrol=="true":
+    if g_clear_screen_first_time and args.screencontrol:
         g_clear_screen_first_time=False
         for _ in range(os.get_terminal_size().lines): print()
     #parts that need to be refreshed each time
@@ -693,6 +700,9 @@ def popup_screen_action_on_command(command_dict, command_properties,command_opti
         #g_screen_obj['popup']['state_of_table'] = { 'start_x': 0, 'start_y': 0 } # state must be reset, after trying ways to do it in refresh pop this seems the best way else its challengig
         command_properties['option'] = 'q'
         return
+    if command in ['p']:
+        obj = context_properties['base_data']
+        build_tree_from_popup( obj )
     if command == 'r':
         #g_screen_obj['popup']['state_of_table'] = { 'start_x': 0, 'start_y': 0 } # state must be reset, after trying ways to do it in refresh pop this seems the best way else its challengig
         memory_controller( 'update', **command_attribute )
@@ -770,7 +780,7 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         command_properties['highlight']= { 'mode': 'id', 'param': pop_rand_obj['id'], '_print_arr_name': pop_rand_obj['_print_arr_name'] } # _print_arr_name is used for subsequent popup
         #print(command_dict,command_properties)
         return
-    if command in [ 'm', 'x' ]: 
+    if command in [ 'm', 'x', 'u' ]: 
         #will be taken care by refresh_tree_print_table
         return
     if command in [ 'p']: 
@@ -781,11 +791,12 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         g_screen_obj['active_obj']=last_active_obj
         return   
     if command in [ 'c']: 
-        last_active_obj = g_screen_obj['active_obj']
-        filename = build_calendar_tree_from_result(int(command_attribute))
-        tree=g_context[filename]['tree']
-        tree_display(tree, tree[0], 'calendar')
-        g_screen_obj['active_obj']=last_active_obj
+        if command_attribute.rstrip().lstrip() and str.isnumeric( command_attribute.rstrip().lstrip() ) :
+            last_active_obj = g_screen_obj['active_obj']
+            filename = build_calendar_tree_from_result(int(command_attribute))
+            tree=g_context[filename]['tree']
+            tree_display(tree, tree[0], 'calendar')
+            g_screen_obj['active_obj']=last_active_obj
         return  
     if command == 'n': 
         command_properties['option'] = 'n'
@@ -858,6 +869,21 @@ def refresh_popup_print_table(command_properties, command_dict):
     return print_table
 
 @debug_gate
+def hide_all_children():
+    if g_screen_obj['active_obj'] != "tree": raise Exception('only tree mode can invoke hide_all_children')
+    child_key = g_screen_obj['tree']['context_properties']['child_key']
+    if '_node_with_hidden_children' in g_screen_obj['tree']:
+        for i in g_screen_obj['tree']['_node_with_hidden_children']:
+            hide_children(i,g_screen_obj['tree']['context_properties']['base_data'],key=child_key)
+        del(g_screen_obj['tree']['_node_with_hidden_children'])
+    else:
+        g_screen_obj['tree']['_node_with_hidden_children'] = []
+        for i in g_screen_obj['tree']['context_properties']['base_data']:
+            if child_key + '_hidden' in i:
+                g_screen_obj['tree']['_node_with_hidden_children'].append( i )
+                hide_children(i,g_screen_obj['tree']['context_properties']['base_data'],key=child_key)
+    
+@debug_gate
 def hide_children(obj,tree,key='children'):
     all_children=get_all_children(tree,[obj['id']],key)
     hidden_child_name = key + '_hidden' # need to separate hidden children for normal and ephemeral
@@ -901,10 +927,13 @@ def refresh_graph_tree_print_table(mode, command_properties, command_dict):
             table_properties['h_size']=1
             g_screen_tree_obj['state_of_table']['_first_h_block_in_scope'] = g_screen_tree_obj['state_of_table']['first_h_block_in_scope']
             g_screen_tree_obj['state_of_table']['first_h_block_in_scope'] = 1
-    if command_dict['command']=='x':
-        for i in g_screen_tree_obj['state_of_table']['selected_visible_items']:
-            if i['obj']['_print_arr_name']==command_dict['command_attribute'].lstrip().rstrip():
-                hide_children(i['obj'], g_screen_tree_obj['context_properties']['base_data'],g_screen_tree_obj['context_properties']['child_key'])
+    if command_dict['command'] in ['x','u']:
+        if command_dict['command'] == 'x':
+            for i in g_screen_tree_obj['state_of_table']['selected_visible_items']:
+                if i['obj']['_print_arr_name']==command_dict['command_attribute'].lstrip().rstrip():
+                    hide_children(i['obj'], g_screen_tree_obj['context_properties']['base_data'],g_screen_tree_obj['context_properties']['child_key'])
+        if command_dict['command'] == 'u':
+            hide_all_children()
         g_screen_tree_obj['data_table'] = build_data_table_from_tree(
             parent_node=g_screen_tree_obj['context_properties']['start_node'],
             tree=g_screen_tree_obj['context_properties']['base_data'],
@@ -1369,6 +1398,7 @@ def highlight_cell_tree_text(colored_text,cell_properties,cell_obj):
     highlight_properties=cell_properties['highlight']
     text=''
     root_link_node = resolve_links_and_data(cell_obj)
+    tag=cell_obj['tag'] if 'tag' in cell_obj  else [] 
     for n,i in enumerate(nested_links_to_dfs_flat_array(root_link_node,[])):
         text+='{} '.format(i['name'])
         text+='{} '.format(i['data'])
@@ -1381,7 +1411,7 @@ def highlight_cell_tree_text(colored_text,cell_properties,cell_obj):
             for each_highlighted_word in highlight_properties['param'].split(','):
                 #input(each_highlighted_word)
                 #input(text)
-                if each_highlighted_word.lower() in text.lower():
+                if each_highlighted_word.lower() in text.lower() or any([each_highlighted_word.lower() in temp.lower() for temp in tag]):
                     found=True
         if highlight_properties['mode'] == 'id' and cell_obj['id'] == highlight_properties['param']:
             found=True
@@ -1707,7 +1737,7 @@ def build_tree_array_table(state_of_table, table, table_properties, command_prop
 
 @debug_gate
 def ansii_screen_controls(mode="clear_screen_for_print" , context_properties = None):
-    if args.screencontrol=="false":
+    if not args.screencontrol:
         return
     if mode=="clear_screen_for_print":
         print('\033[{hgt}A'.format(hgt=os.get_terminal_size().lines+1),end='',flush=True)
@@ -1901,11 +1931,12 @@ def is_item_in_list(item,item_list,partial=False):
             if item in i:
                 return True
     
-def match_node_property(node_list,value=[''],property_name=['tag','name'],include_context_as_tag=True):
+def match_node_property(node_list,values=[],property_name=['tag','name'],include_context_as_tag=True):
+    if not values : return node_list
     selectedNodes=[]
     for j in node_list:
         match=[]
-        for i in value:
+        for i in values:
             match_found=False
             for k in property_name:
                 if k in j:
@@ -1917,28 +1948,30 @@ def match_node_property(node_list,value=[''],property_name=['tag','name'],includ
             match.append(match_found)
         if all(match):
             selectedNodes.append(j)
-                
     return selectedNodes
 
 @debug_gate    
-def parse_command(tree,command,args_property):
-    #cmd = list(re.split('([\>\&])',command))
-    cmd = list(command.split('>'))
-    selectedNodes=tree
+def parse_command(tree,command):
+    cmd = list(command.split(','))
+    selectedNodes=[]
+    selectedIds=[]
     prev_node = None
     for i in cmd:
+        curr_selected_node=[]
         cmd_parts=i.split('?')
-        node=cmd_parts[0].split(',') if cmd_parts[0]!='' else []
-        tag =cmd_parts[1].split(',') if len(cmd_parts)>1 and cmd_parts[1]!='' else []
-        if '*' in tag:
-            return tree
-        #print(node,tag)
-        if node!=[]:
-            curr_node_list  = node_search_by_name(selectedNodes,node,ignoreCase=True)
-            curr_node_ids = list(map(lambda d:d['id'],curr_node_list))
-            selectedNodes = get_all_children(selectedNodes,curr_node_ids)
-        if tag!=[]:
-            selectedNodes = match_node_property(selectedNodes,tag,args_property)
+        node_name=cmd_parts[0].split(',') if cmd_parts[0]!='' else None
+        node_tag = None if len(cmd_parts)<2 else [] if cmd_parts[1]=='' else cmd_parts[1].split(',')
+        if node_name is not None: curr_selected_node = match_node_property(tree,node_name,['name'])
+        if node_tag is not None: 
+            search_tree = curr_selected_node if node_name is not None else tree
+            #print('........',curr_selected_node,node_name)
+            curr_selected_node =  match_node_property(search_tree,node_tag,['tag'])
+        #print(node_name, node_tag)
+        #print([i['name'] for i in curr_selected_node])
+        for curr_item in curr_selected_node:
+            if curr_item['id'] not in selectedIds:
+                selectedIds.append(curr_item['id'])
+                selectedNodes.append(curr_item)
     return(selectedNodes)
 
 @debug_gate
@@ -2006,14 +2039,13 @@ def to_node(content,filename,reload):
                 if '@' in j:
                     key=j.split('@')[0]
                     value=j.split('@')[1]
-                    if key.lower() in ['parent','children','tag']:
+                    if key.lower() in ['parent','children','tag','date']:
                         value=value.split(',') if value.strip()!='' else []
                     dict_items[key]=value
             dict_items['data']=[]
             #dict_items = dict([ ( a.split('@')[0],a.split('@')[1].split(',') if ',' in a.split('@')[1] else a.split('@')[1])  for a in i.split('#') if '@' in a ])
         elif i.startswith('#?#link') and identified_box_hash:
             seen_link_atleast_once=True
-            i = i.rstrip()
             lnk = dict([ ( a.split('@')[0],a.split('@')[1].split(',') if ',' in a.split('@')[1] else a.split('@')[1])  for a in i.split('#') if '@' in a ])
             lnk_nodeid = lnk['id'].rstrip()
             lnk_basefilename = lnk['fn'].rstrip()
@@ -2027,6 +2059,20 @@ def to_node(content,filename,reload):
                 curr_block=''
             dict_items['data'].append({ 'type': 'link', 'id':lnk_nodeid, 'filename':lnk_basefilename })
         elif identified_box_hash:
+            if i.startswith('#?#hint'):
+                hint_items=i.rstrip().split('#')
+                for hint_j in hint_items:
+                    if '@' in hint_j:
+                        key=hint_j.split('@')[0]
+                        value=hint_j.split('@')[1]
+                        if key.lower() in ['tag','date']:
+                            value=value.split(',') if value.strip()!='' else []
+                        else:
+                            raise Exception("hint has an unapproved key {}".format(key))
+                        if key in dict_items:
+                            dict_items[key] += value
+                        else:
+                            dict_items[key] = value
             curr_block+=i
     if curr_block: dict_items['data'].append({ 'type': 'default', 'txt': curr_block })
     curr_block=''
@@ -2091,9 +2137,9 @@ def search(filename,set_curr_context=True,prompt_each_match=True,reload=False) -
         g_context[base_file_name]['searched']=True
         g_context[base_file_name]['filtered_nodes']=filtered_nodes
         if args.search!='' and args.search is not None:
-            args_property = args.property.split(',') if args.property != '' else ['name','tag']
+            #args_property = args.property.split(',') if args.property != '' else ['name','tag']
             args_level = args.level
-            filtered_nodes = parse_command(g_context[base_file_name]['tree'],args.search,args_property)
+            filtered_nodes = parse_command(g_context[base_file_name]['tree'],args.search)
             if filtered_nodes:
                 g_context[base_file_name]['filtered_nodes']=filtered_nodes
                 if not reload: print('Match found in:'+filename)
@@ -2138,7 +2184,7 @@ def identify_files(key='all',filename=None):
         chosen_file_list = file_path_list[key.lower()]
     elif filename:
         if filename[0] == '*' and filename[-1] == '*':
-            chosen_file_list = [ all_file_dict[temp] for temp in all_file_dict.keys() if filename[1:-1] in temp ]
+            chosen_file_list = [ all_file_dict[temp] for temp in all_file_dict.keys() if filename[1:-1].lower() in temp.lower() ]
         else:
             chosen_file_list=[filename]
     else:
@@ -2152,14 +2198,19 @@ def reload_coordinator(filename):
 def main_coordinator(filename, command=None):
     search(filename)
     while command != 'n':
-        seed = node_search_by_id(g_context[g_context['basefilename']]['tree'],['seed'])[0]
-        build_tree_from_result(g_context[g_context['basefilename']]['filtered_nodes'], seed)
-        res = tree_display(g_context[g_context['basefilename']]['filtered_tree'], seed , mode='tree')
-        last_active_obj=res['active_obj']
-        if last_active_obj in res:
-            command = res[last_active_obj]['command_properties']['option']
-            if command=='r':
-                reload_coordinator(filename)
+        tree = g_context[g_context['basefilename']]['tree']
+        seed = node_search_by_id(tree,['seed'])[0]
+        filtered_nodes = g_context[g_context['basefilename']]['filtered_nodes']
+        if filtered_nodes and not ( len(filtered_nodes) == 1 and filtered_nodes[0]['id'] == 'seed' ) :
+            g_context[g_context['basefilename']]['filtered_tree'] = build_tree_from_result(tree, filtered_nodes, seed)
+            res = tree_display(g_context[g_context['basefilename']]['filtered_tree'] , seed , mode='tree')
+            last_active_obj=res['active_obj']
+            if last_active_obj in res:
+                command = res[last_active_obj]['command_properties']['option']
+                if command=='r':
+                    reload_coordinator(filename)
+            else:
+                command='n'
         else:
             command='n'
 
@@ -2271,14 +2322,14 @@ parser.add_argument("-f","--filename", help="increase output verbosity")
 parser.add_argument("-s","--search", help="increase output verbosity")
 #parser.add_argument("-d","--dive", help="dive into tree ",nargs="?",default='false',const="true")
 parser.add_argument("-d","--debug", help="dive into tree ",nargs="?",default=0,const=1,type=int)
-parser.add_argument("-p","--property", help="increase output verbosity", default="name,tag")
+#parser.add_argument("-p","--property", help="increase output verbosity", default="name,tag")
 parser.add_argument("-l","--level", help="level of depth applies only to vertical_tree", default=100)
 #parser.add_argument("-e","--expand", help="node data", default=100) makes it look too complilcated not practical to use
 parser.add_argument("-c","--choosenode", help="choosenode",nargs="?",default='false',const='true') #if just -c value 1 if nothing value false
 #parser.add_argument("-m","--modeofprint", help="modeofprint",nargs="?",default='read',const='line')
 parser.add_argument("-t","--tree", help="tree",nargs="?",default='false',const='true')
 parser.add_argument("-v","--vannangal", help="painttext with colors",nargs="?",default='false',const='true')
-parser.add_argument("-sc","--screencontrol", help="ansii screencontrol",nargs="?",default='false',const='true')
+parser.add_argument("-sc","--screencontrol", help="ansii screencontrol",nargs="?",default=False,const=True,type=bool)
 parser.add_argument("-r","--remember", help="load memory file",nargs="?",default='false',const='true')
 args = parser.parse_args()    
 print(args)

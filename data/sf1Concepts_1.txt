@@ -23,11 +23,6 @@ Snowpark-optimized warehouse provides ~*16x~* memory per node compared to a stan
 Snowpark workloads can be run on both ~*Standard~* and ~*Snowpark-optimized warehouses~*
 Snowpark-optimized warehouses are recommended for workloads that have ~*large memory requirements~* such as ML training use cases
 
-https://docs.snowflake.com/en/user-guide/warehouses-snowpark-optimized
-Snowpark-optimized warehouses let you configure the available ~*memory resources~*, ~*CPU architecture~* on a single-node instance for your workloads
-Snowpark-optimized warehouse provides ~*16x~* memory per node compared to a standard warehouse
-Snowpark workloads can be run on both ~*Standard~* and ~*Snowpark-optimized warehouses~*
-Snowpark-optimized warehouses are recommended for workloads that have ~*large memory requirements~* such as ML training use cases
 #?#box#calculatedX@560#calculatedY@189#children@#name@SuspendAndResume#id@1704786661708#parent@#x@448#y@151
 Auto-suspend and auto-resume apply to ~*"entire" warehouse~* and not to the ~*individual clusters~* in the warehouse.
 
@@ -45,7 +40,7 @@ Minimum number of clusters, equal to or less than the maximum (up to 10).
 same value for both ~*maximum~* and ~*minimum~* number of clusters
 use when large numbers of ~*concurrent user sessions~* and/or queries and the numbers do not fluctuate significantly
 #?#box#calculatedX@698#calculatedY@278#children@1709549178164#name@autoscale#id@1709548997137#parent@#x@558#y@222
-different values for maximum and minimum number of clusters
+~*different values~* for maximum and minimum number of clusters
 #?#box#calculatedX@811#calculatedY@278#children@1709549302125,1709549307931#name@scalingPolicy#id@1709549178164#parent@#x@648#y@222
 scaling policy only applies to ~*auto scale~* mode
 #?#box#calculatedX@940#calculatedY@277#children@#name@standard#id@1709549302125#parent@#x@752#y@221
@@ -79,13 +74,12 @@ Query the QUERY_ACCELERATION_ELIGIBLE View
 content
 #?#box#calculatedX@326#calculatedY@368#children@1707563377,1707563378#name@microPartitions#id@1704787008261#parent@#x@260#y@294
 contiguous units of storage
-50 MB and 500 MB of "uncompressed data"
-"Groups of rows" in tables are mapped into individual micro-partitions, organized in a "columnar fashion" 
+~*50 MB~* and ~*500 MB~* of ~*"uncompressed data"~*
+"Groups of rows" in tables are mapped into individual micro-partitions, organized in a ~*"columnar fashion"~*
 #?#box#calculatedX@489#calculatedY@378#children@#name@Clustering#id@1704787113672#parent@#x@391#y@302
-manual clustering Disabled
-create table cluster by <key>
-Data within micro partition is ordered by key
-Table will not be 100% clustered
+~*manual clustering~* Disabled
+create table cluster by <key> will order data within micro partition by key
+Table will not be ~*100% clustered~*
 
 clustering depth ( 2 below) - number of microparitition with overlapping data
 micro parition 1 - A TO F ---
@@ -99,13 +93,10 @@ To view/monitor the clustering metadata for a table, Snowflake provides the foll
 SYSTEM$CLUSTERING_DEPTH
 SYSTEM$CLUSTERING_INFORMATION (including clustering depth)
 #?#box#calculatedX@489#calculatedY@378#children@#name@zeroclone#id@1713612732#parent@#x@391#y@302
-clone utilizes --- because it shares all the existing micro-partitions of the original table at the time it was cloned
-no data storage
-rows can then be added, deleted, or updated in the clone --- from the original table
-independently
-Each change to the clone results in --- that are owned exclusively by the clone and are protected through CDP.
-new micro-partitions
-clones can be cloned, with no limitations which results in a n-level hierarchy of cloned objects each with their own portion of shared and independent data storage
+clone utilizes ~*no data storage~* because it shares all the existing micro-partitions of the original table at the time it was cloned
+rows can then be added, deleted, or updated in the clone ~*independently~* from the original table
+Each change to the clone results in ~*new micro-partitions~* that are owned exclusively by the clone and are protected through CDP.
+clones can be cloned, with no limitations which results in a ~*n-level hierarchy~* of cloned objects each with their own portion of ~*shared~* and ~*independent~* data storage
 #?#box#calculatedX@337#calculatedY@313#children@1713613122,1716306157#name@objects#id@1716306061#parent@#x@269#y@250
 content
 #?#box#calculatedX@337#calculatedY@313#children@1726663852,1713613123#name@tables#id@1713613122#parent@#x@269#y@250
@@ -148,56 +139,55 @@ CREATE OR REPLACE DYNAMIC TABLE product
 #?#box#calculatedX@337#calculatedY@313#children@1713613124,1713613125,1713613126#name@internal#id@1713613123#parent@#x@269#y@250
 content
 #?#box#calculatedX@337#calculatedY@313#children@#name@temporary#id@1713613124#parent@#x@269#y@250
-Temporary tables only exist within the session
+Temporary tables only exist ~*within the session~*
 you can create temporary and non-temporary tables with the same name within the same schema.
-temporary table takes precedence in the session over any other table with the same name in the same schema.
+~*temporary table~* takes precedence in the session over any other table with the same name in the same schema.
 
 CREATE TEMPORARY TABLE mytemptable (id NUMBER, creation_date DATE);
 Time travel 0 or 1 ( default )
 fail safe 0
 #?#box#calculatedX@337#calculatedY@313#children@#name@transient#id@1713613125#parent@#x@269#y@250
-Transient tables are similar to permanent tables with the key difference that they do not have a Fail-safe period
+Transient tables are similar to permanent tables with the key difference that they do not have a ~*Fail-safe period~*
 
 CREATE TRANSIENT TABLE mytranstable (id NUMBER, creation_date DATE);
 Time travel 0 or 1 ( default )
 fail safe 0
 #?#box#calculatedX@337#calculatedY@313#children@#name@permanent#id@1713613126#parent@#x@269#y@250
-time travel 0 to 90 (default is configurable)
-fail safe 7
+time travel 0 to ~*90~* (default is configurable)
+fail safe ~*7~*
 #?#box#calculatedX@337#calculatedY@313#children@1716306158,1716308000#name@views#id@1716306157#parent@#x@269#y@250
 content
 #?#box#calculatedX@337#calculatedY@313#children@1716308001#name@secure#id@1716308000#parent@#x@269#y@250
 https://docs.snowflake.com/en/user-guide/views-secure
 
-cannot see query of view except for authorised users
-cannot see query profile after execution even for owner 
-optimizations that expose data will not be applied 
+cannot see ~*query~* of view except for authorised users
+cannot see ~*query profile~* after execution even for ~*owner~* 
+optimizations that ~*expose data~* will not be applied . eg: Where Clause
 #?#box#calculatedX@337#calculatedY@313#children@#name@isViewSecure#id@1716308001#parent@#x@269#y@250
 For non-materialized views, check the IS_SECURE column in the Information Schema
 SHOW VIEWS LIKE 'myview';
 SHOW MATERIALIZED VIEWS LIKE 'my_mv';
 
 #?#box#calculatedX@337#calculatedY@313#children@1716306159,1716306160#name@materialized#id@1716306158#parent@#x@269#y@250
-useful when
-output row is less compare to base table
-data calculaltion is process resource intensive
-query is on external table which might have slower performance
-base table dont change frequently
+useful when ~*output row~* is less compare to base table
+data calculaltion is ~*process/resource~* intensive
+query is on ~*external table~* which might have ~*slower performance~*
+base table dont ~*change frequently~*
 
 GUARANTEE
-Data accessed through materialized views is always current
+Data accessed through materialized views is always ~*current~*
 #?#box#calculatedX@337#calculatedY@313#children@#name@limits#id@1716306159#parent@#x@269#y@250
 https://docs.snowflake.com/en/user-guide/views-materialized#limitations-on-creating-materialized-views
 ONLY FEW COVERED HERE , SEE LINK FOR MORE 
-A materialized view can query only a single table.
-Joins, including self-joins, are not supported.
+A materialized view can query ~*only a single table~*.
+~*Joins~*, including ~*self-joins~*, are not supported.
 A materialized view cannot include UDF,Window,HAVING,ORDER BY,LIMIT , many aggregate function ETC 
 #?#box#calculatedX@337#calculatedY@313#children@#name@gotcha#id@1716306160#parent@#x@269#y@250
-materialized view can be secure
-supports clustering on materialized view 
-can be suspended 
-add column to base table does not reflect automatically 
-update or drop column - recreate materialized view 
+materialized view can be ~*secure~*
+supports ~*clustering~* on materialized view 
+can be ~*suspended ~*
+add column to base table ~*does not reflect automatically~*
+update or drop column - ~*recreate materialized view ~*
 without specifying a materialized view in a SQL statement query optimizer can automatically rewrite queries against the base table or regular views to use the materialized view instead.
 
 #?#box#calculatedX@337#calculatedY@313#children@1714328152#name@secureSharing#id@1714328151#parent@#x@269#y@250

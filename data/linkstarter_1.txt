@@ -1,0 +1,19 @@
+#?#box#calculatedX@87#calculatedY@79#children@45#name@0:seed#id@seed#parent@#x@87#y@79#date@02jan2023
+hi1
+#?#link#id@seed#fn@linkstarter_2.txt
+hello1
+#?#box#calculatedX@161#calculatedY@203#children@#name@first#id@1#parent@#x@161#y@203#date@04jul2023
+hi
+hello
+sfa
+#?#link#id@seed#fn@linkstarter_1.txt
+more text
+#?#box#calculatedX@161#calculatedY@203#children@#name@second#id@2#parent@#x@161#y@203
+ooooo
+
+#?#link#id@seed#fn@linkstarter_1.txt
+ppppp
+
+kk
+#?#box#calculatedX@161#calculatedY@203#children@#name@third#id@3#parent@#x@161#y@203
+end of line

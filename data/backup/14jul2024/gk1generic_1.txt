@@ -1,0 +1,115 @@
+#?#box#calculatedX@108#calculatedY@98#children@noparent,1720955814,1720955333,1720952932,1720953745#name@0:seed#id@seed#parent@#x@86#y@78#tag@tp,timepass
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@noparent#id@noparent#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@1720955835,1720955905#name@tech#id@1720955814#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@celebs#id@1720955835#parent@#x@86#y@78
+ceo of open ai
+sam altman
+
+ftx founder crypto fraud
+sam bankman
+
+bitcoin founder 
+Satoshi Nakamoto
+
+c founder 
+dennis ritchie
+
+java founder 
+james gosling
+
+python founder 
+Guido van Rossum
+#?#box#calculatedX@108#calculatedY@98#children@#name@companies#id@1720955905#parent@#x@86#y@78
+top consulting companies
+deloitte
+pwc price water house cooper
+kpmg Klynveld Peat Marwick Goerdeler
+McKinsey
+#?#box#calculatedX@108#calculatedY@98#children@1720955415#name@dates#id@1720955333#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@celebs#id@1720955415#parent@#x@86#y@78
+Jayalalithaa
+Born:
+ 24 February 1948, Melukote
+Died:
+ 5 December 2016, Apollo Hospital Chennai, Chennai
+
+Karunanidhi
+Born:
+ 3 June 1924, Thirukkuvalai
+Died:
+ 7 August 2018, Kauvery Hospital Chennai, Chennai
+Gandhi Jayanti
+October 2
+#?#box#calculatedX@108#calculatedY@98#children@1720953139,1720953192,1720953629#name@gk#id@1720952932#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@universe#id@1720953139#parent@#x@86#y@78
+which planet does not have moons
+Mercury and venus
+biggest planet
+Jupiter
+hottest planet, morning and evening star
+Venus
+coldest planet
+Uranus
+#?#box#calculatedX@108#calculatedY@98#children@#name@botany#id@1720953192#parent@#x@86#y@78#meta@linebyline
+largest flower , country, smell
+Rafflesia arnoldii , Indonesia, decaying flesh 
+largest water lilly
+Victoria boloviana
+victoria amazonica - 2nd native to guyana and national flower of guyana
+#?#box#calculatedX@108#calculatedY@98#children@1720953670,1720956063#name@tamil#id@1720953629#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@months#id@1720953670#parent@#x@86#y@78
+சித்திரை	Mid-April to mid-May	Chithirai
+வைகாசி	Mid-May to mid-June	Vaikaasi
+ஆனி	Mid-June to mid-July	Aani
+ஆடி	Mid-July to mid-August	Aadi
+ஆவணி	Mid-August to mid-September	Aavani
+புரட்டாசி	Mid-September to mid-October	Purattaasi
+ஐப்பசி	Mid-October to mid-November	Aippasi
+கார்த்திகை	Mid-November to mid-December	Karthikai
+மார்கழி	Mid-December to mid-January	Maargazhi
+தை	Mid-January to mid-February	Thai
+மாசி	Mid-February to mid-March	Maasi
+பங்குனி	Mid-March to mid-April	Panguni
+#?#box#calculatedX@108#calculatedY@98#children@1720956090#name@poem#id@1720956063#parent@#x@86#y@78
+content
+#?#box#calculatedX@108#calculatedY@98#children@#name@dontcare#id@1720956090#parent@#x@86#y@78
+barathiyar
+
+இந்தப் புவிதனில் வாழும் மரங்களும்
+இன்ப நறுமலர்ப் பூஞ்செடிக் கூட்டமும்
+அந்த மரங்களைச் சூழ்ந்த கொடிகளும்
+ஔடத மூலிகை பூண்டு புல் யாவையும்
+எந்தத் தொழில் செய்து வாழ்வன வோ?
+
+௨)
+மானுடர் உழாவிடினும் வித்து நடாவிடினும் 
+வரம்பு கட்டாவிடினும் அன்றிநீர் பாய்ச்சாவிடினும்
+வானுலகு நீர்தருமேல் மண்மீது மரங்கள்
+வகைவகையா நெற்கள்புற்கள் மலிந்திருக்குமென்றே?
+யானெதற்கும் அஞ்சுகிலேன்,மானுடரே,நீவிர்
+என்மதத்தைக் கைக் கொண்மின்;பாடுபடல்வேண்டா;
+ஊனுடலை வருத்தாதீர்;உணவியற்கை கொடுக்கும்;
+உங்களுக்குத் தொழிலிங்கே அன்புசெய்தல் கண்டீர்!
+#?#box#calculatedX@108#calculatedY@98#children@#name@realestate#id@1720953745#parent@#x@86#y@78
+patta 
+Patta is a government record containing the details of land ownership, area of land, location with survey details
+
+chitta
+Chitta is a government document pertaining to immovable property that is maintained by the concerned Village Administrative Officer (VAO) and Taluka office
+
+what is najai and punjai mentioned in chitta
+nanjai is rich water land , punjai is opposite
+
+ec
+An encumbrance refers to the charges created on the property in question, whereby it is held as a security for any debt of its owner, which has not been discharged as on a date. An Encumbrance Certificate or (EC) is a certificate of assurance that the concerned property is free from any legal or financial liability such as a mortgage or pending loan.    
+
+acre to square feet
+43560
+cent 
+435.56 1% of acre 

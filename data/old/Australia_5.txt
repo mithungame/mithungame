@@ -1,0 +1,323 @@
+#?#box#calculatedX@395#calculatedY@270#children@45,1698378337186#name@0:seed#id@seed#parent@#tag@australia#x@316#y@216
+australia
+#?#box#calculatedX@425#calculatedY@305#children@66#name@0:pte#id@45#parent@#x@340#y@244
+pte
+#?#box#calculatedX@445#calculatedY@350#children@67,1678178657684,1678253893594,1678255381269#name@0:categories#id@66#parent@#x@356#y@280
+    categories
+#?#box#calculatedX@125#calculatedY@347#children@68,69,70,71,72,1698720896303#name@0:Speaking#id@67#parent@66#x@100#y@277
+Speaking 
+#?#box#calculatedX@120#calculatedY@377#children@#name@51:30 mins, Time management not needed as all task has a timer#id@1698720896303#parent@#type@bubble#x@96#y@301
+content
+#?#box#calculatedX@-30#calculatedY@475#children@1698288343143,1698288420959,1698288566416,1698288780184,1698289570482,1698289665572#name@0:read aloud#id@68#parent@67#t_color@red#x@-24#y@380
+---
+#?#box#calculatedX@-25#calculatedY@505#children@#name@1:35 sec to prepare - beep#id@1698288343143#parent@#type@bubble#x@-20#y@404
+content
+#?#box#calculatedX@-25#calculatedY@550#children@#name@2:30 to 40 sec to speak , if done click next#id@1698288420959#parent@#type@bubble#x@-20#y@440
+content
+#?#box#calculatedX@-25#calculatedY@610#children@#name@3:6 or 7 questions#id@1698288566416#parent@#type@bubble#x@-20#y@488
+content
+#?#box#calculatedX@-25#calculatedY@655#children@#name@4:stay quiet for 3 sec mic off#id@1698288780184#parent@#type@bubble#x@-20#y@524
+content
+#?#box#calculatedX@-25#calculatedY@695#children@#name@5:reading and speaking score#id@1698289570482#parent@#type@bubble#x@-20#y@556
+content
+#?#box#calculatedX@-25#calculatedY@735#children@#name@6:25 points#id@1698289665572#parent@#type@bubble#x@-20#y@588
+content
+#?#box#calculatedX@130#calculatedY@465#children@1698289819663,1698289780939,1698289793427#name@1:repeat sentence#id@69#parent@67#x@104#y@372
+repeat sentence
+hear a sentence 3-9 seconds , 6 or 12 words 
+ repeat sentence as close as possible
+content pronounciation fluency gives points
+#?#box#calculatedX@125#calculatedY@525#children@#name@1: 3 to 9 seconds, 6 or 12 words -NO BEEP-#id@1698289819663#parent@#type@bubble#x@100#y@420
+content
+#?#box#calculatedX@125#calculatedY@595#children@#name@3:10 or 12 questions#id@1698289780939#parent@#type@bubble#x@100#y@476
+content
+#?#box#calculatedX@130#calculatedY@655#children@#name@5:listening and speaking score#id@1698289793427#parent@#type@bubble#x@104#y@524
+content
+#?#box#calculatedX@320#calculatedY@460#children@1678176272944,1678696982928,1678697092150,1678697709086,1678697877854,1678697976291#name@2:describe image #id@70#parent@67#x@256#y@368
+describe image 
+#?#box#calculatedX@240#calculatedY@495#children@1698290603274,1698290616056,1698290579036#name@0:properties#id@1678176272944#parent@#x@192#y@396
+------
+#?#box#calculatedX@245#calculatedY@530#children@#name@1:25 seconds to prepare BEEP YES#id@1698290603274#parent@#type@bubble#x@196#y@424
+content
+#?#box#calculatedX@245#calculatedY@580#children@#name@2:40 seconds to introduce,describe and conclude image#id@1698290616056#parent@#type@bubble#x@196#y@464
+content
+#?#box#calculatedX@245#calculatedY@650#children@#name@3:3 to 4 on test day#id@1698290579036#parent@#type@bubble#x@196#y@520
+content
+#?#box#calculatedX@395#calculatedY@550#children@#name@1:types#id@1678696982928#parent@#x@316#y@440
+bar graph
+line chart 
+pie chart 
+map 
+photo
+table 
+process 
+combination of two graph
+#?#box#calculatedX@386#calculatedY@575#children@#name@2:difficult#id@1678697092150#parent@#x@308#y@460
+difficult version
+10 seconds 
+this <image/bar graph/process> represents <title> + <x axis>
+								across 
+								according to 
+								among 
+								by <x axis>
+								such as < read some contents > 
+								including < read some contents >
+								table - read the first column and first row
+20 seconds 
+key features
+	- easiest , highest , lowest , this was followed by , noticable 
+    - keep it simple 
+	- the reminder increased 
+	- in contrast 
+	- read eveerything there 
+	- ... accounted for highest 
+	
+	no hesitation no restart no um just speak words on screen 
+	
+5 seconds 
+	over all say noticable feature again use words increase or decrease
+#?#box#calculatedX@382#calculatedY@601#children@#name@3:unrelated#id@1678697709086#parent@#x@305#y@480
+this is a beautiful image 
+this image provides insightful information about various aspects
+and it is crucial to have a understanding of this
+and from this image we can deduce that it is a popular image
+and it requires immense efforts to calculate maximum and minimum
+#?#box#calculatedX@385#calculatedY@632#children@#name@4:meFinal#id@1678697877854#parent@#x@308#y@505
+This image/illustration represents/depicts/portrays a dog.
+This image provides (insightful information/valuable insights) about dog, tail and teeth.
+dog, tail and teeth can be observed/deduced from this image.
+This image also represents dog, tail and teeth.
+In conclusion, this image provides (crucial/imperative) information about dog.
+
+In conclusion, the picture provides important information about [title].
+#?#box#calculatedX@386#calculatedY@660#children@#name@5:i see#id@1678697976291#parent@#x@308#y@528
+i see #key words 
+i also see #key words#
+this is a informative image
+#?#box#calculatedX@490#calculatedY@540#children@1698292613970,1698292650434,1698292685356,1698292797578,1698292846702#name@3:retell lecture #id@71#parent@67#x@392#y@432
+The main focus of the lecture was <topic>
+A number of advantages/disadvantages/causes/effects/affects of <topic> were discussed in the lecture 
+The first crucial aspect revealed in the discourse was -----
+Furthermore, another significant point mentioned in the lecture was -----
+Additionally, the lecture also exhibited important information about -----
+In conclusion, the lecture suggested that -----
+
+The lecture was about <topic>. 
+The first important point mentioned in the lecture was ----
+secondly, the speaker mentioned about ----
+Another important point mentioned in the lecture was ----
+overall, the lecture suggested that ----
+#?#box#calculatedX@500#calculatedY@615#children@#name@1:90 seconds lecture 10 sec prepare BEEP#id@1698292613970#parent@#type@bubble#x@400#y@492
+content
+#?#box#calculatedX@500#calculatedY@655#children@#name@2:40 second to speak#id@1698292650434#parent@#type@bubble#x@400#y@524
+content
+#?#box#calculatedX@505#calculatedY@690#children@#name@3:1 or 2 questions#id@1698292685356#parent@#type@bubble#x@404#y@552
+content
+#?#box#calculatedX@500#calculatedY@730#children@#name@5:listening and speaking score#id@1698292797578#parent@#type@bubble#x@400#y@584
+content
+#?#box#calculatedX@500#calculatedY@780#children@#name@6:can take notes#id@1698292846702#parent@#type@bubble#x@400#y@624
+content
+#?#box#calculatedX@575#calculatedY@540#children@1698719595878#name@4:answer short question#id@72#parent@67#t_color@green#x@460#y@432
+answer short question
+5 or 6 questions
+vocabulary score
+listen to question and speak answer in 1 or two words
+#?#box#calculatedX@590#calculatedY@611#children@#name@1: 3 to 9 sec question BEEP NO, answer immediately#id@1698719595878#parent@#type@bubble#x@472#y@488
+content
+#?#box#calculatedX@787#calculatedY@461#children@1678178873969,1678179250057,1698720948819#name@1:writing#id@1678178657684#parent@#x@629#y@368
+writing
+#?#box#calculatedX@791#calculatedY@490#children@#name@51:30 mins, no time management needed#id@1698720948819#parent@#type@bubble#x@632#y@392
+content
+#?#box#calculatedX@795#calculatedY@575#children@1698379511010,1698379539423,1698379591751#name@0:summarize written text#id@1678178873969#parent@#t_color@yellow#x@636#y@460
+4 to 5 points
+1 or 2 
+10 mins to read passage and summarize
+5 to 75 words though 40 to 50 is sweet spot
+read and writing points
+
+<pick a sentence>, and <pick a sentence>, furthermore, <pick a sentence>
+
+they did not add full stop at end
+dont use capital letter unless its a pronoun
+make sure the sentence which i pick dont have full stop
+#?#box#calculatedX@795#calculatedY@620#children@#name@1:10 mins#id@1698379511010#parent@#type@bubble#x@636#y@496
+content
+#?#box#calculatedX@800#calculatedY@656#children@#name@2:5 to 75 words though 40 to 50 is sweet spot#id@1698379539423#parent@#type@bubble#x@640#y@524
+content
+#?#box#calculatedX@801#calculatedY@710#children@#name@3:1 or 2 questions#id@1698379591751#parent@#type@bubble#x@640#y@568
+content
+#?#box#calculatedX@910#calculatedY@570#children@1698720676585,1698720707356#name@1:Essay#id@1678179250057#parent@#x@728#y@456
+Essay
+20 mins
+1 or 2 essay
+format - answer question , take sides . Essay will be argumentative or persuasive
+200-300 words
+#?#box#calculatedX@935#calculatedY@615#children@#name@1:20mins#id@1698720676585#parent@#type@bubble#x@748#y@492
+content
+#?#box#calculatedX@937#calculatedY@646#children@#name@2: 200 to 300 words , sweet spot 250-270 words?#id@1698720707356#parent@#type@bubble#x@749#y@516
+content
+#?#box#calculatedX@740#calculatedY@62#children@1678254182597,1678253940667,1678254344531,1678255152320,1698721003828#name@2:reading#id@1678253893594#parent@#x@592#y@49
+Reading does not give separate timing per task we have to manage as a whole
+13 to 18 questions
+29 to 30 minutes
+#?#box#calculatedX@750#calculatedY@110#children@#name@51:30 mins#id@1698721003828#parent@#type@bubble#x@600#y@88
+content
+#?#box#calculatedX@742#calculatedY@150#children@1698721851616#name@1:fillIndropdown#id@1678253940667#parent@#t_color@red#x@593#y@120
+a.k.a reading writing fill in blanks
+fillIndropdown
+5 to 6
+scores for reading and writing
+4 dropdown
+spend 2 minutes
+#?#box#calculatedX@880#calculatedY@150#children@#name@51:5 to 6 * 2 mins ~ 12 mins#id@1698721851616#parent@#type@bubble#x@704#y@120
+content
+#?#box#calculatedX@735#calculatedY@235#children@1698723395838#name@2:multiplechoice#id@1678254182597#parent@#t_color@green#x@588#y@188
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+!!!NEGATIVE SCORE
+reading score only
+SQUARE BUTTON means multiple choice
+2 or 3 answers will be correct
+spend 2 to 3 minutes
+
+
+NOTE: THERE IS A SINGLE CHOICE FORMAT AS WELL, IT WILL HAVE CIRCLE INSTEAD OF SQUARE BOX
+#?#box#calculatedX@890#calculatedY@236#children@#name@51:2 or 3, 2 mins ~ 6 mins(Jay) NOT POSSIBLE SO 30 SECS 3 mins#id@1698723395838#parent@#type@bubble#x@712#y@188
+content
+#?#box#calculatedX@742#calculatedY@280#children@1698723211188#name@3:reorder paragraph#id@1678254344531#parent@#t_color@yellow#x@593#y@224
+reorder paragraph
+2 or 3 
+ only reading score 
+spend 1 or 2 mins
+#?#box#calculatedX@876#calculatedY@282#children@#name@51:2 or 3 * 2 mins ~ 6 mins#id@1698723211188#parent@#type@bubble#x@700#y@225
+content
+#?#box#calculatedX@741#calculatedY@367#children@1698723710010#name@4:fillInBlanks#id@1678255152320#parent@#t_color@red#x@592#y@293
+a.k.a drag and drop
+fillInBlanks
+4 0r 5
+reading alone
+fill one words per blanks
+1 or 2 minutes
+#?#box#calculatedX@890#calculatedY@375#children@#name@51: 4 or 5  2 mins ~ 10 min#id@1698723710010#parent@#type@bubble#x@712#y@300
+content
+#?#box#calculatedX@1195#calculatedY@170#children@1678255633712,1678255654682,1678255687138,1678255720334,1678255781326,1678255804360,1678255836644#name@3:Listening#id@1678255381269#parent@#x@956#y@136
+Listening
+12 - 20 questions and 30 to 40 minutes
+#?#box#calculatedX@1195#calculatedY@200#children@1698379691217,1698379708426,1698379761461#name@1:Summarize Spoken text#id@1678255633712#parent@#x@956#y@160
+Summarize Spoken text
+take notes of lecture
+listening and writing
+
+The talk was about topic. Firstly, the speaker said dash. Later, the speaker said dash. Furthermore, the speaker provided imperative information on dash. In the end, the speaker left an important note on dash.
+
+dont pick key words pick a few phrases and fill the dash
+#?#box#calculatedX@1200#calculatedY@275#children@#name@1:10 mins no carry over#id@1698379691217#parent@#type@bubble#x@960#y@220
+content
+#?#box#calculatedX@1201#calculatedY@315#children@#name@2:1 or 2 items#id@1698379708426#parent@#type@bubble#x@960#y@252
+content
+#?#box#calculatedX@1205#calculatedY@346#children@#name@3:write summary 50 - 70 words. target 60#id@1698379761461#parent@#type@bubble#x@964#y@276
+content
+#?#box#calculatedX@1351#calculatedY@201#children@#name@2:MultipleChoice#id@1678255654682#parent@#t_color@green#x@1080#y@160
+spend 30 seconds
+if you dont know answer for multiple mcq just select one option and move on
+1 or 2 questions
+just listening
+can be single or multiple choice
+manage own time after summarize spoken text
+#?#box#calculatedX@1350#calculatedY@242#children@#name@3:FillInBlanks#id@1678255687138#parent@#x@1080#y@193
+FillInBlanks
+10 to 12 points
+2 or 3
+listening and writing
+no options
+listen and fill
+write on erasable notebook or type directly
+recommend write notes
+#?#box#calculatedX@1353#calculatedY@289#children@#name@4:HighLightCorrectSummary#id@1678255720334#parent@#t_color@green#x@1082#y@231
+1 to 2 points
+listeing and reading score
+cant read and listen at same time
+take notes
+#?#box#calculatedX@1352#calculatedY@325#children@#name@5:SelectMissingWord#id@1678255781326#parent@#x@1081#y@260
+SelectMissingWord
+1 or 2
+only listening
+there will be a beep
+choose from option
+#?#box#calculatedX@1355#calculatedY@377#children@#name@6:HighlightIncorrectWords#id@1678255804360#parent@#t_color@red#x@1084#y@301
+10 to 12 points
+2 or 3
+listening
+move mouse as voice comes and click wrong word
+#?#box#calculatedX@1358#calculatedY@432#children@1698379994945,1698380222036#name@7:WriteFromDictation#id@1678255836644#parent@#t_color@red#x@1086#y@345
+WriteFromDictation
+listening and writing
+type what is said
+
+order dont matter
+spelling matter
+if you dont know a spelling or word or singlar plural - add extra words 
+also add a an the - at end if you are not sure if you heard it
+#?#box#calculatedX@1359#calculatedY@485#children@#name@1:3 or 4 questions#id@1698379994945#parent@#type@bubble#x@1087#y@388
+content
+#?#box#calculatedX@1358#calculatedY@525#children@#name@2:spend 45 sec per question#id@1698380222036#parent@#type@bubble#x@1086#y@420
+content
+#?#box#calculatedX@325#calculatedY@205#children@1698377867645,1698378332090#name@1:grammar#id@1698378337186#parent@#x@260#y@164
+content
+#?#box#calculatedX@75#calculatedY@186#children@#name@1:complexSentence#id@1698377867645#parent@#x@60#y@148
+In complex sentences, the independent clause usually comes first. In most cases, the clauses are not separated by a comma
+
+She could not come because she had informed us about her illness.
+While my mother was sleeping, my father came home.
+Though I had no money, I bought the dress from the market.
+Since you have completed your homework, you can take a break.
+He will be happy if he gets the job.
+You should do it because I told you to do so.
+Because he was ill, he left the office early.
+He would not have failed the examination if he had listened to me.
+She went with them because they asked her to come with them.
+The teacher explained the lesson again so that everyone could understand.
+Please feel free to share any questions with us if you have any questions.
+She couldn't attend the party because she was feeling unwell.
+I will go to the cinema only if it rains tomorrow.
+Unless you study harder, you cannot pass the examination next month.
+After I finish my work, I will meet my friends for dinner.
+After you have completed the painting, you should take a rest.
+When they entered, they saw that their friends had arrived.
+He will be promoted if he finishes this project.
+I closed my shop because I had to attend an interview.
+He was happy because he had solved a complex math problem.
+After completing my work, I came to my home quickly.
+She told her friend that she was ready for the examination.
+Though he thought his assignment was well written, His teacher gave him a poor mark.
+You should visit your sister-in-law when she needs you the most.
+Your friend approached me when I was speaking to the principal.
+She is a beautiful woman because she has no defects.
+If they promise to come, I'll invite my friends to celebrate my birthday.
+The cat ran away when it saw the dog approaching.
+They gave me a gift because I was their manager.
+Though they were ill at that time, they competed with others.
+Though it was raining heavily, he came to the office on time.
+The shop is closed on Sundays so I won't visit there.
+When you entered the school, the class had just finished.
+I passed the exam because I studied seriously.
+I waited for her because she was my best friend.
+Yesterday, I heard that he had given his time to another woman.
+I'll introduce you to my parents when you come to my house.
+When I was a child, I used to play football very well.
+It was like a miracle when their son survived the accident.
+Although he made the painting with much patience and effort, he got a poor rating.
+You should take responsibility for your parents because you are the only child.
+When I played football with my friends, we played on the field.
+They got their punishment because they committed a great sin.
+Although he is strong, he is polite towards his friends.
+If I were you, I would have done it differently.
+We walked to school because the weather was very nice.
+I'll lend you the book if you promise to return it to me soon.
+When she heard about the bad news, she burst into tears.
+Since he waited for his friend till midnight, he did not come.
+If I had enough money, I would have bought the entire building.
+#?#box#calculatedX@85#calculatedY@231#children@#name@2:compoundSentence#id@1698378332090#parent@#x@68#y@184
+content
+#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@259
+root Node

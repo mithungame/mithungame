@@ -208,19 +208,37 @@ compute function is opaque to Spark,it does not know the operation filter or gro
 so no change of optimization
 
 #?#box#calculatedX@205#calculatedY@165#children@#name@dataframe#id@1679714979674#parent@#x@164#y@372
-A DataFrame is simply a ~*Dataset[Row]~*
-row is a ~*generic untyped JVM object~* that may hold different types of fields
-Python and R uses dataframe
-data frame is not ~*type-safe~* as types are dynamically inferred or assigned during ~*execution~*,not during ~*compile time~*
-If you are an ~*R/Python user~*, use DataFrames and drop down to ~*RDDs~* if you need more control.
+A DataFrame is simply a 
+Dataset[Row]
+row is a 
+generic untyped JVM object that may hold different types of fields
+used in 
+Python and R 
+Python and R are not
+compile-time type-safe
+types are 
+dynamically inferred or assigned during execution,not during compile time
+use DataFrames when 
+your processing dictates relational transformations similar to SQL-like queries
+unification, code optimization, and simplification of APIs across Spark components, use DataFrames.
+If you are an R user
+If you are a Python user, use DataFrames and drop down to RDDs if you need more control.
 If you want space and speed efficiency, use DataFrames.
 
 #?#box#calculatedX@315#calculatedY@160#children@#name@dataset#id@1679715016785#parent@#x@252#y@368
-A Dataset[T] where T is a ~*strongly typed typed field~*, T can be ~*row object~* ( ~*dataframe~* )
-dataset is used in Java and Scala
-when creating a Dataset you have to know the ~*schema~*
+Datasets take on two characteristics
+typed and untyped APIs( DataFrame )
+A Dataset, by contrast, is a collection of 
+Dataset[T] where T is a typed field
+strongly typed JVM objects in Scala or a class in Java
+used in
+Java and Scala
+when creating a Dataset you have to
+know the schema.
+DataSet summary 
 it is like RDD but  with better control and high level language 
-use Datasets when for strict ~*compile-time type~* safety and dont mind creating multiple ~*case classes~* for a specific Dataset[T]
+use Datasets when 
+If you want strict compile-time type safety and dont mind creating multiple case classes for a specific Dataset[T]
 benefit from Tungstens efficient serialization with Encoders
 
 #?#box#calculatedX@640#calculatedY@330#children@1679715514690,1679715381542,1681967597550,1681977845841,1682349908366,1682395749323#name@linkage#id@1679715279208#parent@#x@512#y@504
@@ -228,9 +246,6 @@ link
 
 #?#box#calculatedX@790#calculatedY@260#children@#name@sparkCatalog#id@1682349908366#parent@#x@632#y@448
 spark catalog
-Spark manages the metadata associated with each managed or unmanaged table. This is captured in the 
-Catalog
-
 inmemory - tables only available in sparksession
 hive - persistent tables using hive metastore
 default external catalog implementation property
@@ -258,24 +273,30 @@ hive
 note:spark write is different from spark save as table and has nothing 
 to do with metastore
 
-#?#box#calculatedX@907#calculatedY@258#children@1679715651217,1679715658244,1679718715196#name@1.1:sparkViewsAndTables#id@1679715514690#parent@#x@725#y@446
+#?#box#calculatedX@907#calculatedY@258#children@1679715531944,1679715651217,1679715658244,1679718715196#name@1.1:sparkViewsAndTables#id@1679715514690#parent@#x@725#y@446
 sparkViews
 
 #?#box#calculatedX@1047#calculatedY@338#children@#name@SparkViews#id@1679715651217#parent@#x@837#y@510
-CREATE [ OR REPLACE ] [ [ GLOBAL ] TEMPORARY ] VIEW [ IF NOT EXISTS ] view_identifier
-    create_view_clauses AS query
+Views can be 
+global (visible across all SparkSessions on a given cluster) or 
+- lives till application is alive 
+session-scoped (visible only to a single SparkSession), 
+- lives for session 
+and they are temporary: they disappear after your Spark application terminates.
 
-for creating permanent view use ~*SPARK SQL~*
 
-Temporary views disappear after your ~*Spark application~* terminates.
-it can be ~*global~* or ~*session scoped~*
-global (visible across ~*all SparkSessions~* on a given cluster) , lives till ~*application is alive ~*
-GLOBAL TEMPORARY views are tied to a system preserved temporary database global_temp.
-session-scoped (visible only to a ~*single SparkSession~*), lives for session 
-
-example of global temporary view
+Temporary views versus global temporary views
+A temporary view is tied
+to a single SparkSession within a Spark application
+a global temporary view is visible across 
+multiple SparkSessions within a Spark application
+!!Yes, you can create multiple SparkSessions within a single Spark application
+example 
 two spark session dont have same hive metastore configuration
 in this case create two session and read data, then create two global view , which can then be combined 
+
+Spark manages the metadata associated with each managed or unmanaged table. This is captured in the 
+Catalog
 
 #?#box#calculatedX@1093#calculatedY@278#children@1681966954175,1681967266767#name@sparkTables#id@1679715658244#parent@#x@874#y@462
 There are no temporary tables in spark only temporary views all tables are permanent
@@ -320,27 +341,33 @@ Make the UDF itself null-aware and do null checking inside the UDF.
 Use IF or CASE WHEN expressions to do the null check and invoke the UDF in a conditional branch.
 -----------------udf is too much for me now so i am skipping it and moving to spark sql shell 
 
-#?#box#calculatedX@995#calculatedY@435#children@1681716791137,1681716976777#name@sparkJoin#id@1679715381542#parent@#x@796#y@588
+#?#box#calculatedX@871#calculatedY@337#children@#name@playArea#id@1679715531944#parent@#x@696#y@509
 content
 
+#?#box#calculatedX@995#calculatedY@435#children@1679715474400,1681716791137,1681716976777#name@sparkJoin#id@1679715381542#parent@#x@796#y@588
+Spark has five distinct join strategies
+
 #?#box#calculatedX@1030#calculatedY@500#children@#name@properties#id@1681716791137#parent@#x@824#y@640
-Spark has ~*five distinct~* join strategies
+Spark has five distinct join strategies
 broadcast hash join (BHJ) 
 shuffle hash join (SHJ),
 shuffle sort merge join (SMJ)
 broadcast nested loop join (BNLJ)
 shuffle-and-replicated nested loop join (a.k.a. Cartesian product join).
-~*BHJ and SMJ~* are most commonly used
+BHJ and SMJ are most commonly used
 
 #?#box#calculatedX@1120#calculatedY@500#children@#name@BroadcastHashJoin#id@1681716976777#parent@#x@896#y@640
 aka map-side-only join
 situation 
-one small dataset(fitting in the ~*drivers and executors memory~*) and another large enough to ideally be ~*spared from movement~*
-default Spark will use a broadcast join if the smaller data set is less than ~*10 MB~*
+one small dataset(fitting in the drivers and executors memory) and another large enough to ideally be spared from movement
+default Spark will use a broadcast join if the smaller data set is 
+less than 10 MB
 property variable 
 spark.sql.autoBroadcastJoinThreshold
-Specifying a value of ~*-1~* in spark.sql.autoBroadcastJoinThreshold will cause Spark to always resort to a ~*shuffle sort merge join~*
+Specifying a value of -1 in spark.sql.autoBroadcastJoinThreshold will cause Spark to always resort to a shuffle sort merge join
 
+#?#box#calculatedX@890#calculatedY@470#children@#name@roofTopaboveOfficeRoom#id@1679715474400#parent@#x@712#y@616
+content
 
 #?#box#calculatedX@640#calculatedY@438#children@1681967580919,1681977292723,1681977725322,1681978581370,1682395587803#name@partition#id@1681967597550#parent@#x@512#y@590
 content
