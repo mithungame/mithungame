@@ -673,7 +673,9 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
                 if command == 'c': command_attribute = input('enter year:').rstrip()
                 if command == 'h': command_attribute = input('enter comma separated text').rstrip()
                 if command == 'h': command_attribute = input('enter comma separated text').rstrip()
-                if command in ['i','j','k','l']  and g_target_device == "phone": command_attribute = input('enter shift value').rstrip()
+                if command in ['i','j','k','l']  and g_target_device == "phone": 
+                    command_attribute = input('enter shift value').rstrip()
+                    if not command_attribute: command_attribute = 10
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
             tree_screen_action_on_command(command_dict,tree_command_properties,command_options)
             #reset per cycle 
