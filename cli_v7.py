@@ -57,17 +57,17 @@ class _Getch:
     """Gets a single character from standard input.  Does not echo to the
 screen."""
     def __init__(self):
+        #self.impl = _GetchWindows()
+        if platform.system() == 'Windows': 
+            self.impl = _GetchWindows()
+        else:
+            self.impl = _GetchUnix()
+
+    def __call__(self): 
         try:
-            #self.impl = _GetchWindows()
-            if platform.system() == 'Windows': 
-                self.impl = _GetchWindows()
-            else:
-                self.impl = _GetchUnix()
-        except ImportError:
-            self.impl = input('')
-
-    def __call__(self): return self.impl()
-
+            return self.impl()
+        except Exception as e:
+            return input('')
 
 class _GetchUnix:
     def __init__(self):
