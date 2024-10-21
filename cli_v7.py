@@ -7,7 +7,14 @@ import random
 import shutil
 import time
 from datetime import datetime, timedelta
-if platform.system() == 'Windows': import msvcrt
+g_target_device = None
+if platform.system() == 'Windows': 
+    g_target_device = "windows"
+elif os.getcwd().startswith == '/storage/emulated/0/': 
+    g_target_device = "phone"
+else:
+    g_target_device = "linux"
+if g_target_device == 'windows': import msvcrt
 
 g_debug_dict={0: 'show_none', 1: 'show_func_names',2: 'show_func_name_and_params'}
 g_remember_modified=False
@@ -53,15 +60,18 @@ g_stop_words=['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 
 }'''
 g_priority=[ 'RED' , 'BLUE' , 'YELLOW' , 'GREEN' ]
 
+
 class _Getch:
     """Gets a single character from standard input.  Does not echo to the
 screen."""
     def __init__(self):
         #self.impl = _GetchWindows()
-        if platform.system() == 'Windows': 
+        if g_target_device == 'windows': 
             self.impl = _GetchWindows()
-        else:
+        elif g_target_device == 'linux': 
             self.impl = _GetchUnix()
+        else:
+            return input('')
 
     def __call__(self): 
         try:
@@ -653,7 +663,7 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
             g_screen_obj[mode]['command_dict'] = command_dict
             command = display_table()
             command_attribute = None
-            if command in ['c','p','h','x'] and command in command_options: # custom , then revert to normal input 
+            if  (command in ['c','p','h','x'] and command in command_options) or ( command in ['i','j','k','l'] and g_target_device == "phone" ): # custom , then revert to normal input 
                 if command in ['p']: 
                     if tree_command_properties['highlight'] and '_print_arr_name' in tree_command_properties['highlight']:
                         command_attribute = tree_command_properties['highlight']['_print_arr_name']
@@ -662,6 +672,8 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
                 if command in ['x']: command_attribute = input('enter id seen in screen <id>:<name> ').rstrip()
                 if command == 'c': command_attribute = input('enter year:').rstrip()
                 if command == 'h': command_attribute = input('enter comma separated text').rstrip()
+                if command == 'h': command_attribute = input('enter comma separated text').rstrip()
+                if command in ['i','j','k','l']  and g_target_device == "phone": command_attribute = input('enter shift value').rstrip()
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
             tree_screen_action_on_command(command_dict,tree_command_properties,command_options)
             #reset per cycle 
@@ -853,7 +865,7 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         g_screen_obj['active_obj']=last_active_obj
         return
     if command in ['i', 'j', 'k', 'l']:
-        shift_value = 3
+        shift_value = int(command_attribute.rstrip().lstrip()) if command_attribute and command_attribute.rstrip().lstrip() and str.isnumeric( command_attribute.rstrip().lstrip() ) else 3
         if command_attribute:
             shift_value = int(command_attribute)
         if command == 'i':
