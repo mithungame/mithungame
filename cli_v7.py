@@ -52,6 +52,50 @@ g_stop_words=['a', 'about', 'above', 'after', 'again', 'against', 'ain', 'all', 
 5: {  20 :'WHITE' , 30: 'WHITE'  , 40 :'WHITE'  , 45: 'WHITE'  , 3000: 'WHITE'} # default 
 }'''
 g_priority=[ 'RED' , 'BLUE' , 'YELLOW' , 'GREEN' ]
+
+class _Getch:
+    """Gets a single character from standard input.  Does not echo to the
+screen."""
+    def __init__(self):
+        try:
+            #self.impl = _GetchWindows()
+            if platform.system() == 'Windows': 
+                self.impl = _GetchWindows()
+            else:
+                self.impl = _GetchUnix()
+        except ImportError:
+            self.impl = input('')
+
+    def __call__(self): return self.impl()
+
+
+class _GetchUnix:
+    def __init__(self):
+        import tty, sys
+
+    def __call__(self):
+        import sys, tty, termios
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+        try:
+            tty.setraw(sys.stdin.fileno())
+            ch = sys.stdin.read(1)
+        finally:
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        return ch
+
+
+class _GetchWindows:
+    def __init__(self):
+        import msvcrt
+
+    def __call__(self):
+        import msvcrt
+        return msvcrt.getch()
+
+
+getch = _Getch()
+
    
 def node_gate(func):
     def inner(*arrs,**kwargs): # must have inner function for decorator
@@ -501,9 +545,9 @@ def display_table(clear_screen = True, cursor_pos = None):
     print(lines)
     command = ''
     if platform.system() == 'Windows':
-        command = msvcrt.getch().decode("utf-8")
+        command = getch().decode("utf-8")
     else:
-        command = input('')
+        command = getch()
     return command
 
 @debug_gate
@@ -2160,8 +2204,8 @@ def identify_files(key='all',filename=None):
                 'secret' : [base_dir+r'\Downloads\track\projects\d3\privateData\*[0-9].txt'],
                 'quickref' : [base_dir+r'\Downloads\track\**\*quickref*.txt'],
                 }
-    elif base_dir.startswith('/storage/emulated/0/download'):
-        file_list = {'reference' : [ base_dir+r'*[0-9].txt', 
+    elif base_dir.startswith('/storage/emulated/0/Download'):
+        file_list = {'reference' : [ base_dir+r'/*[0-9].txt', 
                     ],
                 }       
     file_path_list=dict()
@@ -2222,7 +2266,7 @@ def memory_controller(mode='read',**kwargs):
     base_dir=g_context['base_dir']
     file_name = "remember.csv"
     if base_dir.startswith('C:\\Users\\mithu'): file_name=os.path.join(base_dir, r'Downloads\track\projects\d3\core\data\meta', file_name )
-    if base_dir.startswith('/storage/emulated/0/download'): file_name=os.path.join(base_dir, file_name )
+    if base_dir.startswith('/storage/emulated/0/Download'): file_name=os.path.join(base_dir, file_name )
     headers="filename|id|last_visited_date|next_visit_in".split('|')
     file_name=os.path.join(base_dir,file_name)
     if mode == "read":
@@ -2301,7 +2345,7 @@ def end_action():
 @debug_gate
 def main(args):
     if os.getcwd().startswith('C:\\Users\\mithu'): g_context['base_dir']='C:\\Users\\mithu'
-    elif os.getcwd().startswith('/storage/emulated/0/download'): g_context['base_dir']='/storage/emulated/0/download'
+    elif os.getcwd().startswith('/storage/emulated/0/Download'): g_context['base_dir']='/storage/emulated/0/Download'
     if args.remember: memory_controller('read')
     files=identify_files(args.key,args.filename)
     #print(files)
@@ -2330,7 +2374,7 @@ parser.add_argument("-c","--choosenode", help="choosenode",nargs="?",default='fa
 parser.add_argument("-t","--tree", help="tree",nargs="?",default='false',const='true')
 parser.add_argument("-v","--vannangal", help="painttext with colors",nargs="?",default='false',const='true')
 parser.add_argument("-sc","--screencontrol", help="ansii screencontrol",nargs="?",default=False,const=True,type=bool)
-parser.add_argument("-r","--remember", help="load memory file",nargs="?",default='false',const='true')
+parser.add_argument("-r","--remember", help="load memory file",nargs="?",default=False,const=True,type=bool)
 args = parser.parse_args()    
 print(args)
 
