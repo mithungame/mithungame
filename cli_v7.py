@@ -14,6 +14,8 @@ elif os.getcwd().startswith('/storage/emulated/0/'):
     g_target_device = "phone"
 else:
     g_target_device = "linux"
+
+g_target_device = "phone"
 if g_target_device == 'windows': import msvcrt
 
 g_debug_dict={0: 'show_none', 1: 'show_func_names',2: 'show_func_name_and_params'}
@@ -729,6 +731,9 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
             command = display_table(False,{'x':0 , 'y': 3})
             #command = display_table()
             command_attribute = None
+            if command in ['i','j','k','l'] and g_target_device == "phone" :
+                command_attribute = input('enter shift value').rstrip()
+                if not command_attribute: command_attribute = "4"
             if command in ['r']: 
                 next_visit_in = input('enter next_visit_in days - 0:remove enter:retain').rstrip().lstrip()
                 if not next_visit_in: next_visit_in = 9999
@@ -775,6 +780,12 @@ def popup_screen_action_on_command(command_dict, command_properties,command_opti
         build_tree_from_popup( obj )
     if command in ['i', 'j', 'k', 'l']:
         shift_value = 1
+        if command_attribute and str.isnumeric( command_attribute.rstrip().lstrip() ):
+            shift_value = int(command_attribute.rstrip().lstrip())
+        elif g_target_device == "phone": 
+            shift_value = 6
+        else:
+            shift_value = 1
         if command == 'i': command_properties['h_shift'] = shift_value
         elif command == 'k': command_properties['h_shift'] = - shift_value
         if command == 'j': command_properties['w_shift'] = shift_value
@@ -872,9 +883,13 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         g_screen_obj['active_obj']=last_active_obj
         return
     if command in ['i', 'j', 'k', 'l']:
-        shift_value = int(command_attribute.rstrip().lstrip()) if command_attribute and str.isnumeric( command_attribute.rstrip().lstrip() ) else 6
-        if command_attribute:
-            shift_value = int(command_attribute)
+        shift_value = 1
+        if command_attribute and str.isnumeric( command_attribute.rstrip().lstrip() ):
+            shift_value = int(command_attribute.rstrip().lstrip())
+        elif g_target_device == "phone": 
+            shift_value = 6
+        else:
+            shift_value = 1
         if command == 'i':
             command_properties['h_shift'] = shift_value
         elif command == 'k':
