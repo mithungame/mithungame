@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 g_target_device = None
 if platform.system() == 'Windows': 
     g_target_device = "windows"
-elif os.getcwd().startswith == '/storage/emulated/0/': 
+elif os.getcwd().startswith('/storage/emulated/0/'): 
     g_target_device = "phone"
 else:
     g_target_device = "linux"
@@ -70,8 +70,6 @@ screen."""
             self.impl = _GetchWindows()
         elif g_target_device == 'linux': 
             self.impl = _GetchUnix()
-        else:
-            return input('')
 
     def __call__(self): 
         try:
@@ -102,6 +100,13 @@ class _GetchWindows:
     def __call__(self):
         import msvcrt
         return msvcrt.getch()
+        
+class _GetchDefault:
+    def __init__(self):
+        pass
+
+    def __call__(self):
+        return input()
 
 
 getch = _Getch()
@@ -554,7 +559,7 @@ def display_table(clear_screen = True, cursor_pos = None):
             lines+=(' '*os.get_terminal_size().columns)+'\n'
     print(lines)
     command = ''
-    if platform.system() == 'Windows':
+    if g_target_device == "windows":
         command = getch().decode("utf-8")
     else:
         command = getch()
@@ -675,7 +680,7 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
                 if command == 'h': command_attribute = input('enter comma separated text').rstrip()
                 if command in ['i','j','k','l']  and g_target_device == "phone": 
                     command_attribute = input('enter shift value').rstrip()
-                    if not command_attribute: command_attribute = 10
+                    if not command_attribute: command_attribute = "10"
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
             tree_screen_action_on_command(command_dict,tree_command_properties,command_options)
             #reset per cycle 
@@ -867,7 +872,7 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         g_screen_obj['active_obj']=last_active_obj
         return
     if command in ['i', 'j', 'k', 'l']:
-        shift_value = int(command_attribute.rstrip().lstrip()) if command_attribute and command_attribute.rstrip().lstrip() and str.isnumeric( command_attribute.rstrip().lstrip() ) else 3
+        shift_value = int(command_attribute.rstrip().lstrip()) if command_attribute and str.isnumeric( command_attribute.rstrip().lstrip() ) else 6
         if command_attribute:
             shift_value = int(command_attribute)
         if command == 'i':
