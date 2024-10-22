@@ -15,7 +15,6 @@ elif os.getcwd().startswith('/storage/emulated/0/'):
 else:
     g_target_device = "linux"
 
-g_target_device = "phone"
 if g_target_device == 'windows': import msvcrt
 
 g_debug_dict={0: 'show_none', 1: 'show_func_names',2: 'show_func_name_and_params'}
@@ -578,23 +577,19 @@ def initialize_tree_params(g_screen_obj):
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
-    height = os.get_terminal_size().lines - 8
-    width  = os.get_terminal_size().columns
-    #height = 5
-    #width = 30
     if mode == "tree" : 
         command_options = { **command_options,  **{ 'n': 'next', "e": "ephemeral", "c": "calendar" , "r": "reload", "v": "visited on", "u": "unhide all"} }
-        table_properties={'height':height,'width':width,'w_size':20,'h_size' : 1,'pre_dots' : 1,'post_dots' : 2, 'pre_dot_char': '-', 'post_dot_char': '-', 'pre_fill_name': '-', 'post_fill_name': '-', 'default_color': 'WHITE' }
+        table_properties={'height':None,'width':None,'w_size':20,'h_size' : 1,'pre_dots' : 1,'post_dots' : 2, 'pre_dot_char': '-', 'post_dot_char': '-', 'pre_fill_name': '-', 'post_fill_name': '-', 'default_color': 'WHITE' }
     elif mode == "ephemeral_tree":
         command_options = { **command_options, **{ 'b': "Go back to normal tree" } }
-        table_properties={'height':height,'width':width,'w_size':15,'h_size' : 1,'pre_dots' : 0,'post_dots' : 1, 'pre_dot_char': ' ', 'post_dot_char': ' ', 'pre_fill_name': ' ', 'post_fill_name': ' ', 'default_color': 'GREEN' }
+        table_properties={'height':None,'width':None,'w_size':15,'h_size' : 1,'pre_dots' : 0,'post_dots' : 1, 'pre_dot_char': ' ', 'post_dot_char': ' ', 'pre_fill_name': ' ', 'post_fill_name': ' ', 'default_color': 'GREEN' }
     elif mode == "vertical_tree":
         command_options = { 'q' : "q for quit", "p": "popup" , "r": "rndm",  "h" : "highlight"}
         command_options = { **command_options,  **{ 'n': 'move to next file' } }
-        table_properties={'height':-1,'width':-1,'default_color': 'WHITE', 'w_size':100,'h_size' : 1 }
+        table_properties={'height': None,'width':None,'default_color': 'WHITE', 'w_size':100,'h_size' : 1 }
     elif mode == "calendar":
         command_options = { **command_options, **{ 'b': "Go back to normal tree" } }
-        table_properties={'height':height,'width':width,'w_size':width//7,'h_size' : 10,'pre_dots' : 0,'post_dots' : 1, 'pre_dot_char': ' ', 'post_dot_char': ' ', 'pre_fill_name': ' ', 'post_fill_name': ' ', 'default_color': 'GREEN' }
+        table_properties={'height':None,'width':None,'w_size':15,'h_size' : 10,'pre_dots' : 0,'post_dots' : 1, 'pre_dot_char': ' ', 'post_dot_char': ' ', 'pre_fill_name': ' ', 'post_fill_name': ' ', 'default_color': 'GREEN' }
     g_screen_obj[mode]['table_properties']=table_properties
     g_screen_obj[mode]['command_options']=command_options
 
@@ -621,6 +616,8 @@ def initialize_popup_params(g_screen_obj):
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
     g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}#dont add vertical character difficult to copy
+    #g_screen_obj[mode]['cell_properties']['border']= {'units':1,'char': '*'}
+    #g_screen_obj[mode]['cell_properties']['padding']={'units':1,'char': '&'}
     command_options= { 'i j k l': "scroll", #not command option keys must be space separated
         'n' : 'next line',
         'w' : 'next word',
@@ -628,12 +625,8 @@ def initialize_popup_params(g_screen_obj):
         'c' : 'x popup show tree', 
         'r' : 'remember',
         'q' : "quit"
-        } 
-    height = os.get_terminal_size().lines 
-    width  = os.get_terminal_size().columns
-    #table_properties={'height': height - int( height * .20 ),'width': width - int(width * .5) , 'default_color': 'WHITE'}
-    table_properties={'height': height - int( height * .20 ),'width': width  , 'default_color': 'WHITE'} #keep full width it erases tree behind anyway
-    #table_properties={'height': -1,'width': -1 , 'default_color': 'WHITE'}
+        }
+    table_properties={'height': None,'width': None , 'default_color': 'WHITE', 'popup_width_height': 'default'}
     g_screen_obj[mode]['table_properties']=table_properties
     g_screen_obj[mode]['command_options']=command_options    
 
@@ -723,8 +716,11 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
         command_options=g_screen_obj[mode]['command_options']
         command_dict={ 'command': None, 'command_attribute' : None}
         while popup_command_properties['option'] != 'q':
-            height = os.get_terminal_size().lines - 8
-            width  = os.get_terminal_size().columns
+            if  g_screen_obj[mode]['table_properties']['popup_width_height'] == "text_based":
+                height = width = -1
+            else:
+                height = os.get_terminal_size().lines - 8
+                width  = os.get_terminal_size().columns
             g_screen_obj[mode]['table_properties']['height']=height
             g_screen_obj[mode]['table_properties']['width']=width
             g_screen_obj[mode]['table_to_be_printed'] = refresh_popup_print_table(popup_command_properties, command_dict)
@@ -1168,6 +1164,10 @@ def generate_node_id():
 def fill_surround_block(mode,table,cell_properties):
     cp=cell_properties
     units=cp[mode]['units']
+    start_x = cp['start_x']
+    end_x = cp['end_x']
+    start_y = cp['start_y']
+    end_y = cp['end_y']
     if mode=='margin':
         h_char = cp[mode]['h_char']
         v_char = cp[mode]['v_char']
@@ -1175,17 +1175,14 @@ def fill_surround_block(mode,table,cell_properties):
         h_char = cp[mode]['char']
         v_char = cp[mode]['char']
     for _ in range(units):
-        for i in range(cp['start_x'], cp['end_x']+1): 
-            #make_table_entry( table, cp['start_y'], i, {'txt': h_char, 'pre_control': '\x1b[33m', 'post_control': '\x1b[0m' } )
-            make_table_entry( table, cp['start_y'], i, word_obj_to_letter_obj(color_word(h_char,"YELLOW",False).colored_obj)[0])
-            make_table_entry( table, cp['end_y'], i, word_obj_to_letter_obj(color_word(h_char,"YELLOW",False).colored_obj)[0] )
-        cp['start_y'] += 1
-        cp['end_y'] -= 1
-        for i in range(cp['start_y'], cp['end_y']+1): 
-            make_table_entry( table,i,cp['start_x'], word_obj_to_letter_obj(color_word(v_char,"YELLOW",False).colored_obj)[0] )
-            make_table_entry( table,i, cp['end_x'], word_obj_to_letter_obj(color_word(v_char,"YELLOW",False).colored_obj)[0] )
-        cp['start_x'] += 1 
-        cp['end_x'] -= 1
+        for i in range(start_y, end_y+1): 
+            make_table_entry( table,i,start_x, word_obj_to_letter_obj(color_word(v_char,"YELLOW",False).colored_obj)[0] )
+            make_table_entry( table,i, end_x, word_obj_to_letter_obj(color_word(v_char,"YELLOW",False).colored_obj)[0] )
+        for i in range(start_x, end_x+1): 
+            #make_table_entry( table, start_y, i, {'txt': h_char, 'pre_control': '\x1b[33m', 'post_control': '\x1b[0m' } )
+            make_table_entry( table, start_y, i, word_obj_to_letter_obj(color_word(h_char,"YELLOW",False).colored_obj)[0])
+            make_table_entry( table, end_y, i, word_obj_to_letter_obj(color_word(h_char,"YELLOW",False).colored_obj)[0] )
+
 
 @debug_gate
 def fetch_links(filename,id):
@@ -1573,7 +1570,7 @@ def generate_cell_text(cell_properties):
 #format_cell_text(text="hello hi how ar you\n\nmm",width=3,wrap=True)
 @debug_gate
 def format_cell_text(text,width=100,wrap=True):
-#    print('========',text)
+    #print('========',text,width)
     if width < 1: raise Exception('width size cannot be less than one')
     formatted_text = ''
     formatted_line = []
@@ -1590,7 +1587,7 @@ def format_cell_text(text,width=100,wrap=True):
             each_word = each_word_obj.word
             #print('###each_word:'+each_word)
             if len(each_word) + running_width <= width:  
-                #print('words added',each_word)
+                #print('words added',each_word,running_width,width)
                 formatted_text += each_word
                 formatted_line.append(each_word_obj.colored_obj)
                 #print('...',[i for i in formatted_line])
@@ -1677,32 +1674,48 @@ def check_if_range_in_table(table,y=0,x=0):
 def build_cell_block(cell_properties):
     ''' the height and width should be specific to this cell block not whole table '''
     #print('======',cell_properties)
-    cell_properties['start_x'] = cell_properties['start_y'] = 0 
+    margin_padding_border = ( cell_properties['margin']['units']+cell_properties['padding']['units']+cell_properties['border']['units'] )
+    cell_properties['start_x'] = cell_properties['start_y'] = margin_padding_border
+    margin_padding_border = margin_padding_border * 2
+    cell_properties['end_x'] = cell_properties['start_x'] + cell_properties['width'] - margin_padding_border - 1 
+    cell_properties['end_y'] = cell_properties['start_y'] + cell_properties['height'] - margin_padding_border - 1
     if cell_properties['height'] == -1 or cell_properties['width'] == -1:
+        cell_properties['start_x'] = cell_properties['start_y'] = margin_padding_border = 0 #this mode is mainly for copying text so no border as copying becomes difficult
         text = generate_cell_text(cell_properties)
         cell_properties['height'] = len(text)
         '''for i in text:
             print(i)'''
         cell_properties['width'] =  max( [ sum([len(word.colored_obj['word']) for word in line.colored_obj])  for line in text] )
-        margin_padding_border = ( cell_properties['margin']['units']+cell_properties['padding']['units']+cell_properties['border']['units'] ) * 2
-        cell_properties['height'] += margin_padding_border
-        cell_properties['width'] += margin_padding_border
         #print(cell_properties['height'],cell_properties['width'] ,margin_padding_border)
-        cell_properties['end_x'] = cell_properties['width'] - 1 
-        cell_properties['end_y'] = cell_properties['height'] - 1
+        cell_properties['end_x'] = cell_properties['start_x'] + cell_properties['width'] - 1 
+        cell_properties['end_y'] = cell_properties['start_y'] + cell_properties['height'] - 1
     else:
-        cell_properties['end_x'] = cell_properties['width'] - 1 
-        cell_properties['end_y'] = cell_properties['height'] - 1 
         text = generate_cell_text(cell_properties)
     formatted_text_obj = format_cell_text(text,cell_properties['end_x']-cell_properties['start_x']+1,True)
     print_arr = [ [ ' ' for i in range(cell_properties['width']) ] for j in range(cell_properties['height']) ] 
-    #border 
-    fill_surround_block('border',print_arr,cell_properties)
-    #margin
-    fill_surround_block('margin',print_arr,cell_properties)
-    #padding
-    fill_surround_block('padding',print_arr,cell_properties)
     build_cell_text(print_arr,formatted_text_obj,cell_properties)
+    if margin_padding_border > 0:
+        #border
+        if cell_properties['border']['units'] > 0:
+            cell_properties['start_x'] -= cell_properties['border']['units']
+            cell_properties['start_y'] -=cell_properties['border']['units']
+            cell_properties['end_x'] += cell_properties['border']['units']
+            cell_properties['end_y'] += cell_properties['border']['units']
+            fill_surround_block('border',print_arr,cell_properties)
+        #margin
+        if cell_properties['margin']['units'] > 0:
+            cell_properties['start_x'] -= cell_properties['margin']['units']
+            cell_properties['start_y'] -= cell_properties['margin']['units']
+            cell_properties['end_x'] += cell_properties['margin']['units']
+            cell_properties['end_y'] += cell_properties['margin']['units']
+            fill_surround_block('margin',print_arr,cell_properties)
+        #padding
+        if cell_properties['padding']['units'] > 0:
+            cell_properties['start_x'] -= cell_properties['padding']['units']
+            cell_properties['start_y'] -=cell_properties['padding']['units']
+            cell_properties['end_x'] += cell_properties['padding']['units']
+            cell_properties['end_y'] += cell_properties['padding']['units']
+            fill_surround_block('padding',print_arr,cell_properties)
     '''for i in print_arr:
         print(''.join(i))
     #input()'''
