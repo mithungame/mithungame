@@ -573,7 +573,7 @@ def initiate_params(g_screen_current_obj):
 @debug_gate
 def initialize_tree_params(g_screen_obj):
     '''only initialize params must be here anything that changes should not be here only STATIC'''
-    command_options = { 'i j k l': "scroll", 'q' : "quit", "p": "popup" , "s": "random", "h" : "highlight", "m": "minimize", "x" : "hide"}
+    command_options = { 'i j k l': "scroll", 'q' : "quit", "p": "popup" , "s": "random", "h" : "highlight", "m": "minimize", "x" : "hide", "t": "travel"}
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
@@ -665,16 +665,19 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
             command_attribute = None
             if  (command in ['c','p','h','x'] and command in command_options) or ( command in ['i','j','k','l'] and g_target_device == "phone" ): # custom , then revert to normal input 
                 if command in ['p']: 
-                    if tree_command_properties['highlight'] and '_print_arr_name' in tree_command_properties['highlight']:
-                        command_attribute = tree_command_properties['highlight']['_print_arr_name']
+                    if tree_command_properties['highlight'] and '_print_arr_id' in tree_command_properties['highlight']:
+                        for temp in g_screen_obj[mode]['state_of_table']['selected_visible_items']:
+                            if temp['obj']['id'] == tree_command_properties['highlight']['_print_arr_id']:
+                                command_attribute = temp['obj']['_print_arr_name'] 
+                                break
+                        #command_attribute = tree_command_properties['highlight']['_print_arr_name']
                     else:
                         command_attribute = input('enter id seen in screen <id>:<name> ').rstrip()
                 if command in ['x']: command_attribute = input('enter id seen in screen <id>:<name> ').rstrip()
                 if command == 'c': command_attribute = input('enter year:').rstrip()
                 if command == 'h': command_attribute = input('enter comma separated text').rstrip()
                 if command in ['i','j','k','l']  and g_target_device == "phone": 
-                    command_attribute = input('enter shift value').rstrip()
-                    if not command_attribute: command_attribute = "10"
+                    command_attribute = "5"
             command_dict = { 'command': command, 'command_attribute' : command_attribute}
             tree_screen_action_on_command(command_dict,tree_command_properties,command_options)
             #reset per cycle 
@@ -727,8 +730,7 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
             #command = display_table()
             command_attribute = None
             if command in ['i','j','k','l'] and g_target_device == "phone" :
-                command_attribute = input('enter shift value').rstrip()
-                if not command_attribute: command_attribute = "4"
+                command_attribute = "2"
             if command in ['r']: 
                 next_visit_in = input('enter next_visit_in days - 0:remove enter:retain').rstrip().lstrip()
                 if not next_visit_in: next_visit_in = 9999
@@ -746,11 +748,11 @@ def screen_coordinator(mode, data_table=None ,context_properties=None): #except 
 def popup_screen_action_on_command(command_dict, command_properties,command_options, context_properties):
     command = command_dict['command']
     command_attribute = command_dict['command_attribute']
-    command_properties['h_shift'] = 0
-    command_properties['w_shift'] = 0
     valid_command_options = [ i.split(' ') for i in command_options.keys() ]
     valid_command_options = [j for i in valid_command_options for j in i]
     if command not in valid_command_options: return
+    command_properties['h_shift'] = 0
+    command_properties['w_shift'] = 0
     if command == 'q':
         end_action()
     if command == 'n': #handled in refresh_popup_print_table
@@ -822,6 +824,13 @@ def vertical_tree_screen_action_on_command(command_dict, command_properties,comm
 def tree_screen_action_on_command(command_dict, command_properties,command_options ):
     #print(command_dict, command_properties,command_options )
     global g_screen_obj
+    active_obj = g_screen_obj['active_obj']
+    g_screen_tree_obj = g_screen_obj[active_obj]
+    data_table = g_screen_tree_obj['data_table']
+    table_properties = g_screen_tree_obj['table_properties']
+    context_properties = g_screen_tree_obj['context_properties']
+    cell_properties = g_screen_tree_obj['cell_properties']
+    
     command = command_dict['command']
     command_attribute = command_dict['command_attribute']
     valid_command_options = [ i.split(' ') for i in command_options.keys() ]
@@ -846,7 +855,7 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
     if command == 's': 
         pop_rand_obj = pick_random_selected_item()[0]['obj']
         command_dict['command']='h'
-        command_properties['highlight']= { 'mode': 'id', 'param': pop_rand_obj['id'], '_print_arr_name': pop_rand_obj['_print_arr_name'] } # _print_arr_name is used for subsequent popup
+        command_properties['highlight']= { 'mode': 'id', 'param': pop_rand_obj['id'], '_print_arr_id': pop_rand_obj['id'] } # _print_arr_name is used for subsequent popup
         #print(command_dict,command_properties)
         return
     if command in [ 'm', 'x', 'u' ]: 
@@ -859,6 +868,15 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         #print('= set xx====',last_active_obj)
         g_screen_obj['active_obj']=last_active_obj
         return   
+    if command in ['t']:
+        travel_obj = random.choice([j for i in data_table for j in i if j ])
+        x, y = get_index_of_table ( travel_obj ,  data_table )
+        g_screen_tree_obj['state_of_table']['start_x'] = x
+        g_screen_tree_obj['state_of_table']['start_y'] = y
+        command_properties['h_shift'] = - int(table_properties['height']/2)
+        command_properties['w_shift'] = - int(table_properties['width']/2)
+        command_dict['command']='h'
+        command_properties['highlight']= { 'mode': 'id', 'param': travel_obj['id'], '_print_arr_id': travel_obj['id']} # _print_arr_name is used for subsequent popup
     if command in [ 'c']: 
         if command_attribute.rstrip().lstrip() and str.isnumeric( command_attribute.rstrip().lstrip() ) :
             last_active_obj = g_screen_obj['active_obj']
@@ -911,7 +929,7 @@ def refresh_popup_print_table(command_properties, command_dict):
     if command_dict['command']=='h': 
         g_screen_tree_obj['state_of_table']['hide_answer_mode'] = True
         g_screen_tree_obj['state_of_table']['hide_line_answer'] = True
-    if command_dict['command']=='n':  
+    if command_dict['command']=='n' or ( args.qamode and command_dict['command']!='h'):  
         if g_screen_tree_obj['state_of_table']['word'] < g_screen_tree_obj['state_of_table']['total_word_in_line']:
             g_screen_tree_obj['state_of_table']['word'] = 99999
         else:
@@ -2421,6 +2439,8 @@ parser.add_argument("-t","--tree", help="tree",nargs="?",default='false',const='
 parser.add_argument("-v","--vannangal", help="painttext with colors",nargs="?",default='false',const='true')
 parser.add_argument("-sc","--screencontrol", help="ansii screencontrol",nargs="?",default=False,const=True,type=bool)
 parser.add_argument("-r","--remember", help="load memory file",nargs="?",default=False,const=True,type=bool)
+parser.add_argument("-q","--qamode", help="show xxx on popup",nargs="?",default=False,const=True,type=bool)
+
 args = parser.parse_args()    
 print(args)
 
