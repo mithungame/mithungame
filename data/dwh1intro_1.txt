@@ -5,7 +5,12 @@ A data lake is a ~*central location~* that holds a large amount of data in its ~
 Data lakes consolidate all data in a single location "~*as is~*" without a upfront ~*schema~*
 Data in all stages of the refinement process can be stored. Raw data can be ingested and stored alongside structured, tabular data source
 
-zones
+zones - There is no standard pattern out there there are multiple terminologies but the common theme is bring data as is , cleanse , build models
+some terminologies of zones are 
+bronze, silver, gold 
+raw, cleanse, enrich, serve 
+raw, prepare , curate
+
 ~*Raw/Landing~*
     Raw - As is 
     Landing - raw data thats from a recognized source system
@@ -13,12 +18,15 @@ zones
 ~*Raw/Conformance~*
     Data gets converted into the ~*delta lake/other format~* and lands in an input folder. 
     When data quality runs, pass records are copied to output folder. Records that fail land in an error folder.
-~*Standardized - Ready for analytics~*
+~*Standardized/Enriched - Ready for analytics~*
     This data layer is considered the ~*silver layer~* or ~*read data source~*. 
-    Data within this layer has had ~*no transformations~* applied other than data quality, delta lake conversion, and data type alignment.
+    Data within this layer has had ~*no transformations~* applied other than ~*impurity 
+filteration~*, and ~*data type alignment~*.
 ~*Curated~*
-    Ready for ~*optimized analytics~*
-    ~*Dimensional modelling~*
+    Data has structure and ready for ~*optimized analytics~*
+    thought 1 : This layer is not a replacement for a data warehouse,not good for responsive dashboards.Its best suited for data scientists/advanced data analysis on time insensitive/large scale data as storage costs are lower in your data lake than your data warehouse.
+    Datawarehouse/aggregations can be built on spark and published back to datalake
+    thought 2: it is good enough for ~*Dimensional modelling~*
     
 
 =Disadvantages
@@ -32,6 +40,7 @@ lakeHouse is a datalake with rules on top of it
 ~*Deltalake~* and ~*iceberg~* are examples of lakeHouse format
 
 #?#box#calculatedX@108#calculatedY@98#children@#name@deltaLake#id@1728920181#parent@#x@86#y@78
+Deltalake is an open source ~*table storage format~* originally developed by Databricks in 2017(open sourced in 2019) as their ~*data lakehouse table format~*.
 Deltalake is an open source ~*table storage format~* originally developed by Databricks in 2017(open sourced in 2019) as their ~*data lakehouse table format~*.
 Deltalake overcomes lakehouse limitations, it is an open format data management and governance layer that combines the best of both data lakes and data warehouses
 DeltaLake seems closely associated with ~*spark~* and ~*databricks~*

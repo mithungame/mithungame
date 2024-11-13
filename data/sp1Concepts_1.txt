@@ -346,27 +346,53 @@ Specifying a value of ~*-1~* in spark.sql.autoBroadcastJoinThreshold will cause 
 content
 
 #?#box#calculatedX@570#calculatedY@508#children@#name@repartition#id@1681967580919#parent@#x@456#y@646
-initiates full shuffle
-increase or deacrease partition
+partition means number of files not number of folders which is partitionBy
+repartition initiates full shuffle across nodes
+guarantees similar data is present in same node
+guarantees all keys are present in same partition file if column is specified else distributes data equally among partitions. if data is skewed some partition may be empty and it may increase or deacrease partition
 internally calls coalesce with shuffle=true
-all key will end up in same partition
-a partition may have more than one key
-if data is skewed some partition may be empty
-spark can be repartitioned based on one or MULTIPLE columns
- default value - spark.sql.shuffle.partitions
+
+examples
+# Repartition by number
+df2 = df.repartition(5)
+
+# Repartition by column name
+df2 = df.repartition("state")
+
+# Repartition by column name
+df2 = df.repartition(5, "state")
+
+# Repartition by multiple columns
+df2 = df.repartition("state","department")
+
+df2 = df.repartition(numPartitions=3)
+print(df2.rdd.getNumPartitions())
+df2.write.mode("overwrite").csv("/tmp/partition.csv")
+OUTPUT:
+creates a folder named /tmp/partition.csv inside it creates 3 part csv files 
+
+default value - spark.sql.shuffle.partitions
 
 #?#box#calculatedX@567#calculatedY@563#children@#name@coalesce#id@1681977292723#parent@#x@453#y@690
-avoids full shuffle by retaining most existing partition
-it is good for deacreasing partition
-it can only deacrease partition<CONTRADICTORY INFO>
-may result in unequal sized partition
+this operation results in a narrow dependency - meaning it locally merges partition. it does not guarantee that similar data will be in same node 
+if you go from 1000 partitions to 100 partitions, there will not be a shuffle, instead each of the 100 new partitions will claim 10 of the current partitions.
+If a larger number of partitions is requested, it will stay at the current number of partitions.
+When doing a drastic coalesce, e.g. to numPartitions = 1, this may result in your computation taking place on fewer nodes than you like, all processing will happen in one node ( no parellelism )
+when needing to reduce everything to 1 partition use repartition(1) not coalesce(1)
+
+DataFrame.coalesce(numPartitions: int) - pyspark.sql.dataframe.DataFrame
+takes no column name as input
 
 #?#box#calculatedX@685#calculatedY@514#children@#name@partitionBy#id@1681977725322#parent@#x@548#y@651
-no shuffle
-no of directories=number of unique column values
-no of files=no of partition*no of distinct value in each partition
-a data with 7 days in week dir=7 , files=no of partition*no of unique day in each partition
-can use multiple col
+creates directories per parition 
+df.write.option("header",True).partitionBy("state").mode("overwrite").csv("/tmp/zipcodes-state")
+
+creates directories for state and subdirectory for city 
+df.write.option("header",True).partitionBy("state","city").mode("overwrite").csv("/tmp/zipcodes-state")
+
+creates directories for state and each directory will have 2 part files
+dfRepart.repartition(2).write.option("header",True).partitionBy("state").mode("overwrite").csv("c:/tmp/zipcodes-state-more")
+
 not good for high cardinality columns 
 
 #?#box#calculatedX@690#calculatedY@568#children@#name@bucketing#id@1681978581370#parent@#x@552#y@694
