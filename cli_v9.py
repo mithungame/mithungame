@@ -615,7 +615,10 @@ def initialize_popup_params(g_screen_obj):
     mode=g_screen_obj['active_obj']
     g_screen_obj[mode]=dict()
     initiate_params( g_screen_obj[mode] )
-    g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}#dont add vertical character difficult to copy
+    if g_screen_obj['last_active_obj'] == "vertical_tree":
+        g_screen_obj[mode]['cell_properties']['margin']={'v_char':'','h_char':'-','units':0}
+    else:
+        g_screen_obj[mode]['cell_properties']['margin']={'v_char':'|','h_char':'-','units':1}
     #g_screen_obj[mode]['cell_properties']['border']= {'units':1,'char': '*'}
     #g_screen_obj[mode]['cell_properties']['padding']={'units':1,'char': '&'}
     command_options= { 'i j k l': "scroll", #not command option keys must be space separated
@@ -806,21 +809,21 @@ def vertical_tree_screen_action_on_command(command_dict, command_properties,comm
         command_properties['option'] = 'n'
         return
     if command in [ 'p','s']: 
-        last_active_obj = g_screen_obj['active_obj']
-        #print('==**===',last_active_obj)
+        g_screen_obj['last_active_obj'] = g_screen_obj['active_obj']
+        #print('==**===',g_screen_obj['last_active_obj'])
         popup_display( command_attribute )
-        #print('= set xx====',last_active_obj)
-        g_screen_obj['active_obj']=last_active_obj
+        #print('= set xx====',g_screen_obj['last_active_obj'])
+        g_screen_obj['active_obj']=g_screen_obj['last_active_obj']
         return   
     if command == 'n': 
         command_properties['option'] = 'n'
         return 
     if command == 'e': 
-        last_active_obj = g_screen_obj['active_obj']
-        #print('==** ===',last_active_obj)
+        g_screen_obj['last_active_obj'] = g_screen_obj['active_obj']
+        #print('==** ===',g_screen_obj['last_active_obj'])
         tree_display(g_ephemeral_tree, g_ephemeral_tree[0], 'ephemeral_tree')
-        #print('= set yy====',last_active_obj)
-        g_screen_obj['active_obj']=last_active_obj
+        #print('= set yy====',g_screen_obj['last_active_obj'])
+        g_screen_obj['active_obj']=g_screen_obj['last_active_obj']
         return
 
 @debug_gate
@@ -865,11 +868,11 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         #will be taken care by refresh_tree_print_table
         return
     if command in [ 'p']: 
-        last_active_obj = g_screen_obj['active_obj']
-        #print('==**===',last_active_obj)
+        g_screen_obj['last_active_obj'] = g_screen_obj['active_obj']
+        #print('==**===',g_screen_obj['last_active_obj'])
         popup_display( command_attribute )
-        #print('= set xx====',last_active_obj)
-        g_screen_obj['active_obj']=last_active_obj
+        #print('= set xx====',g_screen_obj['last_active_obj'])
+        g_screen_obj['active_obj']=g_screen_obj['last_active_obj']
         return   
     if command in ['t']:
         travel_obj = random.choice([j for i in data_table for j in i if j ])
@@ -882,21 +885,21 @@ def tree_screen_action_on_command(command_dict, command_properties,command_optio
         command_properties['highlight']= { 'mode': 'id', 'param': travel_obj['id'], '_print_arr_id': travel_obj['id'], '_initiator' : 't' } # _print_arr_name is used for subsequent popup
     if command in [ 'c']: 
         if command_attribute.rstrip().lstrip() and str.isnumeric( command_attribute.rstrip().lstrip() ) :
-            last_active_obj = g_screen_obj['active_obj']
+            g_screen_obj['last_active_obj'] = g_screen_obj['active_obj']
             filename = build_calendar_tree_from_result(int(command_attribute))
             tree=g_context[filename]['tree']
             tree_display(tree, tree[0], 'calendar')
-            g_screen_obj['active_obj']=last_active_obj
+            g_screen_obj['active_obj']=g_screen_obj['last_active_obj']
         return  
     if command == 'n': 
         command_properties['option'] = 'n'
         return 
     if command == 'e': 
-        last_active_obj = g_screen_obj['active_obj']
-        #print('==** ===',last_active_obj)
+        g_screen_obj['last_active_obj'] = g_screen_obj['active_obj']
+        #print('==** ===',g_screen_obj['last_active_obj'])
         tree_display(g_ephemeral_tree, g_ephemeral_tree[0], 'ephemeral_tree')
-        #print('= set yy====',last_active_obj)
-        g_screen_obj['active_obj']=last_active_obj
+        #print('= set yy====',g_screen_obj['last_active_obj'])
+        g_screen_obj['active_obj']=g_screen_obj['last_active_obj']
         return
     if command in ['i', 'j', 'k', 'l']:
         shift_value = 1
@@ -2327,9 +2330,9 @@ def main_coordinator(filename, command=None):
         if filtered_nodes and not ( len(filtered_nodes) == 1 and filtered_nodes[0]['id'] == 'seed' ) :
             g_context[g_context['basefilename']]['filtered_tree'] = build_tree_from_result(tree, filtered_nodes, seed)
             res = tree_display(g_context[g_context['basefilename']]['filtered_tree'] , seed , mode='tree')
-            last_active_obj=res['active_obj']
-            if last_active_obj in res:
-                command = res[last_active_obj]['command_properties']['option']
+            g_screen_obj['last_active_obj']=res['active_obj']
+            if g_screen_obj['last_active_obj'] in res:
+                command = res[g_screen_obj['last_active_obj']]['command_properties']['option']
                 if command=='r':
                     reload_coordinator(filename)
             else:
