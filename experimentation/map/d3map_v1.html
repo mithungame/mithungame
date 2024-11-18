@@ -60,10 +60,10 @@ var myStyle = {
     "opacity": 0.65
 };
 var geojsonMarkerOptions = {
-    radius: 8,
-    fillColor: "#ff7800",
+    radius: 5,
+    fillColor: "blue",
     color: "#000",
-    weight: 1,
+    weight: .5,
     opacity: 1,
     fillOpacity: 0.8
 };
@@ -75,16 +75,18 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 g_tag=[null]
 layer=null
-function data_update(){
+function data_update(params={}){
+p_permanent='permanent' in params ? params['permanent'] : false;
+p_tooltipname='tooltipname' in params ? params['tooltipname'] : 'name';
 if(layer){layer.clearLayers();}
 layer=L.geoJSON(g_contentData, {
     filter: function(feature, layer) {
         console.log(( feature.properties.tag && g_tag.every(r=> feature.properties.tag.includes(r))) )
             return (( feature.properties.tag && g_tag.every(r=> feature.properties.tag.includes(r))) )
     },
-    /*pointToLayer: function (feature, latlng) {
+    pointToLayer: function (feature, latlng) {
         return L.circleMarker(latlng, geojsonMarkerOptions);
-    },*/
+    },
     coordsToLatLng: function (coords) {
         //                    latitude , longitude, altitude
         //return new L.LatLng(coords[1], coords[0], coords[2]); //Normal behavior
@@ -94,10 +96,16 @@ layer=L.geoJSON(g_contentData, {
     },
     onEachFeature: function onEachFeature(feature, layer) {
     layer.bindPopup(feature.properties.comments),
-    layer.bindTooltip(feature.properties.name) 
+    layer.bindTooltip(feature.properties[p_tooltipname],{permanent:p_permanent})
     
     }
 }).addTo(map);
+}
+
+function show_commands(){
+console.log(' g_tag=["salem","area"];data_update() ')
+console.log(' g_tag=["salem","real"];data_update({"permanent":true}) ')
+console.log(' g_tag=["salem","real"];data_update({"permanent":true,"tooltipname": "price"}) ')
 }
 </script>
 </body>

@@ -177,7 +177,7 @@ p_d=[.1,.15,.2,.3,.25]//percentage_distro
 g_p_queue_tracker={[p_d[0]]:0,[p_d[1]]:0,[p_d[2]]:0,[p_d[3]]:0,[p_d[4]]:0} // this is just for tracking which bucket got selected most 
 p=[p_d[0],p_d[1],p_d[2],p_d[3],p_d[4]].reverse() // reversing so as to fill the top ones first , also i put .2 at end so that not everything is new and i get over loaded , let it be fat in middle
 p_queue={[p_d[0]]:[],[p_d[1]]:[],[p_d[2]]:[],[p_d[3]]:[],[p_d[4]]:[]}
-id_list=g_masterData.map(d=>d.id).filter(d=>{return d!='seed' && d!='noparent'}).map(d=>parseInt(d)).sort()
+id_list=g_masterData.map(d=>d.id).filter(d=>{return d!='seed'}).map(d=>parseInt(d)).sort()
 g_id_list=id_list.slice()//copy by value
 id_list_len=id_list.length
 id_list=id_list.reverse()
@@ -252,7 +252,7 @@ hei=d3.stratify()
     {
     if(treeData[i].children.includes(d.id)){res=treeData[i].id;break}
     }
-    if (res==null && ( ! ( d.id == '0:seed' || d.id == 'seed'  ) ) ){return 'noparent' }
+    if (res==null && ( ! ( d.id == '0:seed' || d.id == 'seed'  ) ) ){return 'seed' }
     return res
     })(treeData)
 

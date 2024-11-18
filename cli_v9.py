@@ -2277,6 +2277,7 @@ def identify_files(key='all',filename=None):
                     ],
                     'spark' : [base_dir+r'\Desktop\projects\d3\map\core\data\sp*.txt'],
                     'secret' : [base_dir+r'\Downloads\track\projects\d3\privateData\secrets_1.txt'],
+                    'private' : [base_dir+r'\Downloads\track\projects\d3\privateData\*.txt'],
                     'quickref' : [
                     #base_dir+r'\Downloads\track\**\*quickref*.txt', 
                     #base_dir+r'\Desktop\projects\**\*quickref*.txt'

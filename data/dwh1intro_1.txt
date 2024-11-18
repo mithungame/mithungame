@@ -20,8 +20,7 @@ raw, prepare , curate
     When data quality runs, pass records are copied to output folder. Records that fail land in an error folder.
 ~*Standardized/Enriched - Ready for analytics~*
     This data layer is considered the ~*silver layer~* or ~*read data source~*. 
-    Data within this layer has had ~*no transformations~* applied other than ~*impurity 
-filteration~*, and ~*data type alignment~*.
+    Data within this layer has had ~*no transformations~* applied other than ~*impurity filteration~*, and ~*data type alignment~*.
 ~*Curated~*
     Data has structure and ready for ~*optimized analytics~*
     thought 1 : This layer is not a replacement for a data warehouse,not good for responsive dashboards.Its best suited for data scientists/advanced data analysis on time insensitive/large scale data as storage costs are lower in your data lake than your data warehouse.
@@ -37,7 +36,23 @@ Security
 #?#box#calculatedX@108#calculatedY@98#children@1728920181,1728920199#name@lakeHouse#id@1728913303#parent@#x@86#y@78
 https://www.starburst.io/blog/iceberg-vs-delta-lake/
 lakeHouse is a datalake with rules on top of it 
-~*Deltalake~* and ~*iceberg~* are examples of lakeHouse format
+~*Deltalake~* and ~*iceberg~* are examples of lakeHouse file format
+
+oltp - data lake - propreitary data warehouse
+                   vendor lock in
+                   cost
+                   sometimes DWH is published back to data lake hence duplication
+                   data from data lake is copied to DWH so now there are two data sources totally disconnected
+                   
+LakeHouse architecture
+oltp - Data lake + table format ( lake house ) - execution engine ( spark , dremio )
+example of architecture flow 
+LakeHouse engine ( Spark , Dremio )
+catalog ( Project Nessie, Hive, AWS Glue )
+table format ( iceberg) 
+storage layer ( s3 )
+file format ( parquet )
+
 
 #?#box#calculatedX@108#calculatedY@98#children@#name@deltaLake#id@1728920181#parent@#x@86#y@78
 Deltalake is an open source ~*table storage format~* originally developed by Databricks in 2017(open sourced in 2019) as their ~*data lakehouse table format~*.
@@ -51,12 +66,331 @@ ACID compliance
 Schema Evolution
 Time Travel 
 
-#?#box#calculatedX@108#calculatedY@98#children@#name@Iceberg#id@1728920199#parent@#x@86#y@78
-Apache Iceberg was originally designed by Netflix as a replacement for ~*Hive data lakes~* in 2017. Iceberg ran on Trino clusters. 
+#?#box#calculatedX@108#calculatedY@98#children@1731924514,1731671202,1731926427#name@Iceberg#id@1728920199#parent@#x@86#y@78
+Apache Iceberg was created by Netflix as a replacement for ~*Hive data lakes~* in 2017. Iceberg ran on Trino clusters. 
 It was engineered to handle ~*larger datasets~* that changed ~*too frequently~* for Hive. 
 To do this, Iceberg takes the same object storage that Hive used, but collects ~*additional metadata~*. 
 Icebergs ~*metadata management~* is the key to its architecture, and allows for data warehouse-like functionality using cloud object storage. 
 Since its origins at Netflix, Iceberg is governed by the Apache foundation, and is used as an open source table format in many data lakehouse solutions. 
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@problems#id@1731924514#parent@#x@86#y@78
+!! NOTE - These are historical issues , some might have been fixed as part of new updates !!
+Hive uses ~*folder structured~* file format with folders for tables and sub folders for partition. Users need to know this ~*physical layout~* for writing efficient queries
+Folder structure format does not work well with cloud object storage
+Very difficult to update ~*few records in large files~*, hive updates ~*whole partition~* instead of part files. Even if it can updating part file will for few records will still be inefficient
+Every update needed a ~*analyse stats~* again
+Multiple parallel writes causes consistent read problems, Hive now supports ~*consistent snapshot~* 
+hive now supports some features of acid such as update, delete for ~*ORC~* files, but still no support for READ COMMITTED, DIRTY READ etc
+
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@intro#id@1731671202#parent@#x@86#y@78
+iceberg is a ~*file format specification~*, it is not a ~*storage or exection engine~*
+The specification is implemented by multiple tools with their own ~*readers and writers~* such as ~*Spark and Flink~*
+iceberg comes with an api not sure how it works with every tool and object storage
+table is a ~*canonical list of files~* - like pointer to any location 
+iceberg does not make ~*edits~* to files but creates incremental change files and hence can update one file / one record without rewriting the whole partition
+write create ~*snapshot~* , ~*multiple write~* is supported, and collects ~*file metadata~*,~*column stats~* during write.hence it supports ~*time travel~*
+~*write compaction~* regularly merges small files 
+hidden partition - timestamp ia aware of month year date ????????
+tables can evolve ~*schema~* and also ~*partition~* 
+
+#?#box#calculatedX@108#calculatedY@98#children@1731927525,1731927705,1731927750#name@structure#id@1731926427#parent@#x@86#y@78
+https://www.dremio.com/resources/guides/apache-iceberg-an-architectural-look-under-the-covers/#h-manifest-file
+iceberg meta files are file format agnostic
+
+catalog 
+metadata files
+manifest list
+manifest files 
+data files 
+
+C:\Users\mithu\Desktop\projects\d3\map\resources\
+    iceberg_manifest.png
+    iceberg_manifest_list.png
+    iceberg_metadata.png
+#?#box#calculatedX@108#calculatedY@98#children@#name@metadata#id@1731927525#parent@#x@86#y@78
+{
+    "format-version" : 1,
+    "table-uuid" : "4b96b6e8-9838-48df-a111-ec1ff6422816",
+    "location" : "/home/hadoop/warehouse/db2/part_table2",
+    "last-updated-ms" : 1611694436618,
+    "last-column-id" : 3,
+    "schema" : {
+        "type" : "struct",
+        "fields" : [ {
+            "id" : 1,
+            "name" : "id",
+            "required" : true,
+            "type" : "int"
+        }, {
+            "id" : 2,
+            "name" : "ts",
+            "required" : false,
+            "type" : "timestamptz"
+        }, {
+            "id" : 3,
+            "name" : "message",
+            "required" : false,
+            "type" : "string"
+        } ]
+    },
+    "partition-spec" : [ {
+        "name" : "ts_hour",
+        "transform" : "hour",
+        "source-id" : 2,
+        "field-id" : 1000
+    } ],
+    "default-spec-id" : 0,
+    "partition-specs" : [ {
+        "spec-id" : 0,
+        "fields" : [ {
+            "name" : "ts_hour",
+            "transform" : "hour",
+            "source-id" : 2,
+            "field-id" : 1000
+        } ]
+    } ],
+    "default-sort-order-id" : 0,
+    "sort-orders" : [ {
+        "order-id" : 0,
+        "fields" : [ ]
+    } ],
+    "properties" : {
+        "owner" : "hadoop"
+    },
+    "current-snapshot-id" : 1257424822184505371,
+    "snapshots" : [ {
+        "snapshot-id" : 8271497753230544300,
+        "timestamp-ms" : 1611694406483,
+        "summary" : {
+            "operation" : "append",
+            "spark.app.id" : "application_1611687743277_0002",
+            "added-data-files" : "1",
+            "added-records" : "1",
+            "added-files-size" : "960",
+            "changed-partition-count" : "1",
+            "total-records" : "1",
+            "total-data-files" : "1",
+            "total-delete-files" : "0",
+            "total-position-deletes" : "0",
+            "total-equality-deletes" : "0"
+        },
+        "manifest-list" : "/home/hadoop/warehouse/db2/part_table2/metadata/snap-8271497753230544300-1-d8a778f9-ad19-4e9c-88ff-28f49ec939fa.avro"
+    }, 
+    {
+        "snapshot-id" : 1257424822184505371,
+        "parent-snapshot-id" : 8271497753230544300,
+        "timestamp-ms" : 1611694436618,
+        "summary" : {
+            "operation" : "append",
+            "spark.app.id" : "application_1611687743277_0002",
+            "added-data-files" : "1",
+            "added-records" : "1",
+            "added-files-size" : "973",
+            "changed-partition-count" : "1",
+            "total-records" : "2",
+            "total-data-files" : "2",
+            "total-delete-files" : "0",
+            "total-position-deletes" : "0",
+            "total-equality-deletes" : "0"
+        },
+        "manifest-list" : "/home/hadoop/warehouse/db2/part_table2/metadata/snap-1257424822184505371-1-eab8490b-8d16-4eb1-ba9e-0dede788ff08.avro"
+    } ],
+    "snapshot-log" : [ {
+        "timestamp-ms" : 1611694406483,
+        "snapshot-id" : 8271497753230544300
+    }, 
+    {
+        "timestamp-ms" : 1611694436618,
+        "snapshot-id" : 1257424822184505371
+    } ],
+    "metadata-log" : [ {
+        "timestamp-ms" : 1611694097253,
+        "metadata-file" : "/home/hadoop/warehouse/db2/part_table2/metadata/v1.metadata.json"
+    }, 
+    {
+        "timestamp-ms" : 1611694406483,
+        "metadata-file" : "/home/hadoop/warehouse/db2/part_table2/metadata/v2.metadata.json"
+    } ]
+}
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@manifestList#id@1731927705#parent@#x@86#y@78
+snap-1257424822184505371-1-eab8490b-8d16-4eb1-ba9e-0dede788ff08.avro (converted to JSON)
+
+{
+    "manifest_path": "/home/hadoop/warehouse/db2/part_table2/metadata/eab8490b-8d16-4eb1-ba9e-0dede788ff08-m0.avro",
+    "manifest_length": 4884,
+    "partition_spec_id": 0,
+    "added_snapshot_id": {
+        "long": 1257424822184505300
+    },
+    "added_data_files_count": {
+        "int": 1
+    },
+    "existing_data_files_count": {
+        "int": 0
+    },
+    "deleted_data_files_count": {
+        "int": 0
+    },
+    "partitions": {
+        "array": [ {
+            "contains_null": false,
+            "lower_bound": {
+                "bytes": "¹Ô\\u0006\\u0000"
+            },
+            "upper_bound": {
+                "bytes": "¹Ô\\u0006\\u0000"
+            }
+        } ]
+    },
+    "added_rows_count": {
+        "long": 1
+    },
+    "existing_rows_count": {
+        "long": 0
+    },
+    "deleted_rows_count": {
+        "long": 0
+    }
+}
+{
+    "manifest_path": "/home/hadoop/warehouse/db2/part_table2/metadata/d8a778f9-ad19-4e9c-88ff-28f49ec939fa-m0.avro",
+    "manifest_length": 4884,
+    "partition_spec_id": 0,
+    "added_snapshot_id": {
+        "long": 8271497753230544000
+    },
+    "added_data_files_count": {
+        "int": 1
+    },
+    "existing_data_files_count": {
+        "int": 0
+    },
+    "deleted_data_files_count": {
+        "int": 0
+    },
+    "partitions": {
+        "array": [ {
+            "contains_null": false,
+            "lower_bound": {
+                "bytes": "¸Ô\\u0006\\u0000"
+            },
+            "upper_bound": {
+                "bytes": "¸Ô\\u0006\\u0000"
+            }
+        } ]
+    },
+    "added_rows_count": {
+        "long": 1
+    },
+    "existing_rows_count": {
+        "long": 0
+    },
+    "deleted_rows_count": {
+        "long": 0
+    }
+}
+
+
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@manifest#id@1731927750#parent@#x@86#y@78\
+eab8490b-8d16-4eb1-ba9e-0dede788ff08-m0.avro (converted to JSON)
+
+{
+    "status": 1,
+    "snapshot_id": {
+        "long": 1257424822184505300
+    },
+    "data_file": {
+        "file_path": "/home/hadoop/warehouse/db2/part_table2/data/ts_hour=2021-01-26-01/00000-6-7c6cf3c0-8090-4f15-a4cc-3a3a562eed7b-00001.parquet",
+        "file_format": "PARQUET",
+        "partition": {
+            "ts_hour": {
+                "int": 447673
+            }
+        },
+        "record_count": 1,
+        "file_size_in_bytes": 973,
+        "block_size_in_bytes": 67108864,
+        "column_sizes": {
+            "array": [ {
+                "key": 1,
+                "value": 47
+            },
+            {
+                "key": 2,
+                "value": 57
+            },
+            {
+                "key": 3,
+                "value": 60
+            } ]
+        },
+        "value_counts": {
+            "array": [ {
+                "key": 1,
+                "value": 1
+            },
+            {
+                "key": 2,
+                "value": 1
+            },
+            {
+                "key": 3,
+                "value": 1
+            } ]
+        },
+        "null_value_counts": {
+            "array": [ {
+                "key": 1,
+                "value": 0
+            },
+            {
+                "key": 2,
+                "value": 0
+            },
+            {
+                "key": 3,
+                "value": 0
+            } ]
+        },
+        "lower_bounds": {
+            "array": [ {
+                "key": 1,
+                "value": "\\u0002\\u0000\\u0000\\u0000"
+            },
+            {
+                "key": 2,
+                "value": "\\u0000„ ,Ã¹\\u0005\\u0000"
+            },
+            {
+                "key": 3,
+                "value": "test message 2"
+            } ]
+        },
+        "upper_bounds": {
+            "array": [ {
+                "key": 1,
+                "value": "\\u0002\\u0000\\u0000\\u0000"
+            },
+            {
+                "key": 2,
+                "value": "\\u0000„ ,Ã¹\\u0005\\u0000"
+            },
+            {
+                "key": 3,
+                "value": "test message 2"
+            } ]
+        },
+        "key_metadata": null,
+        "split_offsets": {
+            "array": [
+                4
+            ]
+        }
+    }
+}
 
 #?#box#calculatedX@108#calculatedY@98#children@1728920981#name@fileFormat#id@1728920987#parent@#x@86#y@78
 #?#box#calculatedX@108#calculatedY@98#children@#name@parquet#id@1728920981#parent@#x@86#y@78

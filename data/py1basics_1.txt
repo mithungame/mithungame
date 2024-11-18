@@ -3,7 +3,7 @@ pythonbasics
 #?#box#calculatedX@70#calculatedY@-125#children@1694957722984,1694847682128,1694957789130,1694959856281#name@basicOperation#id@45#parent@#tag@hi#x@316#y@400
 basicOperation
 #?#box#calculatedX@-73#calculatedY@-80#children@1685259883148,1685260199442,1685283245145,1690881098550#name@add#id@1694957722984#parent@#tag@hello#x@201#y@436
-C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
+"C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\add_remove.ipynb"
 #?#box#calculatedX@-125#calculatedY@-45#children@1720904152#name@+=#id@1685259883148#parent@#x@160#y@464
 list+=list , tuple+=tuple , list+=tuple
 tuple+=list WONT WORK
@@ -21,14 +21,14 @@ a
 ---
 [1,2]+(4, ) single element tuple needs comma at end
 
-@?#section#type@qa#pm@linebyline
+@?#hint#type@qa#pm@linebyline
 a=(1,2)
 a+=(3)
 options : 1. (1,2,3) 2.error 
 answer: 2
 ! TypeError: 'int' object is not iterable  single element should have a , -> a+=(3,)
 
-@?#section#type@qa#pm@linebyline
+@?#hint#type@qa#pm@linebyline
 a=[1,2]
 a+=[3]
 options : 1. [1,2,3] 2.error 
@@ -44,6 +44,9 @@ OUTPUT: ([1, 2, 3, 55], 4) <--- !!!! THROWS ERROR STILL ADDS 55 , WHY IT THROWS 
 a[0].extend([66])
 a
 ([1, 2, 3, 55, 66], 4)
+a[0].append(77)
+a
+([1, 2, 3, 55, 66, 77], 4)
 #?#box#calculatedX@-125#calculatedY@35#children@#name@extends#id@1685260199442#parent@#x@160#y@528
 a property of list,argument is any iterable(can be tuple)
 same as += except it  always tries inplace change does not fallback to reassignment
@@ -128,6 +131,11 @@ content
 #?#box#calculatedX@536#calculatedY@10#children@#name@sortAndSorted#id@1685260502274#parent@#x@688#y@508
 list.sort() - inplace,only list,faster,returns None
 sorted() - not inplace,any iterable,returns sorted object,incase of dict returns sorted keys
+sorted(iterable_obj,key=lambda d:(d[0],d[1]),reverse=True)
+=sorting dictionary 
+d={'b':1,'a':2}
+sorted(d)
+['a', 'b']
 #?#box#calculatedX@863#calculatedY@-43#children@1694959878390#name@file#id@1694959856281#parent@#x@950#y@465
 content
 #?#box#calculatedX@845#calculatedY@66#children@1694959914172#name@writeToFile#id@1694959878390#parent@#x@936#y@552
