@@ -1,15 +1,27 @@
 #?#box#calculatedX@279#calculatedY@234#children@1704786298378,1704786809287,1716306061,1714328151#name@seed#id@seed#parent@#tag@snowflake,sf#x@223#y@187#priority@2
 title
 
-#?#box#calculatedX@365#calculatedY@201#children@1707559463,1709549875289#name@warehouse#id@1704786298378#parent@#d_visibility@hidden#x@292#y@160
+#?#box#calculatedX@365#calculatedY@201#children@1707559463,1736277945,1709549875289#name@warehouse#id@1704786298378#parent@#d_visibility@hidden#x@292#y@160
 https://docs.snowflake.com/en/user-guide/warehouses-overview
 warehouse, is a ~*cluster of compute resources ~*
 smallest size ~*x small~* largest size  ~*6x ~*
 warehouse be resized at ~*any time~* ... even ~*while running~*
 Increasing the size of a warehouse does not always improve ~*"data loading"~* performance
 Data loading performance is influenced more by the ~*number of files~* being loaded and the ~*size of each file~* than the size of the warehouse.
+
 #?#box#calculatedX@475#calculatedY@165#children@1704786347678,1704786359487,1704786661708,1709548876390#name@types#id@1707559463#parent@#x@380#y@132
 content
+
+#?#box#calculatedX@365#calculatedY@201#children@1736278015#name@whCache#id@1736277945#parent@#d_visibility@hidden#x@292#y@160
+A running warehouse maintains a ~*cache of table data~* that can be accessed by queries running on the ~*same warehouse~*.
+percentage_scanned_from_cache in snowflake.account_usage.query_history gives cache reuse percentage 
+cache is dropped when the warehouse is ~*suspended~*,  ~*auto-suspend~* setting of the warehouse can have a direct impact on query performance
+
+#?#box#calculatedX@365#calculatedY@201#children@#name@persistedQueryResults#id@1736278015#parent@#d_visibility@hidden#x@292#y@160
+When a query is executed, the result is persisted/cached for a period of time ~*24 hours~* default, after which result is purged from the system.
+Any difference in syntax, including lowercase versus uppercase, or the use of table aliases, will inhibit 100% cache reuse
+snowflake resets the 24-hour retention period for the result, up to a maximum of ~*31 days~* from the date and time that the query was first executed
+
 #?#box#calculatedX@564#calculatedY@116#children@#name@standard#id@1704786347678#parent@#x@451#y@92
 what is the ? node ? core ? ram gb ? gb disk of x small 
 1 node 8 core 16 gb ram 200 gb hard disk , for small multiple all details by 2
@@ -25,6 +37,7 @@ Snowpark-optimized warehouses are recommended for workloads that have ~*large me
 
 #?#box#calculatedX@560#calculatedY@189#children@#name@SuspendAndResume#id@1704786661708#parent@#x@448#y@151
 Auto-suspend and auto-resume apply to ~*"entire" warehouse~* and not to the ~*individual clusters~* in the warehouse.
+a running warehouse consumes credits even if it is not processing queries
 
 For a multi-cluster warehouse:
 Auto-suspend only occurs when the ~*minimum number of clusters~* is running and there ~*is no activity~* for the specified period of time. The minimum is typically ~*1 (cluster)~*, but could be more than 1.

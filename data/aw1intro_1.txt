@@ -1,10 +1,8 @@
-#?#box#calculatedX@87#calculatedY@79#children@1719923185,1720903687,1720965089#name@seed#id@seed#parent@#x@87#y@79
+#?#box#calculatedX@87#calculatedY@79#children@1719923185,1720903687,1720965089,1732212726#name@seed#id@seed#parent@#x@87#y@79
 title
 #?#box#calculatedX@129#calculatedY@131#children@1719924057,1719923206,1720962322,1720962387,1720962434#name@network#id@1719923185#parent@#x@129#y@131
 title
-#?#box#calculatedX@161#calculatedY@203#children@1719924136#name@ip#id@1719924057#parent@#x@161#y@203
-content
-#?#box#calculatedX@161#calculatedY@203#children@#name@class#id@1719924136#parent@#x@161#y@203
+#?#box#calculatedX@161#calculatedY@203#children@#name@ip#id@1719924057#parent@#x@161#y@203
   Public IP Range               private ip range              Subnet  Networks  Hosts
 a 1.0.0.0 to 127.0.0.0         10.0.0.0 to 10.255.255.255     8 bits  126       16,777,214
 b 128.0.0.0 to 191.255.0.0     172.16.0.0 to 172.31.255.255   16 bits 16,382    65,534
@@ -29,8 +27,10 @@ SECURITY AT FRIDGE IS SECURITY GROUP
 #?#box#calculatedX@161#calculatedY@203#children@#name@AvailabilityZones#id@1719923360#parent@#x@161#y@203
 An AWS Region is a physical location where we cluster data centers, known as Availability Zones.
 Availability Zone has independent power, cooling, and physical security, with redundant power, networking, and connectivity
+
 #?#box#calculatedX@161#calculatedY@203#children@1719923521,1719923810#name@subnet#id@1719923445#parent@#x@161#y@203
 A subnet is a range of IP addresses in your VPC
+
 #?#box#calculatedX@161#calculatedY@203#children@#name@types#id@1719923521#parent@#x@161#y@203
 Public subnet – The subnet has a direct route to an ~*internet gateway~*
 Private subnet – The subnet does not have a ~*direct route~* to an internet gateway. 
@@ -42,10 +42,10 @@ VPN-only subnet – The subnet has a route to a Site-to-Site VPN connection thro
   Although the term VPN connection is a general term,here it refers to the connection between your ~*VPC~* and ~*your own on-premises network~*
 Isolated subnet – The subnet has no routes to destinations ~*outside VPC~*. 
   Resources in an isolated subnet can only access or be accessed by other resources in the same VPC.
+
 #?#box#calculatedX@161#calculatedY@203#children@1719923879,1719923893#name@security#id@1719923810#parent@#x@161#y@203
-Every subnet that you create is automatically associated with the default network ACL for the VPC
-default network ACL allows all inbound and outbound traffic
-#?#box#calculatedX@161#calculatedY@203#children@1729451350#name@securitygroup#id@1719923879#parent@#x@161#y@203
+content
+#?#box#calculatedX@161#calculatedY@203#children@#name@securitygroup#id@1719923879#parent@#x@161#y@203
 https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
 Security groups acts as ~*virtual firewall~* that allow inbound and outbound traffic for associated resources, such as EC2 instances.
 security group can be attached to ~*vpc~*, or ~*per instance level~* as ~*ec2 rds~*
@@ -54,7 +54,7 @@ Security groups are ~*stateful~*.
 For example, if you send a request from an instance, the response traffic for that request is allowed to reach the instance regardless of the inbound security group rules. 
 Responses to allowed inbound traffic are allowed to leave the instance, regardless of the outbound rules
 You can specify the ~*source~*/~*destination~*, ~*port range~*, and ~*protocol~* for each inbound/outbound rule
-#?#box#calculatedX@161#calculatedY@203#children@#name@example#id@1729451350#parent@#x@161#y@203
+
 SUBNET A 
 INBOUND 
 198.1.0.0/24  TCP 22     <--- TCP 22 means ~*ssh connection~* , it allows inbound from specific address range 
@@ -64,8 +64,11 @@ OUTBOUND
 0.0.0.0/0    All All     <--- allows all traffic
 
 #?#box#calculatedX@161#calculatedY@203#children@#name@nacl#id@1719923893#parent@#x@161#y@203
-Network control access list
-Network ACLs allow or deny inbound and outbound traffic at the subnet level. In most cases, security groups can meet your needs.
+NACL ~*Network control access list~*
+Every subnet that you create is automatically associated with the default network ACL for the VPC
+default network ACL allows ~*all inbound and outbound~* traffic
+Network ACLs allow or deny inbound and outbound traffic at the ~*subnet level~*.
+In most cases, ~*security groups~* can meet your needs.
 
 #?#box#calculatedX@161#calculatedY@203#children@#name@internetGateway#id@1720962322#parent@#x@161#y@203
 control all access to outside world
@@ -140,3 +143,42 @@ aws lambda invoke help -- for help
 aws cli can be of ~*different language~* than lambda function,because cli calls ~*lambda api ( its an api so any language can be used ) ~*
 ~*aws sdk~* can also be used to call lambda functions
 ----------END OF CHAPTER1 ---------- 
+#?#box#calculatedX@161#calculatedY@203#children@1732908471,1732909170#name@s3#id@1732212726#parent@#x@161#y@203
+Amazon ~*Simple Storage Service~* (Amazon S3) is an object storage service 
+A ~*bucket~* is a container for ~*objects~*.
+An object is a ~*file~* and its ~*metadata~*
+Objects in a Region ~*never leave~* unless explicitly transfer or replicate to another Region.
+An object key uniquely identify object within a ~*bucket~*. ~*bucket + key + version~* == object itself.
+read-after-write consistency - Updates to a ~*single key~* are atomic.PUT to existing key from one thread and GET on same key from second thread ~*concurrently~*, will get ~*old/new data~*, never ~*partial/corrupt~* data.
+S3 does not support object locking for ~*concurrent writers~*. If two PUT requests are simultaneously made to the same key, the request with the ~*latest timestamp~* wins
+S3 achieves high availability by replicating data across multiple servers within AWS data centers.If a PUT request is successful(GET or LIST request)  following successful PUT will return the data written by the PUT. Note: its about ~*object not bucket~*
+Bucket(~*not object~*) configurations have an ~*eventual consistency model~*. ex deleted bucket might still appear in list for some time delay,eg 2: versioning
+
+#?#box#calculatedX@161#calculatedY@203#children@#name@encryption#id@1732908471#parent@#x@161#y@203
+Server-side
+SSE - ~* S3 ~*
+Amazon S3 managed keys - default 
+SSE - ~* KMS ~*
+AWS Key Management Service - have more control over your keys. view separate keys, edit control policies, and follow the keys in AWS CloudTrail. Additionally, you can create and manage ~*customer managed keys~* or use ~*AWS managed keys~* that are ~*unique to you~*
+~* DSSE-KMS ~*
+Dual-layer server-side encryption with AWS Key Management Service (AWS KMS) keys  - similar to SSE-KMS, but DSSE-KMS applies two individual layers of object-level encryption instead of one layer
+SSE - ~*C~*
+customer-provided keys  - you manage the encryption keys, and Amazon S3 manages the encryption as it writes to disks and the decryption when you access your objects
+
+Client-side encryption – You encrypt your data client-side and upload the encrypted data to Amazon S3. In this case, you manage the encryption process, encryption keys, and related tools.
+
+#?#box#calculatedX@161#calculatedY@203#children@#name@storageclass#id@1732909170#parent@#x@161#y@203
+https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html
+
+frequently accessed objects
+S3 Standard - default
+S3 Express One Zone - high-performance
+Reduced Redundancy - not recommended
+
+Storage class for automatically optimizing data with changing or unknown access patterns - S3 Intelligent-Tiering is designed to optimize storage costs by automatically moving data to the most cost-effective access tier
+
+infrequently accessed objects
+S3 Standard-IA and S3 One Zone-IA
+
+Storage classes for rarely accessed objects - S3 Glacier ( has 3 subtypes )
+

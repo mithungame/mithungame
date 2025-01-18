@@ -26,8 +26,6 @@ raw, prepare , curate
     thought 1 : This layer is not a replacement for a data warehouse,not good for responsive dashboards.Its best suited for data scientists/advanced data analysis on time insensitive/large scale data as storage costs are lower in your data lake than your data warehouse.
     Datawarehouse/aggregations can be built on spark and published back to datalake
     thought 2: it is good enough for ~*Dimensional modelling~*
-    
-
 =Disadvantages
 Reliability
 Slow performance as data increases
@@ -35,7 +33,7 @@ Security
 
 #?#box#calculatedX@108#calculatedY@98#children@1728920181,1728920199#name@lakeHouse#id@1728913303#parent@#x@86#y@78
 https://www.starburst.io/blog/iceberg-vs-delta-lake/
-lakeHouse is a datalake with rules on top of it 
+lakeHouse is a datalake with ~*rules on top of it~* 
 ~*Deltalake~* and ~*iceberg~* are examples of lakeHouse file format
 
 oltp - data lake - propreitary data warehouse
@@ -45,17 +43,15 @@ oltp - data lake - propreitary data warehouse
                    data from data lake is copied to DWH so now there are two data sources totally disconnected
                    
 LakeHouse architecture
-oltp - Data lake + table format ( lake house ) - execution engine ( spark , dremio )
+oltp - Data lake + table format ( lake house ) - execution engine
 example of architecture flow 
-LakeHouse engine ( Spark , Dremio )
-catalog ( Project Nessie, Hive, AWS Glue )
-table format ( iceberg) 
-storage layer ( s3 )
-file format ( parquet )
-
+LakeHouse engine ( ~*Spark , Dremio~* )
+catalog ( ~*Project Nessie, Hive, AWS Glue~* )
+table format ( ~* iceberg ~* ) 
+storage layer (~* s3 ~*)
+file format (~* parquet ~*)
 
 #?#box#calculatedX@108#calculatedY@98#children@#name@deltaLake#id@1728920181#parent@#x@86#y@78
-Deltalake is an open source ~*table storage format~* originally developed by Databricks in 2017(open sourced in 2019) as their ~*data lakehouse table format~*.
 Deltalake is an open source ~*table storage format~* originally developed by Databricks in 2017(open sourced in 2019) as their ~*data lakehouse table format~*.
 Deltalake overcomes lakehouse limitations, it is an open format data management and governance layer that combines the best of both data lakes and data warehouses
 DeltaLake seems closely associated with ~*spark~* and ~*databricks~*
@@ -66,22 +62,19 @@ ACID compliance
 Schema Evolution
 Time Travel 
 
-#?#box#calculatedX@108#calculatedY@98#children@1731924514,1731671202,1731926427#name@Iceberg#id@1728920199#parent@#x@86#y@78
-Apache Iceberg was created by Netflix as a replacement for ~*Hive data lakes~* in 2017. Iceberg ran on Trino clusters. 
-It was engineered to handle ~*larger datasets~* that changed ~*too frequently~* for Hive. 
-To do this, Iceberg takes the same object storage that Hive used, but collects ~*additional metadata~*. 
+#?#box#calculatedX@108#calculatedY@98#children@1731671202,1731926427#name@Iceberg#id@1728920199#parent@#x@86#y@78
+Apache Iceberg was created by Netflix as a replacement for ~*Hive data lakes~* in 2017. Iceberg ran on ~*Trino~* clusters. 
+designed for ~*larger datasets~* that changed ~*too frequently~* for Hive. 
+Iceberg has same object storage Hive used, but collects ~*additional metadata~*. 
 Icebergs ~*metadata management~* is the key to its architecture, and allows for data warehouse-like functionality using cloud object storage. 
-Since its origins at Netflix, Iceberg is governed by the Apache foundation, and is used as an open source table format in many data lakehouse solutions. 
-
-#?#box#calculatedX@108#calculatedY@98#children@#name@problems#id@1731924514#parent@#x@86#y@78
+Iceberg is now Apache foundation open source table format in many data lakehouse solutions. 
 !! NOTE - These are historical issues , some might have been fixed as part of new updates !!
 Hive uses ~*folder structured~* file format with folders for tables and sub folders for partition. Users need to know this ~*physical layout~* for writing efficient queries
-Folder structure format does not work well with cloud object storage
+Folder structure format does not work well with ~*cloud object storage~*
 Very difficult to update ~*few records in large files~*, hive updates ~*whole partition~* instead of part files. Even if it can updating part file will for few records will still be inefficient
 Every update needed a ~*analyse stats~* again
 Multiple parallel writes causes consistent read problems, Hive now supports ~*consistent snapshot~* 
 hive now supports some features of acid such as update, delete for ~*ORC~* files, but still no support for READ COMMITTED, DIRTY READ etc
-
 
 #?#box#calculatedX@108#calculatedY@98#children@#name@intro#id@1731671202#parent@#x@86#y@78
 iceberg is a ~*file format specification~*, it is not a ~*storage or exection engine~*
@@ -89,7 +82,7 @@ The specification is implemented by multiple tools with their own ~*readers and 
 iceberg comes with an api not sure how it works with every tool and object storage
 table is a ~*canonical list of files~* - like pointer to any location 
 iceberg does not make ~*edits~* to files but creates incremental change files and hence can update one file / one record without rewriting the whole partition
-write create ~*snapshot~* , ~*multiple write~* is supported, and collects ~*file metadata~*,~*column stats~* during write.hence it supports ~*time travel~*
+write create ~*snapshot~* hence it supports ~*time travel~*.~*multiple write~* is supported, and collects ~*file metadata~*,~*column stats~* during write
 ~*write compaction~* regularly merges small files 
 hidden partition - timestamp ia aware of month year date ????????
 tables can evolve ~*schema~* and also ~*partition~* 
@@ -427,16 +420,15 @@ Strongly discouraged by Kimball  but it help rapid development since each team i
 sometimes each team has its own staging layer as seen in diagram
 Maintenance nightmare
 #?#box#calculatedX@108#calculatedY@98#children@#name@hubSpokeCIF#id@1720961816#parent@#x@86#y@78
-hub and spoke CIF is advocated by Inmon
-CIF - corporate information factory 
-Bill Inmon model
-source -> EDW(must be normalized) -> Multiple Data Marts
+hub and spoke CIF is advocated by ~*bill Inmon~*
+CIF - ~*corporate information factory~*
+source -> EDW(~*must be normalized~*) -> Multiple Data Marts
           user queryable             Dimensional 
           3 NF                       Summarized  
           Atomic                     Departmental
 
-Organizations who have adopted the CIF approach often access the EDW repository for detailed queries
-presentation area is often departmental and summarized
+Organizations who have adopted the CIF approach often access the EDW repository for ~*detailed queries~*
+presentation area is often ~*departmental and summarized~*
 Not suitable for large companies as EDW layer is a perfect world 
 #?#box#calculatedX@108#calculatedY@98#children@#name@ods#id@1720961623#parent@#x@86#y@78
 ODS - ~* operational data store ~*
@@ -455,7 +447,7 @@ content
 Dimensions must be ~*atomic~* which allows ~*adhoc query~*
 Dimensions must be ~*wide~* and ~*descriptive~*
 Dimensions must be ~*conformed~* that allows ~*single source of truth~*
-#?#box#calculatedX@108#calculatedY@98#children@1729452141,1729452196,1729452611#name@fact#id@1728822873#parent@#x@86#y@78
+#?#box#calculatedX@108#calculatedY@98#children@1729452141,1729452196,1729452611,1732910089,1732910095,1732910123#name@fact#id@1728822873#parent@#x@86#y@78
 The term fact represents a ~*business measure~*
 The data on each row is at a specific level of detail, referred to as the ~*grain~*, such as one row per product sold on a sales transaction.
 facts can be ~*additive, semi-additive, non-additive ~*
@@ -487,11 +479,33 @@ A row in a periodic snapshot fact table summarizes many measurement events occur
 The grain is the ~*period~*, not the individual transaction.
 Often contain many facts because any measurement event consistent with the fact table grain is permissible. 
 They have ~*uniformly dense~* foreign keys, even if no activity takes place during the period, a row is typically inserted in the fact table containing a ~*zero or null~* for each fact.
+
 #?#box#calculatedX@108#calculatedY@98#children@#name@accumulatingSnapshot#id@1729452611#parent@#x@86#y@78
 Summarizes the measurement events occurring at ~*predictable steps~* between the beginning and the end of a process
 There is a ~*date foreign key~* in the fact table for each step in the process of the pipeline
 As pipeline progress occurs, the accumulating fact table row is ~*revisited and updated~*.
 This consistent updating of accumulating snapshot fact rows is unique among the three types of fact tables
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@factlessfact#id@1732910089#parent@#x@86#y@78
+an event of a student attending a class on a given day may not have a recorded numeric fact, but a fact row with foreign keys for calendar day,student, teacher, location, and class is well-defined. This is a factless fact 
+
+it can also be used to analyze what didnt happen. 
+These queries always have two parts:
+~*factless coverage~* table with all possibilities and an ~*activity table~* that contains the events that did happen. 
+When the activity is subtracted from the coverage, the result is the set of events that did not happen.
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@aggregatefact#id@1732910095#parent@#x@86#y@78
+Aggregate Fact Tables
+Aggregate Fact Tables are simple ~*numeric rollups of atomic fact~* table data built solely to ~*accelerate query performance~*
+Aggregate fact tables contain foreign keys to ~*shrunken conformed dimensions~*, as well as ~*aggregated facts~* created by summing measures from more atomic fact tables
+
+~*OLAP cubes~* with summarized measures are built in the same way as relational aggregates, but the OLAP cubes are meant to be accessed directly by the business users.
+
+#?#box#calculatedX@108#calculatedY@98#children@#name@consolidatedFact#id@1732910123#parent@#x@86#y@78
+combine facts from multiple processes together into a single consolidated fact table if they can be expressed at the ~*same grain~*. 
+For example, ~*sales actuals~* can be consolidated with ~*sales forecasts~* in a single fact table
+Consolidated fact tables add burden to  ~*ETL processing~*, but ease the analytic burden on the ~*BI applications~*
+
 #?#box#calculatedX@108#calculatedY@98#children@#name@hybridInmonKimbal#id@1720961854#parent@#x@86#y@78
 hybrid CIF KIMBALL
 staging is 3NF but off limits to users 

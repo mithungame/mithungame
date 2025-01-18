@@ -1,12 +1,12 @@
-#?#box#calculatedX@226#calculatedY@286#children@45,1712464776749,1712640915627,1713707071#name@0:seed#id@seed#parent@#x@280#y@228#tag@kafka
+#?#box#calculatedX@226#calculatedY@286#children@45,1712464776749,1712640915627,1713707071#name@seed#id@seed#parent@#x@280#y@228#tag@kafka
 title
 #?#box#calculatedX@336#calculatedY@195#children@#name@xxx#id@9999#parent@#x@368#y@156
 sss
-#?#box#calculatedX@336#calculatedY@195#children@66,1712330435713,1712330830657#name@0:ksqldb#id@45#parent@#x@368#y@156
+#?#box#calculatedX@336#calculatedY@195#children@66,1712330435713,1712330830657#name@ksqldb#id@45#parent@#x@368#y@156
 ksqlDB is ~*event streaming~* database
 In Kafka, you store a collection of events in a ~*topic~*, Each event can contain any ~*raw bytes ~*
 In ksqlDB, you store events in a ~*stream~* which is a ~*topic~* with a ~*strongly defined schema~*
-#?#box#calculatedX@542#calculatedY@82#children@1712330229481#d_visibility@hidden#name@0:declareStream#id@66#parent@#x@533#y@65
+#?#box#calculatedX@542#calculatedY@82#children@1712330229481#d_visibility@hidden#name@declareStream#id@66#parent@#x@533#y@65
 
 CREATE STREAM readings (
     sensor VARCHAR KEY,
@@ -17,22 +17,22 @@ CREATE STREAM readings (
     partitions = 3,
     value_format = 'json'
 );
-#?#box#calculatedX@697#calculatedY@87#children@#name@1:behindScenes#id@1712330229481#parent@#x@657#y@69
+#?#box#calculatedX@697#calculatedY@87#children@#name@behindScenes#id@1712330229481#parent@#x@657#y@69
 if topic does not exist ~*create topic~* and save metadata in a ~*local metadata store~*
 data is partitioned on ~*sensor~*
-#?#box#calculatedX@541#calculatedY@136#children@1712330531996#d_visibility@hidden#name@1:insertrow#id@1712330435713#parent@#x@532#y@108
+#?#box#calculatedX@541#calculatedY@136#children@1712330531996#d_visibility@hidden#name@insertrow#id@1712330435713#parent@#x@532#y@108
 INSERT INTO readings (sensor, location, reading) VALUES ('sensor-1', 'wheel', 45);
 
 In Kafka, you model an event as a ~*record~* and put it into a ~*topic~*
 In ksqlDB, you model an event as a ~*row~* and put it into a ~*stream~* 
 A row is just a record with ~*additional metadata~*
-#?#box#calculatedX@698#calculatedY@137#children@#name@1:behindScenes#id@1712330531996#parent@#x@658#y@109
+#?#box#calculatedX@698#calculatedY@137#children@#name@behindScenes#id@1712330531996#parent@#x@658#y@109
 a request with the payload is sent to a ksqlDB server
 check schema
 reject malformed records
 use Kafka producer client to insert that record into the backing Kafka topic
 persisted on directly on the ~*broker~*, None of it lives in ~*ksqlDB servers~*
-#?#box#calculatedX@535#calculatedY@197#children@1712331421750#d_visibility@hidden#name@2:transformations#id@1712330830657#parent@#x@528#y@157
+#?#box#calculatedX@535#calculatedY@197#children@1712331421750#d_visibility@hidden#name@transformations#id@1712330830657#parent@#x@528#y@157
 kafka way - use ~*consumer~* to transform producer data, this is low level
 ksqldb way - issue a ~*persistent query~* to transform one stream into another using its SQL
 
@@ -44,7 +44,7 @@ reading,
 UCASE(location) AS location
 FROM readings
 EMIT CHANGES;
-#?#box#calculatedX@710#calculatedY@196#children@#name@1:behindScenes#id@1712331421750#parent@#x@668#y@156
+#?#box#calculatedX@710#calculatedY@196#children@#name@behindScenes#id@1712331421750#parent@#x@668#y@156
 Persistent queries are little ~*stream processing programs~* that run indefinitely
 When a persistent query is created, it is assigned a generated name
 As each row passes through the persistent query, the ~*transformation logic~* is applied to create a new row
@@ -52,9 +52,9 @@ ksqlDB server compiles query  to a physical execution plan as a ~*Kafka Streams 
 The ~*topology~* runs as a daemon, reacting to ~*new topic records~* as soon as they become available
 If you run ksqlDB as a cluster, the topology scales ~*horizontally~*all of the processing work happens on ~*ksqlDB server~* and no processing work happens on the ~*Kafka brokers~*
 Persistent queries completely manage their ~*own processing progression~*, even in the presence of faults. ksqlDB durably maintains the ~*highest offset~* of each ~*input partition~*.
-#?#box#calculatedX@344#calculatedY@596#children@1714812975,1714813776#name@1:concepts#id@1713707071#parent@#x@375#y@476
+#?#box#calculatedX@344#calculatedY@596#children@1714812975,1714813776#name@concepts#id@1713707071#parent@#x@375#y@476
 content
-#?#box#calculatedX@461#calculatedY@600#children@1713707072,1713707073#name@1:serde#id@1714812975#parent@#x@468#y@480
+#?#box#calculatedX@461#calculatedY@600#children@1713707072,1713707073#name@serde#id@1714812975#parent@#x@468#y@480
 https://docs.confluent.io/platform/current/streams/developer-guide/datatypes.html
 https://kafka.apache.org/10/documentation/streams/developer-guide/datatypes
 
@@ -79,7 +79,7 @@ import org.apache.kafka.common.serialization.Serdes;
 final Serde<Long> longSerde = Serdes.Long();
 KStream<String, Long> userCountByRegion = ...;
 userCountByRegion.to("RegionCountsTopic", Produced.valueSerde(Serdes.Long()));
-#?#box#calculatedX@566#calculatedY@598#children@#name@1:default#id@1713707072#parent@#x@552#y@478
+#?#box#calculatedX@566#calculatedY@598#children@#name@default#id@1713707072#parent@#x@552#y@478
 <artifactId>kafka-clients</artifactId> artifact provides default serdes
 byte[] Serdes.ByteArray(), Serdes.Bytes() (see tip below)
 ByteBuffer Serdes.ByteBuffer()
@@ -91,7 +91,7 @@ UUID Serdes.UUID()
 
 example 
 streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,   Serdes.String().getClass().getName());
-#?#box#calculatedX@571#calculatedY@625#children@#name@2:basicCustomeSerde#id@1713707073#parent@#x@556#y@500
+#?#box#calculatedX@571#calculatedY@625#children@#name@basicCustomeSerde#id@1713707073#parent@#x@556#y@500
 https://github.com/apache/kafka/blob/1.0/clients/src/main/java/org/apache/kafka/common/serialization/Serializer.java
 
 package org.apache.kafka.streams.examples.pageview;
@@ -131,16 +131,16 @@ public class JsonPOJOSerializer<T> implements Serializer<T> {
 
 }
 
-#?#box#calculatedX@571#calculatedY@625#children@1714813777,1714813778,1714813779#name@2:header#id@1714813776#parent@#x@556#y@500
+#?#box#calculatedX@571#calculatedY@625#children@1714813777,1714813778,1714813779#name@header#id@1714813776#parent@#x@556#y@500
 Support for custom headers in Kafka messages was added in Kafka version 0.11.0.0
 ProducerRecord(String topic, Integer partition, K key, V value, Iterable<Header> headers)
 ProducerRecord(String topic, Integer partition, Long timestamp, K key, V value, Iterable<Header> headers)
-#?#box#calculatedX@571#calculatedY@625#children@#name@1:producer#id@1714813777#parent@#x@556#y@500
+#?#box#calculatedX@571#calculatedY@625#children@#name@producer#id@1714813777#parent@#x@556#y@500
 List <Header> headers = new ArrayList<>();
 headers.add(new RecordHeader("website", "baeldung.com".getBytes()));
 ProducerRecord <String, String> record = new ProducerRecord <>("baeldung", null, "message", "Hello World", headers);
 producer.send(record);
-#?#box#calculatedX@571#calculatedY@625#children@#name@2:consumer#id@1714813778#parent@#x@556#y@500
+#?#box#calculatedX@571#calculatedY@625#children@#name@consumer#id@1714813778#parent@#x@556#y@500
 
 for (ConsumerRecord<String, String> record : records) {
     System.out.println(record.key());
@@ -152,12 +152,12 @@ for (ConsumerRecord<String, String> record : records) {
         System.out.println(new String(header.value()));
     }
 }
-#?#box#calculatedX@571#calculatedY@625#children@#name@3:gotcha#id@1714813779#parent@#x@556#y@500
+#?#box#calculatedX@571#calculatedY@625#children@#name@gotcha#id@1714813779#parent@#x@556#y@500
 no support for dsl yet
 https://cwiki.apache.org/confluence/display/KAFKA/KIP-159%3A+Introducing+Rich+functions+to+Streams
-#?#box#calculatedX@340#calculatedY@290#children@1712464808098#name@2:kafka#id@1712464776749#parent@#x@372#y@232
+#?#box#calculatedX@340#calculatedY@290#children@1712464808098#name@kafka#id@1712464776749#parent@#x@372#y@232
 content
-#?#box#calculatedX@523#calculatedY@230#children@#name@1:keyConcepts#id@1712464808098#parent@#x@518#y@184
+#?#box#calculatedX@523#calculatedY@230#children@#name@keyConcepts#id@1712464808098#parent@#x@518#y@184
 EVENT
 An event records the fact that something happened
 
@@ -182,12 +182,12 @@ Kafka guarantees that any consumer of a given topic-partition will always read t
 
 REPLICATION
 Topics are replicated
-#?#box#calculatedX@313#calculatedY@382#children@1712641154508,1713475712,1714245120,1714245121,1715083673,1719925194#name@3:kafkaStreams#id@1712640915627#parent@#x@350#y@305
+#?#box#calculatedX@313#calculatedY@382#children@1712641154508,1713475712,1714245120,1714245121,1715083673,1719925194#name@kafkaStreams#id@1712640915627#parent@#x@350#y@305
 Kafka Streams is a 
 client library for processing and analyzing data stored in Kafka.
 
 Supports exactly-once processing semantics to guarantee that each record will be processed once and only once even when there is a failure on either Streams clients or Kafka brokers in the middle of processing.
-#?#box#calculatedX@447#calculatedY@381#children@1714244654,1713009069738,1713522303,1713552032#name@1:keyConcepts#id@1712641154508#parent@#x@457#y@304
+#?#box#calculatedX@447#calculatedY@381#children@1714244654,1713009069738,1713522303,1713552032#name@keyConcepts#id@1712641154508#parent@#x@457#y@304
 link
 https://kafka.apache.org/37/documentation/streams/core-concepts
 
@@ -211,14 +211,14 @@ specified Kafka topic.
 procssor topology can be manipulated using 
 Kafka Streams DSL provides the most common data transformation operations such as map, filter, join and aggregations out of the box
 the lower-level Processor API allows developers define and connect custom processors as well as to interact with state stores.
-#?#box#calculatedX@689#calculatedY@322#children@1714244655#name@1:Task#id@1714244654#parent@#x@651#y@257
+#?#box#calculatedX@689#calculatedY@322#children@1714244655#name@Task#id@1714244654#parent@#x@651#y@257
 If there are multiple processor topologies specified in a Kafka Streams application, each task instantiates only one of the topologies for processing
 In addition, a single processor topology may be decomposed into independent sub-topologies (or sub-graphs).
 
 A sub-topology is a set of processors, that are all transitively connected as parent/child or via state stores in the topology
 task may instantiate only one such sub-topology for processing
 so different sub-topologies exchange data via topics and dont share any state stores
-#?#box#calculatedX@762#calculatedY@321#children@#name@1:TaskParallelism#id@1714244655#parent@#x@709#y@256
+#?#box#calculatedX@762#calculatedY@321#children@#name@TaskParallelism#id@1714244655#parent@#x@709#y@256
 Kafka Streams creates a fixed number of tasks based on the 
 input stream partitions for the application
 
@@ -249,14 +249,14 @@ processor topologies
 
 Starting more stream threads or more instances of the application merely amounts to 
 replicating the topology
-#?#box#calculatedX@685#calculatedY@354#children@#name@2:streamPartitions#id@1713009069738#parent@#x@648#y@283
+#?#box#calculatedX@685#calculatedY@354#children@#name@streamPartitions#id@1713009069738#parent@#x@648#y@283
 Each stream partition is a totally ordered sequence of data records and maps to a 
 Kafka topic partition.
 A data record in the stream maps to a 
 Kafka message from that topic.
 The keys of data records determine the partitioning of data in both 
 Kafka and Kafka Streams, i.e., how data is routed to specific partitions within topics.
-#?#box#calculatedX@685#calculatedY@381#children@#name@3:globalktable#id@1713552032#parent@#x@648#y@304
+#?#box#calculatedX@685#calculatedY@381#children@#name@globalktable#id@1713552032#parent@#x@648#y@304
 GlobalKTable extends a full copy of the data to each instance. 
 You typically use a GlobalKTable with lookup data
 
@@ -264,7 +264,7 @@ StreamsBuilder builder = new StreamsBuilder();
  GlobalKTable<String, String> globalKTable = 
     builder.globalTable(inputTopic, 
     Materialized.with(Serdes.String(), Serdes.String()));
-#?#box#calculatedX@700#calculatedY@403#children@#name@4:ktable#id@1713522303#parent@#x@660#y@322
+#?#box#calculatedX@700#calculatedY@403#children@#name@ktable#id@1713522303#parent@#x@660#y@322
 subscribe to only one topic
 ktable has no notion of ttl time to live
 concerned only about latest record for the key 
@@ -276,7 +276,7 @@ does not react to every event , if a time limit of 30 sec set , emit output ever
 An aggregation of a KStream yields a KTable.
 A KTable can be transformed record by record, joined with another KTable or KStream, or can be re-partitioned and aggregated into a new KTable.
 maintains a state store
-#?#box#calculatedX@442#calculatedY@327#children@#name@2:statestore#id@1714245120#parent@#x@453#y@261
+#?#box#calculatedX@442#calculatedY@327#children@#name@statestore#id@1714245120#parent@#x@453#y@261
 The Kafka Streams DSL, for example, automatically creates and manages  state stores when you are calling stateful operators such as count() or aggregate(), or when you are windowing a stream.
 
 Every stream task in a Kafka Streams application may embed one or more local state stores 
@@ -286,7 +286,7 @@ Because Kafka Streams partitions the data for processing it, an application's en
 
 The Kafka Streams API lets you work with an application's state stores both locally (e.g., on the level of an instance of the application) 
 as well as in its entirety (on the level of the logical application) eg: count
-#?#box#calculatedX@453#calculatedY@554#children@#name@3:memManagement#id@1714245121#parent@#x@462#y@443
+#?#box#calculatedX@453#calculatedY@554#children@#name@memManagement#id@1714245121#parent@#x@462#y@443
 https://docs.confluent.io/platform/current/streams/architecture.html#memory-management
 
 specify the total memory (RAM) size that is used for an instance of a processing topology
@@ -300,14 +300,14 @@ the write-back cache reduces the number of records going to downstream processor
 The final computation results are identical regardless of the cache size (including a disabled cache), which means it is safe to enable or disable the cache
 
 Configuration parameters,commit.interval.ms - note: its not a guarantee
-#?#box#calculatedX@453#calculatedY@554#children@1715083674,1716237075#name@4:processApi#id@1715083673#d_visibility@hidden#parent@#x@462#y@443
+#?#box#calculatedX@453#calculatedY@554#children@1715083674,1716237075#name@processApi#id@1715083673#d_visibility@hidden#parent@#x@462#y@443
 https://kafka.apache.org/10/documentation/streams/developer-guide/processor-api.html
 https://kafka.apache.org/documentation/streams/developer-guide/processor-api.html#overview
 
 The Processor API helps define custom processors and to interact with state stores
 implement both stateless as well as stateful operations
 can combine DSL with Processor API
-#?#box#calculatedX@453#calculatedY@554#children@1715083675#name@1:define#id@1715083674#parent@#x@462#y@443
+#?#box#calculatedX@453#calculatedY@554#children@1715083675#name@define#id@1715083674#parent@#x@462#y@443
 stream processor implements Processor interface which has init, process and close methods 
 init() is called during task construction phase
 process() method is called on each of the received records
@@ -318,7 +318,7 @@ ProcessorContext instance provides
 2. schedule a punctuation function (via ProcessorContext#schedule())
 3. forward a new record as a key-value pair to the downstream processors (via ProcessorContext#forward())
 4. commit the current processing progress (via ProcessorContext#commit())
-#?#box#calculatedX@453#calculatedY@554#children@#name@1:punctuationType#id@1715083675#parent@#x@462#y@443
+#?#box#calculatedX@453#calculatedY@554#children@#name@punctuationType#id@1715083675#parent@#x@462#y@443
 stream-time or wall-clock-time
 
 example 60 records, each record has own second
@@ -336,13 +336,13 @@ Attention
 Stream-time is only advanced if all input partitions over all input topics have new data (with newer timestamps) available. 
 If at least one partition does not have any new data available, stream-time will not be advanced and thus punctuate() will not be triggered if PunctuationType.STREAM_TIME was specified. 
 This behavior is independent of the configured timestamp extractor, i.e., using WallclockTimestampExtractor does not enable wall-clock triggering of punctuate().
-#?#box#calculatedX@457#calculatedY@449#children@#name@2:unittesting#id@1716237075#parent@#x@465#y@359
+#?#box#calculatedX@457#calculatedY@449#children@#name@unittesting#id@1716237075#parent@#x@465#y@359
 https://kafka.apache.org/documentation/streams/developer-guide/testing.html#unit-testing-processors
-#?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004,1715941443#name@5:code#id@1713475712#parent@#x@465#y@359
+#?#box#calculatedX@457#calculatedY@449#children@1713609003,1713609004,1715941443#name@code#id@1713475712#parent@#x@465#y@359
 content
-#?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@1:egKStream#id@1713609003#parent@#x@762#y@356
+#?#box#calculatedX@828#calculatedY@445#children@1713475713,1713475714,1713475715#name@egKStream#id@1713609003#parent@#x@762#y@356
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
-#?#box#calculatedX@852#calculatedY@556#children@#name@1:setConfig#id@1713475713#parent@#x@781#y@444
+#?#box#calculatedX@852#calculatedY@556#children@#name@setConfig#id@1713475713#parent@#x@781#y@444
 import java.util.Properties;
 final Properties streamsConfiguration = new Properties();
 streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, "wordcount-avro-lambda-example");
@@ -354,17 +354,17 @@ streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Specifi
 streamsConfiguration.put(StreamsConfig.STATE_DIR_CONFIG, stateDir);
 streamsConfiguration.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
-#?#box#calculatedX@952#calculatedY@520#children@#name@2:createTopology#id@1713475714#parent@#x@861#y@416
+#?#box#calculatedX@952#calculatedY@520#children@#name@createTopology#id@1713475714#parent@#x@861#y@416
 final StreamsBuilder builder = new StreamsBuilder();
 final KStream<String, String> textLines = builder.stream(inputTopic);
 //implement rest of app logic basically build topology
-#?#box#calculatedX@1023#calculatedY@468#children@#name@3:start#id@1713475715#parent@#x@918#y@374
+#?#box#calculatedX@1023#calculatedY@468#children@#name@start#id@1713475715#parent@#x@918#y@374
 //builder.build() returns instance of topology
 final KafkaStreams streams = new KafkaStreams(builder.build(), streamsConfiguration);
 streams.start();
-#?#box#calculatedX@571#calculatedY@513#children@1713609005,1713609006,1714819365#name@2:operations#id@1713609004#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@1713609005,1713609006,1714819365#name@operations#id@1713609004#parent@#x@556#y@410
 content
-#?#box#calculatedX@696#calculatedY@494#children@1719925573#name@1:joinStream#id@1713609005#parent@#x@656#y@395
+#?#box#calculatedX@696#calculatedY@494#children@1719925573#name@joinStream#id@1713609005#parent@#x@656#y@395
 KStream<String, String> leftStream = builder.stream("topic-A");
 KStream<String, String> rightStream = builder.stream("topic-B");
 
@@ -389,7 +389,7 @@ or
    solution : define custom punctuator that emits a dummy heartbeat value or null
 
 
-#?#box#calculatedX@698#calculatedY@523#children@#name@2:map#id@1713609006#parent@#x@658#y@418
+#?#box#calculatedX@698#calculatedY@523#children@#name@map#id@1713609006#parent@#x@658#y@418
 https://github.com/confluentinc/kafka-streams-examples/blob/master/src/main/java/io/confluent/examples/streams/WikipediaFeedAvroExample.java
 https://kafka.apache.org/20/javadoc/index.html?org/apache/kafka/streams/KeyValue.html
 
@@ -403,14 +403,14 @@ Example 1
  
 Example 2
 builder.stream(WIKIPEDIA_FEED).map((KeyValueMapper<String, WikiFeed, KeyValue<String, WikiFeed>>) (key, value) -> new KeyValue<>(value.getUser(), value))
-#?#box#calculatedX@571#calculatedY@513#children@1714819366,1714819367#name@3:stateless#id@1714819365#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@1714819366,1714819367#name@stateless#id@1714819365#parent@#x@556#y@410
 In a stateful operation, you typically group by key first, so keys have to be present
 When you call a stateful operation, a KTable is returned
 Stateful operations in Kafka Streams include reduce, count, and aggregate.
 Materialized with syntax tells to use state store 
 .to syntax tells to convert ktable to kstream
 emits records basesd on time limit or buffer size 10mb,30 sec default 
-#?#box#calculatedX@571#calculatedY@513#children@#name@1:reduce#id@1714819366#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@#name@reduce#id@1714819366#parent@#x@556#y@410
 for reducer return type has to be same 
 
 StreamsBuilder builder = new StreamsBuilder();
@@ -419,7 +419,7 @@ Reducer<Long> reducer = (longValueOne, longValueTwo) -> longValueOne + longValue
 myStream.groupByKey().reduce(reducer,
                              Materialized.with(Serdes.String(), Serdes.Long()))
                             .toStream().to("output-topic");
-#?#box#calculatedX@571#calculatedY@513#children@#name@2:aggregate#id@1714819367#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@#name@aggregate#id@1714819367#parent@#x@556#y@410
 with aggregate, you can return a different type:
 0L is initial value 
 its critical that we provide the SerDes for the state store, because we are changing the type. 
@@ -434,9 +434,9 @@ myStream.groupByKey().aggregate(() -> 0L,
                                       characterCountAgg, 
                                       Materialized.with(Serdes.String(), Serdes.Long()))
                                       .toStream().to("output-topic");
-#?#box#calculatedX@571#calculatedY@513#children@1715941444,1716236972#name@3:processApi#id@1715941443#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@1715941444,1716236972#name@processApi#id@1715941443#parent@#x@556#y@410
 content
-#?#box#calculatedX@571#calculatedY@513#children@#name@1:init#id@1715941444#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@#name@init#id@1715941444#parent@#x@556#y@410
 @Override
   @SuppressWarnings("unchecked")
   public void init(ProcessorContext context) {
@@ -461,7 +461,7 @@ content
           context.commit();
       });
   }
-#?#box#calculatedX@571#calculatedY@513#children@#name@2:process#id@1716236972#parent@#x@556#y@410
+#?#box#calculatedX@571#calculatedY@513#children@#name@process#id@1716236972#parent@#x@556#y@410
     @Override
     public void process(final Record<String, String> record) {
         final String[] words = record.value().toLowerCase(Locale.getDefault()).split("\\W+");

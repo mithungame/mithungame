@@ -4,64 +4,61 @@ title
 content
 #?#box#calculatedX@205#calculatedY@332#children@1712719338992,1712719338993#name@video1#id@1712719338991#parent@#x@164#y@285
 content
-#?#box#calculatedX@205#calculatedY@332#children@45,66,68,1712719432275,1712818224017#name@p1#id@1712719338992#parent@#x@164#y@285
-content
-#?#box#calculatedX@291#calculatedY@297#children@#name@Move#id@45#parent@#x@232#y@257
-delete cube
-
+#?#box#calculatedX@205#calculatedY@332#children@66,1712719832939,1712818224017,1732970159#name@basics#id@1712719338992#parent@#x@164#y@285
 create cube - ~* shift A ~*
-select cube - right click ( edit preferences )
+shift A -> mesh - > UV SPHERE
+
+focus
+click on object hit ~* / ~* then hit ~* / ~* again
+
+select cube - ~* right click ( edit preferences ) ~*
+
 move in X Y Z direction - ~* G+X G+Y G+Z ~*
-#?#box#calculatedX@293#calculatedY@328#children@#name@rotate#id@66#parent@#x@234#y@282
-rotate cube
+rotate cube ~*R+X R+Y R+Z~*
 
-R+X
-R+Y
-R+Z
-#?#box#calculatedX@293#calculatedY@328#children@#name@cancelTransform#id@68#parent@#x@234#y@282
-create cube 
-scale 
-rotate 
-grab 
+cancel transform 
+scale  rotate  grab 
+~*alt s  alt r   alt g ~*
+for all cancel alt a - ~*DID NOT WORK~*
 
-alt s 
-alt r 
-alt g 
-for all cancel alt a - DID NOT WORK
-
-apply app transform 
-go the same -> control a -> all transform 
-alt s 
-alt r 
-alt g
-#?#box#calculatedX@292#calculatedY@357#children@1712719832939#name@SphereCreate#id@1712719432275#parent@#x@233#y@305
-shift A
-mesh - > UV SPHERE
-#?#box#calculatedX@432#calculatedY@358#children@#name@torusOnsphere#id@1712719832939#parent@#x@345#y@306
+apply all transform 
+go the same -> control a -> ~*all transform ~*
+alt s  alt r  alt g -> wont work 
+#?#box#calculatedX@432#calculatedY@358#children@#name@magnet#id@1712719832939#parent@#x@345#y@306
 create torus 
 
-switch on magnet OR "control" during move
-set to face
-Align rotation to target
+switch on magnet OR "control" during move -> center -> face -> Align rotation to target
 stick torus on sphere
 experiment with vertex, edge etc
 
 DO SAME WITH CUBE AND TORUS
 #?#box#calculatedX@296#calculatedY@401#children@#name@monkeyrotate#id@1712818224017#parent@#x@236#y@340
 create monkey head
-shift D to duplicate
+~*shift D~* to duplicate
 
 arrange in all directions
 tilt them differently 
 
 Rotate 
 
-set to local
-transform pivot point - median axis
+set transformation orientation( middle top ) to ~*local~*
+transform pivot point - ~*median axis~*
 it will rotate on its own axis  but on a median point
-transform pivot point - individual origin
+transform pivot point - ~*individual origin~*
 it will rotate on its own axis  but in its own place
-#?#box#calculatedX@205#calculatedY@332#children@1712818598288,1712821353740,1712821389892,1712821389893,1712821389896#name@p2#id@1712719338993#parent@#x@164#y@285
+
+#?#box#calculatedX@296#calculatedY@401#children@#name@duplicating#id@1732970159#parent@#x@236#y@340
+create a cube 
+shift d 
+these two cubes are ~*separate objects~*
+
+create a cube 
+~* tab ~* to edit mode
+shift d 
+these two cubes are ~*linked objects~*.
+deleting or selecting one will reflect on other in object mode, can be separately edited in edit mode
+
+#?#box#calculatedX@205#calculatedY@332#children@1712818598288,1712821389892,1712821389893,1712821389896#name@p2#id@1712719338993#parent@#x@164#y@285
 content
 #?#box#calculatedX@295#calculatedY@451#children@#name@doorHinge#id@1712818598288#parent@#x@236#y@380
 create door
@@ -78,8 +75,6 @@ shift s
 cursor to selected
 go to object mode
 object - set origin - origin to 3d cursor
-#?#box#calculatedX@296#calculatedY@497#children@#name@focus#id@1712821353740#parent@#x@236#y@417
-create sphere and cube , click on sphere hit / then hit / again
 #?#box#calculatedX@298#calculatedY@543#children@#name@createTable#id@1712821389892#parent@#x@238#y@454
 after creating 
 hit control j for joining 
@@ -291,13 +286,12 @@ go near a vertex
 press control and move the mouse 
 press click to confirm
 #?#box#calculatedX@296#calculatedY@401#children@#name@dumbell#id@1715107335#parent@#x@236#y@340
-create a sphere in edit mode 
+create a sphere 
+tab to edit mode
 shift d 
 delete two opposite faces 
 spacebar 
 bridge fill 
-
-Note: if one sphere is created in edit mode and shift d done in object mode , one looks like a grid and another looks solid.
 #?#box#calculatedX@296#calculatedY@401#children@#name@horseShoe#id@1715107336#parent@#x@236#y@340
 create a cube make it long 
 spin on z
@@ -727,7 +721,4 @@ emission - color output
 
 hdri 
 image texture - emission - color output 
-control t on image texture and rotate to see the difference 
-
-#?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@491#y@279
-root Node
+control t on image texture and rotate to see the difference

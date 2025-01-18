@@ -1,4 +1,4 @@
-#?#box#calculatedX@95#calculatedY@-350#children@45,1690875626919,1685259800875,1698726635873#name@seed#id@seed#parent@#tag@python#x@336#y@220
+#?#box#calculatedX@95#calculatedY@-350#children@45,1690875626919,1734468501,1698726635873,1734467417#name@seed#id@seed#parent@#tag@python#x@336#y@220
 pythonbasics
 #?#box#calculatedX@70#calculatedY@-125#children@1694957722984,1694847682128,1694957789130,1694959856281#name@basicOperation#id@45#parent@#tag@hi#x@316#y@400
 basicOperation
@@ -7,8 +7,8 @@ basicOperation
 #?#box#calculatedX@-125#calculatedY@-45#children@1720904152#name@+=#id@1685259883148#parent@#x@160#y@464
 list+=list , tuple+=tuple , list+=tuple
 tuple+=list WONT WORK
-if __iadd__ present inplace upgrade,else use __add__ and do reassignment
-can only access immediate local variable
+if ~* __iadd__ ~* present inplace upgrade,else use ~* __add__ ~* and do reassignment
+can only access ~*immediate local variable~*
 a=[11,22,33]
 a+=(1,2,3,4)
 a
@@ -25,32 +25,31 @@ a
 a=(1,2)
 a+=(3)
 options : 1. (1,2,3) 2.error 
-answer: 2
-! TypeError: 'int' object is not iterable  single element should have a , -> a+=(3,)
+answer: 2 ! TypeError: 'int' object is not iterable  single element should have a , -> a+=(3,)
 
 @?#hint#type@qa#pm@linebyline
 a=[1,2]
 a+=[3]
 options : 1. [1,2,3] 2.error 
-[1, 2, 3]
-answer: 1
-! it will work with both [3] and [3,]
+answer: 1 ! it will work with both [3] and [3,]
 
 #?#box#calculatedX@-125#calculatedY@-45#children@#name@gotcha#id@1720904152#parent@#x@160#y@464
-a=([1,2,3],4)
-command: a[0]+=[55]
-TypeError: 'tuple' object does not support item assignment
-OUTPUT: ([1, 2, 3, 55], 4) <--- !!!! THROWS ERROR STILL ADDS 55 , WHY IT THROWS ERROR BECAUSE += IS OBJECT ASSIGNMENT , SO TUPLE IS COMPLAINING , SEE BELOW WITH EXTEND IT DOES NOT COMPLAIN
-a[0].extend([66])
-a
-([1, 2, 3, 55, 66], 4)
-a[0].append(77)
-a
-([1, 2, 3, 55, 66, 77], 4)
-#?#box#calculatedX@-125#calculatedY@35#children@#name@extends#id@1685260199442#parent@#x@160#y@528
-a property of list,argument is any iterable(can be tuple)
-same as += except it  always tries inplace change does not fallback to reassignment
-can access local and global variable
+b=[4,5]
+print(id(b)) # 2706220346304
+a=(1,2,3,b)
+a[-1].append(6)
+a[-1].extend([7])
+print(id(a)) #2706220529152
+print(a) #(1, 2, 3, [4, 5, 6, 7])
+a[-1]+=[8] ### TypeError: 'tuple' object does not support item assignment
+print(a) # shows (1, 2, 3, [4, 5, 6, 7, 8]) and id of b and a is unaffected
+print(id(b)) # 2706220346304
+print(id(a)) # 2706220529152
+#?#box#calculatedX@-125#calculatedY@35#children@#name@extend#id@1685260199442#parent@#x@160#y@528
+in place ~* no ~* fallback to reassignment ~* no ~*
+property of list ~* ya ~*
+argument must be ~* any iterable ~*
+can access local and global variable ~* ya ~*
 faster that for loop
 
 a=[11,22,33]
@@ -64,14 +63,21 @@ a.extend(b)
 a
 [1, 2, [3, 4]]
 
-#?#box#calculatedX@-245#calculatedY@-50#children@#name@plus +#id@1685283245145#parent@#x@64#y@460
-not in place,a property of list , argument must be a list 
+#?#box#calculatedX@-245#calculatedY@-50#children@#name@plus+#id@1685283245145#parent@#x@64#y@460
+in place ~* no ~*
+property of list ~* ya ~*
+argument must be ~* list ~*
+can access local and global variable ~* ya ~*
 
->>> [1]+[1,2]=[1,1,2]
+[1]+[1,2]
+[1,1,2]
 
->>> [1,2]+[[3,4]]
+[1,2]+[[3,4]]
 [1, 2, [3, 4]]
 
+a=[1,2]
+a+(3,)
+TypeError: can only concatenate list (not "tuple") to list
 #?#box#calculatedX@-125#calculatedY@95#children@#name@addItem#id@1690881098550#parent@#x@160#y@576
 append 
 a=[11,22,33]
@@ -88,49 +94,44 @@ a.insert(2,[2,3])
 a
 [11, 22, [2, 3], 33]
 #?#box#calculatedX@65#calculatedY@40#children@1694848088918,1694848122546#name@remove#id@1694847682128#parent@#x@312#y@532
-content
-#?#box#calculatedX@-20#calculatedY@70#children@1694847836214,1694847889854#name@removeByValue#id@1694848088918#parent@#x@244#y@556
-content
-#?#box#calculatedX@11#calculatedY@100#children@#name@removeAllOccurence#id@1694847836214#parent@#x@268#y@580
+#?#hint#tag@removeAllOccurence,byvalue
 a=[22,11,22,33,22]
-a=[i for i in a if i!=22 ]
+a=[ i for i in a if i!=22 ]
 a
 [11, 33]
 ---
 [e for e in item_list if e not in ('item', 5)]
-#?#box#calculatedX@10#calculatedY@140#children@#name@removeFirstOccurence#id@1694847889854#parent@#x@268#y@612
+#?#hint#tag@removefirst,byvalue
 a=[22,11,22,33,22]
 a.remove(22) #removes first item
 [11, 22, 33, 22]
-#?#box#calculatedX@235#calculatedY@75#children@1694848148572,1694848170751,1694848456874#name@removeByPosition#id@1694848122546#parent@#x@448#y@560
-content
-#?#box#calculatedX@245#calculatedY@115#children@#name@removeOne#id@1694848148572#parent@#x@456#y@592
+#?#hint#tag@deleteone,bypos
 a=[1,2,3]
 del(a[1])
 a
 [1, 3]
-
+#?#hint#tag@deleteone,bypos
 a=[1,2,3]
 a.pop(1)
 2 #returns 2
 a
 [1, 3]
-#?#box#calculatedX@250#calculatedY@156#children@#name@removeRange#id@1694848170751#parent@#x@460#y@624
-a=[10,11,12,13,14]
-del(a[1:3])
-a
-[10, 13, 14]
-#?#box#calculatedX@255#calculatedY@205#children@#name@removeLastPos#id@1694848456874#parent@#x@464#y@664
+#?#hint#tag@deletelast,bypos
 a=[11,22,33]
 a.pop()
 33 #returns 3
 a
 [11,22]
-#?#box#calculatedX@550#calculatedY@-49#children@1685260502274#name@sort#id@1694957789130#parent@#x@700#y@460
-content
-#?#box#calculatedX@536#calculatedY@10#children@#name@sortAndSorted#id@1685260502274#parent@#x@688#y@508
-list.sort() - inplace,only list,faster,returns None
-sorted() - not inplace,any iterable,returns sorted object,incase of dict returns sorted keys
+
+#?#hint#tag@deleterange,bypos
+a=[10,11,12,13,14]
+del(a[1:3])
+a
+[10, 13, 14]
+
+#?#box#calculatedX@550#calculatedY@-49#children@#name@sort#id@1694957789130#parent@#x@700#y@460
+list.sort() - inplace y/n ~* yes ~* ,only list y/n ~* yes ~* ,faster,returns ~*None~*
+sorted() - inplace y/n ~* yes ~* ,only list y/n ~* any iterable ~* ,returns ~*sorted object~*,incase of dict returns ~*sorted keys~*
 sorted(iterable_obj,key=lambda d:(d[0],d[1]),reverse=True)
 =sorting dictionary 
 d={'b':1,'a':2}
@@ -138,18 +139,37 @@ sorted(d)
 ['a', 'b']
 #?#box#calculatedX@863#calculatedY@-43#children@1694959878390#name@file#id@1694959856281#parent@#x@950#y@465
 content
-#?#box#calculatedX@845#calculatedY@66#children@1694959914172#name@writeToFile#id@1694959878390#parent@#x@936#y@552
-content
-#?#box#calculatedX@823#calculatedY@132#children@#name@newline#id@1694959914172#parent@#x@918#y@605
+#?#box#calculatedX@845#calculatedY@66#children@#name@write#id@1694959878390#parent@#x@936#y@552
 write to file with new line
   - option-1 f.write('hello'+'\n')
   - option 2 - print('text',file=f) NOTE:This will not print to stdout and f is file handle
 #?#box#calculatedX@300#calculatedY@-260#children@1685247052308,1685247436558,1690875175553,1690875571098#name@itersAndgenrs#id@1690875626919#parent@#x@500#y@292
-iterators dont bring ~*all to memory~*, just iterates unlike ~*list comprehensions~* which brings everything to memory,calculates and produces results 
 C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\iter_gen.ipynb
 #?#box#calculatedX@435#calculatedY@-420#children@#name@iterator#id@1685247052308#parent@#x@608#y@164
+iterators dont bring ~*all to memory~*, just iterates unlike ~*list comprehensions~* which brings everything to memory,calculates and produces results 
 any object whose class has a  ~* __iter__ ~* method which returns ~* self ~* and ~* __next__ ~* 
 even for loop internally calls ~*iterable~* which calls ~*iterator~* like java
+
+
+a=[1,2,3]
+b=iter(a)
+print(next(b))
+1
+
+custom iterator
+class iter_example:
+    def __init__(self,lst) -> None:
+        self.lst = lst 
+        self.counter = -1
+    def __iter__(self): # mandatory function for iterator ,must return self 
+        return self
+    def __next__(self): # mandatory function for iterator
+        self.counter += 1 
+        if self.counter < len(self.lst):
+            return self.lst[self.counter]
+        else :
+            raise StopIteration
+
 #?#box#calculatedX@435#calculatedY@-365#children@#name@generator#id@1685247436558#parent@#x@608#y@208
 Every generator is an ~*iterator~*, but ~*not vice versa~*. 
 issubclass(types.GeneratorType, collections.Iterator)
@@ -181,7 +201,7 @@ square numbers if even else dont
  a=[ i*i if i%2==0 else i for i in a ]
 #?#box#calculatedX@435#calculatedY@-260#children@#name@map#id@1690875571098#parent@#x@608#y@292
 map maps a ~*function~* over an ~*iterable~*
-map is ~*lazy~*, iterates
+map is ~*lazy~* and returns an ~*iterator~*
 a=map(str, range(10**100));next(a) <--- WONT CRASH
 speed comparison - ~*LIST COMPREHENSION~* > ~*MAP~* > ~*FOR LOOP~*
 *depends on pattern and usage
@@ -230,15 +250,17 @@ tools for ~*shell scripts~* or related tools
 #?#box#calculatedX@334#calculatedY@533#children@1698726980289#name@bestPractices#id@1698727851852#parent@#x@527#y@926
 if __name__ == "__main__":
     main() #always use this pattern else code will run on import
+
 #?#box#calculatedX@563#calculatedY@465#children@#name@docstrings#id@1698726980289#parent@#x@710#y@872
-class, function, or method header
-first line following the colon
-indented the same as the following code.
-' " '''
-PEP8 line length 80 characters
+docstrins can be added to ~*class, function~*, or ~*method header~*
+it must be the ~*first line~* following the ~*colon~* and indented the same as the ~*following code~*.
+PEP8 line length ~*80~* characters
+can use all these quotes ' " '''
 
 def move(self, x, y):
     "Move the point to a new location in 2D space."
+    pass
+
 #?#box#calculatedX@325#calculatedY@458#children@#name@module#id@1698726653443#parent@#x@520#y@866
 a .py file
 #?#box#calculatedX@8#calculatedY@387#children@1698727225598,1698727337083,1698727518794#name@package#id@1698727216288#parent@#x@266#y@809
@@ -272,7 +294,36 @@ products.py - from .database import Database
 package folder - from ..database import Database
 
 from ..contact.email import send_mail
-#?#box#calculatedX@578#calculatedY@145#children@1685259919444,1685260059948,1698727713673#name@class#id@1685259800875#parent@#x@722#y@616
+
+#?#box#calculatedX@578#calculatedY@145#children@1734468527,1685259800875,1735063522,1735069155,1735069877#name@oops#id@1734468501#parent@#x@722#y@616
+content
+
+#?#box#calculatedX@578#calculatedY@145#children@#name@function#id@1734468527#parent@#x@722#y@616
+a def is of type ~*function~*
+def my_func():
+    pass
+
+>>> type(my_func)
+<class 'function'>
+
+
+get ready for some craziness
+class my_class:
+    def my_class_func(): pass
+    def my_obj_func(self): pass
+
+>>> obj=my_class()
+>>> type(obj.my_class_func)
+<class 'method'>
+>>> type(obj.my_obj_func)
+<class 'method'>
+>>>
+>>> type(my_class.my_class_func)
+<class 'function'>
+>>> type(my_class.my_obj_func)
+<class 'function'>
+
+#?#box#calculatedX@578#calculatedY@145#children@1736501681,1685259919444,1685260059948,1698727713673#name@class#id@1685259800875#parent@#x@722#y@616
 ~*__init__~* is initializer
 ~*__new__~* is constructor rarely used
 class can be ~*inside object~*, philiposc2p45
@@ -289,17 +340,90 @@ class Point:
 point = Point(3, 5)
 print(point.x, point.y)
 
+type of a class is 
+>>> type(classname)
+<class 'type'>
+
+
+#?#box#calculatedX@578#calculatedY@145#children@#name@mindbender#id@1736501681#parent@#x@722#y@616
+    -----------type
+    |      |     ^
+    |      |     |
+    |      |     |
+    |      |- of type 
+    |        /       \
+    |   object       class 
+    |        ^
+    |        |         |
+    |-------of subclass
+
+Everything including object is a subclass of ~*object~*
+Everything including type   is of type       ~*type~*
+    
+>>> type(type)
+<class 'type'>
+
+>>> type(my_class)
+<class 'type'>
+
+>>> type(object)
+<class 'type'>
+
+>>> type.__class__.__bases__
+(<class 'object'>,)
+
+>>> my_class.__class__.__bases__
+(<class 'object'>,)
+
+>>> object.__class__.__bases__
+(<class 'object'>,)
+
 #?#box#calculatedX@415#calculatedY@170#children@#name@dataclass#id@1685259919444#parent@#x@592#y@636
 (a small tuition) C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\dataclass.ipynb
+
+data class decorates a class with special functions such as ~* __init__ and __repr__ ~* without ~*explicitly adding it~*
+
+from dataclasses import dataclass
+from typing import ClassVar
+@dataclass
+class Animal:
+    name: str 
+    type:str
+    canread: ClassVar[str]
+
+obj=Animal() ! ERROR __init__() missing 2 required positional arguments: 'name' and 'type' , automatically added by data class
+
 #?#box#calculatedX@410#calculatedY@235#children@#name@property#id@1685260059948#parent@#x@588#y@688
-setter,deleter,getter variable access will go via ~*property method~*
+~*setter,deleter,getter~* variable access will go via ~*property method~*
 variable name and property name should ~*not be same~* , it will cause ~*infinite recursion~*
-eg use _name as variable and name as property
+eg use ~*_name~* as variable and name as property
+
+from dataclasses import dataclass
+from typing import ClassVar
+@dataclass
+class Animal:
+    _name: str 
+    _type:str
+    _canread: ClassVar[str]
+    
+    @property 
+    def name(self) -> str: #note : if this method name and variable name is same it will cause infinite loop and crash so we use _var . 
+        print('Getting variable will go through this:')
+        return self._name
+    @name.setter
+    def name(self,name: str) -> str:
+        print('setting name:')
+        self._name=name
+    @name.deleter
+    def name(self):
+        print('delete:')
+        del(self._name)
+
+obj=Animal('lion','mammal') #handled by data class 
 #?#box#calculatedX@755#calculatedY@323#children@1698727725678,1698727967889#name@variables#id@1698727713673#parent@#x@864#y@758
 content
 #?#box#calculatedX@769#calculatedY@379#children@#name@global#id@1698727725678#parent@#x@875#y@803
-in case of items like ~*list~* or ~*dict~* no need to define ~*global~* keyword
-global keyword must be used when global variable is ~*modified~* not when ~*reading~*
+~*global~* keyword is needed when ~*assignment~* is performed inside a non global scope, not needed when ~*reading~*
 
 database = None
 
@@ -323,5 +447,179 @@ class SecretString:
             return self.__plain_string   #<----------- self.__
         else:
             return ''
+
+#?#box#calculatedX@894#calculatedY@389#children@#name@abstract#id@1735123628#parent@#x@975#y@811
+C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\abstract.ipynb
+
+the abstract class must import ~*abc.ABC~* and ~*parent class~* it 
+if any ~*abstractmethod~* is defined and subclass of abstract class must implement it . This validation is done by ~*ABC~* behind the scenes
+the abstract class is actually a ~*metaclass~* type(ABC) -> abc.ABCMeta
+so it can be used directly as well ABC is like a synctatic sugar 
+```
+from abc import ABCMeta
+class MyABC(metaclass=ABCMeta): ...
+```
+
+#?#box#calculatedX@769#calculatedY@379#children@#name@typing#id@1734467417#parent@#x@875#y@803
+The Python runtime ~*does not enforce~* function and variable type annotations. They can be used by third party tools such as type checkers, IDEs, linters, etc.
+
+def surface_area_of_cube(edge_length: float) -> str
+takes an ~*argument~* float and ~*return~* an instance of str
+
+==type alias
+type Vector = list[float]
+Vector and list[float] will be treated equivalently by static type checkers
+==explicit type alias 
+from typing import TypeAlias
+Vector: TypeAlias = list[float]
+
+Callable[[int], str] signifies a function that takes a single parameter of type ~*int~* and returns a ~*str~*.
+from collections.abc import Callable
+def feeder(get_next_item: Callable[[], str]) -> None:
+Callable cannot express complex signatures such as functions that take a variadic number of arguments, overloaded functions, or functions that have keyword-only parameters. However, these signatures can be expressed by defining a Protocol class with a __call__() method:
+
+#?#box#calculatedX@769#calculatedY@379#children@#name@typedDict#id@1735063522#parent@#x@875#y@803
+from typing import TypedDict
+class Movie(TypedDict):
+    name: str
+    year: int
+
+movie: Movie = {'name': 'Blade Runner','year': 1982}
+
+Alternate syntax
+Movie = TypedDict('Movie', {'name': str, 'year': int})
+
+Make all vars optional
+~*total~*=~*False~*
+class Movie(TypedDict, total=False):
+Movie = TypedDict('Movie', {'name': str, 'year': int}, total=False )
+
+Make some vars mandatory
+from typing import Required, NotRequired, TypedDict  
+Movie = TypedDict('Movie', {'name': str, 'year': Required[int]}, total=False )
+
+Make some vars optional - use total ~*True~* and for each optional var ~*NotRequired[str]~*
+
+#?#box#calculatedX@769#calculatedY@379#children@#name@decorators#id@1735069155#parent@#x@875#y@803
+C:\Users\mithu\Desktop\project python\jupyter\pythonPractice\decorators.ipynb
+
+A decorator should return a ~*function~* that wraps ~*original function~*
+A typical decorator signature is ~*wrapper(func,*args,**kwargs)~*
+A typical inner decorator signature is ~*inner_wrapper(*args,**kwargs)~*
+
+@wrapper
+def say_hi(*args):
+    '''i say hi'''
+    print(*args)
+print(say_hi.__name__) will not return say_hi but instead inner_wrapper
+to avoid this use 
+from functools import wraps
+and decorate inner_wrapper with 
+```@wraps(func)
+def inner_wrapper(*args,**kwargs):```
+
+To pass an argument to a decorator use one more outer_wrapper function 
+```def outer_wrapper(*outer_args): # * typed args is of type tuple 
+    def wrapper(func,*args,**kwargs):
+        @wraps(func)
+        def inner_wrapper(*args,**kwargs):
+        ...
+        return inner_wrapper
+    return wrapper
+    
+outer_args = ("hi","vanakkam")
+@outer_wrapper(outer_args)
+def say_hi(*args):
+```
+
+The parameters to outer_wrapper is ~*static~*
+even if a variable is used it binds the first time . so changing variable will not reflect 
+
+#?#box#calculatedX@769#calculatedY@379#children@1735069889,1735070146#name@argskwargs#id@1735069877#parent@#x@875#y@803
+content
+#?#box#calculatedX@769#calculatedY@379#children@#name@args#id@1735069889#parent@#x@875#y@803
+def f1(*args): #1
+    f2(*args) #2
+
+def f2(*args):#3
+    print(args,type(args)) #4
+    print(*args) #5
+f1("one","two")
+
+what happens at
+1?  ~* the arguments are bundled to a tuple ~*
+2?  ~* argument are unpacked and fowarded to f2 ~*
+3?  ~* the arguments are bundled to a tuple ~*
+4?  ~* prints tuple - ('one', 'two') <class 'tuple'> ~*
+5?  ~* unpacks and prints normal output - one two ~*
+
+
+def f1(*args): #1
+    f2(args) #2
+
+def f2(*args):#3
+    print(args,type(args)) #4
+    print(*args) #5
+f1("one","two")
+
+what happens at
+1?  ~* the arguments are bundled to a tuple ~*
+2?  ~* argument are fowarded to f2 as is ~*
+3?  ~* the arguments are bundled AGAIN to a tuple ~*
+4?  ~* prints tuple - (('one', 'two'),) <class 'tuple'> ~*
+5?  ~* unpacks but its still a tuple and prints output - ('one', 'two') ~*
+
+#?#box#calculatedX@769#calculatedY@379#children@#name@posOrKey#id@1735070146#parent@#x@875#y@803
+def f(a,b,c): print(a,b,c)
+>>> f(1,2,3)
+1 2 3
+>>> f(c=3,b=2,a=1)
+1 2 3
+
+def a(p,*args): print(*args)
+a(1,2,3)
+2 3
+
+def a(p,*args,b=1): print(p,*args,b)
+a(1,2,3,4)
+1 2 3 4 1
+
+def a(p,*args,b): print(p,*args,b)
+>>> a(1,2,3,4)
+TypeError: a() missing 1 required keyword-only argument: 'b'
+>>> a(1,2,3,4,b=1)
+1 2 3 4 1
+
+enforce positional ONLY arguments. Note the "/"
+def f(a,b,c,/): print(a,b,c)
+>>> f(c=3,b=2,a=1)
+TypeError: f() got some positional-only arguments passed as keyword arguments: 'a, b, c'
+>>> f(1,2,3)
+1 2 3
+
+enforce keyword only arguments
+def f(*,a=1,b=2): print(a,b)
+>>> f(a=1,b=2)
+1 2
+>>> f(b=2,a=1)
+1 2
+>>> f(1,2)
+TypeError: f() takes 0 positional arguments but 2 were given
+disadvantage: user might send arguments to * thinks it is expected behavior
+
+def f(*ignore,a=1,b=2):
+    if ignore:
+            raise TypeError
+    else:
+            print(a,b)
+
+>>> f(88,99)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "<stdin>", line 3, in f
+TypeError
+>>> f(a=88,b=99)
+88 99
+
 #?#box#calculatedX@614.4#calculatedY@324#children@#name@rootNode#id@root#parent@#x@751#y@759
 root Node

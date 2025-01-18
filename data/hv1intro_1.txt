@@ -1,6 +1,6 @@
-#?#box#calculatedX@158#calculatedY@-2#children@45,1707711084815,1707711257961,1707711322017#name@0:seed#id@seed#parent@#x@86#y@78
+#?#box#calculatedX@158#calculatedY@-2#children@45,1707711084815,1707711257961,1707711322017#name@seed#id@seed#parent@#x@86#y@78
 content
-#?#box#calculatedX@211#calculatedY@63#children@#name@1:intro#id@45#parent@#x@128#y@130#date@18sep2024#tag@zzz
+#?#box#calculatedX@211#calculatedY@63#children@#name@intro#id@45#parent@#x@128#y@130#date@18sep2024#tag@zzz
 Apache Hive is built on top of 
 Apache Hadoop
 hive Query execution via 
@@ -22,37 +22,37 @@ Hive is not designed for
 online transaction processing (OLTP) workloads
 It is best used for 
 traditional data warehousing tasks.
-#?#box#calculatedX@217#calculatedY@108#children@1707711105496,1707711113358#name@2:components#id@1707711084815#parent@#x@133#y@166
+#?#box#calculatedX@217#calculatedY@108#children@1707711105496,1707711113358#name@components#id@1707711084815#parent@#x@133#y@166
 content
-#?#box#calculatedX@247#calculatedY@155#children@#name@1:HCatalog#id@1707711105496#parent@#x@157#y@204
+#?#box#calculatedX@247#calculatedY@155#children@#name@HCatalog#id@1707711105496#parent@#x@157#y@204
 HCatalog is a 
 table and storage management layer for Hadoop 
 HCatalog enables  Pig and MapReduce etc 
 to more easily read and write data on the grid.
-#?#box#calculatedX@373#calculatedY@162#children@#name@2:WebHCat#id@1707711113358#parent@#x@258#y@209
+#?#box#calculatedX@373#calculatedY@162#children@#name@WebHCat#id@1707711113358#parent@#x@258#y@209
 WebHCat provides a service that you can use to 
 run Hadoop MapReduce (or YARN), Pig, Hive jobs. 
 WebHCat provides a HTTP (REST style) interface for 
 performing Hive metadata operations
-#?#box#calculatedX@240#calculatedY@213#children@1707711274075#name@3:links#id@1707711257961#parent@#x@152#y@250
+#?#box#calculatedX@240#calculatedY@213#children@1707711274075#name@links#id@1707711257961#parent@#x@152#y@250
 content
-#?#box#calculatedX@274#calculatedY@274#children@#name@1:installation#id@1707711274075#parent@#x@179#y@299
+#?#box#calculatedX@274#calculatedY@274#children@#name@installation#id@1707711274075#parent@#x@179#y@299
 https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-InstallationandConfiguration
-#?#box#calculatedX@245#calculatedY@324#children@1707711380464,1707711590458,1707712361803#name@4:Startup#id@1707711322017#parent@#x@156#y@339
+#?#box#calculatedX@245#calculatedY@324#children@1707711380464,1707711590458,1707712361803#name@Startup#id@1707711322017#parent@#x@156#y@339
 content
-#?#box#calculatedX@299#calculatedY@364#children@#name@1:gotcha#id@1707711380464#parent@#x@199#y@371
+#?#box#calculatedX@299#calculatedY@364#children@#name@gotcha#id@1707711380464#parent@#x@199#y@371
 HiveServer2 (introduced in Hive 0.11) has its own CLI called Beeline, which is a JDBC client based on SQLLine.  Due to new development being focused on HiveServer2, Hive CLI will soon be deprecated in favor of Beeline (HIVE-10511).
-#?#box#calculatedX@216#calculatedY@406#children@1707711632943,1707711669525,1707711725022,1707711775726#d_visibility@hidden#name@2:steps#id@1707711590458#parent@#x@132#y@404
+#?#box#calculatedX@216#calculatedY@406#children@1707711632943,1707711669525,1707711725022,1707711775726#d_visibility@hidden#name@steps#id@1707711590458#parent@#x@132#y@404
 content
-#?#box#calculatedX@287#calculatedY@451#children@#name@1:runHive#id@1707711632943#parent@#x@189#y@440
+#?#box#calculatedX@287#calculatedY@451#children@#name@runHive#id@1707711632943#parent@#x@189#y@440
 https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHive
-#?#box#calculatedX@294#calculatedY@498#children@#name@2:RunHS2andBeeLine#id@1707711669525#parent@#x@195#y@478
+#?#box#calculatedX@294#calculatedY@498#children@#name@RunHS2andBeeLine#id@1707711669525#parent@#x@195#y@478
 https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHiveServer2andBeeline.1
-#?#box#calculatedX@297#calculatedY@552#children@#name@3:runHCatalog#id@1707711725022#parent@#x@197#y@521
+#?#box#calculatedX@297#calculatedY@552#children@#name@runHCatalog#id@1707711725022#parent@#x@197#y@521
 https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningHCatalog
-#?#box#calculatedX@301#calculatedY@607#children@#name@4:RunWebHCat#id@1707711775726#parent@#x@200#y@565
+#?#box#calculatedX@301#calculatedY@607#children@#name@RunWebHCat#id@1707711775726#parent@#x@200#y@565
 https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-RunningWebHCat(Templeton)
-#?#box#calculatedX@419#calculatedY@405#children@1707712468776#name@3:configuration#id@1707712361803#parent@#x@295#y@404
+#?#box#calculatedX@419#calculatedY@405#children@1707712468776#name@configuration#id@1707712361803#parent@#x@295#y@404
 Hive configuration can be manipulated by:
 
 https://cwiki.apache.org/confluence/display/Hive/GettingStarted#GettingStarted-ConfigurationManagementOverview
@@ -64,7 +64,7 @@ $ bin/hive --hiveconf x1=y1 --hiveconf x2=y2  //this sets the variables x1 and x
 $ bin/hiveserver2 --hiveconf x1=y1 --hiveconf x2=y2  //this sets server-side variables x1 and x2 to y1 and y2 respectively
 $ bin/beeline --hiveconf x1=y1 --hiveconf x2=y2  //this sets client-side variables x1 and x2 to y1 and y2 respectively.
 Setting the HIVE_OPTS environment variable to "--hiveconf x1=y1 --hiveconf x2=y2" which does the same as above.
-#?#box#calculatedX@537#calculatedY@428#children@#name@1:gotcha#id@1707712468776#parent@#x@389#y@422
+#?#box#calculatedX@537#calculatedY@428#children@#name@gotcha#id@1707712468776#parent@#x@389#y@422
 Hive queries are executed using map-reduce queries and, therefore, the behavior of such queries can be controlled by the Hadoop configuration variables.
 
 The HiveCLI (deprecated) and Beeline command 'SET' can be used to set any Hadoop (or Hive) configuration variable. For example:

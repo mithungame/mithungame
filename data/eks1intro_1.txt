@@ -1,43 +1,201 @@
-#?#box#calculatedX@87#calculatedY@79#children@1720807813,#name@seed#id@seed#parent@#x@87#y@79#tag@eks
+#?#box#calculatedX@87#calculatedY@79#children@1720807813,1720807844#name@seed#id@seed#parent@#x@87#y@79#tag@eks
 title
-#?#box#calculatedX@87#calculatedY@79#children@1720807844,1720809170,1720809368#name@eks#id@1720807813#parent@#x@87#y@79
-content
-#?#box#calculatedX@87#calculatedY@79#children@1720807954,1720808085,1720808085#name@docker#id@1720807844#parent@#x@87#y@79
-content
-#?#box#calculatedX@87#calculatedY@79#children@#name@logInOut#id@1720807954#parent@#x@87#y@79
-docker login something.abc.com
-docker login -u srvcdopd
+#?#box#calculatedX@87#calculatedY@79#children@1732792842,1732903770,1732905512,1720809170,1720809368#name@eks#id@1720807813#parent@#x@87#y@79
+Kubernetes K8s is an open source system for automating deployment, scaling, and management of ~*containerized applications~*.
 
-docker logout
+#?#box#calculatedX@87#calculatedY@79#children@#name@architecture#id@1732792842#parent@#x@87#y@79
+"C:\Users\mithu\Desktop\projects\d3\map\resources\eks_kubernetes_architecture.png"
 
-note: output stored at /<user>/.docker/config.json
-#?#box#calculatedX@87#calculatedY@79#children@#name@buildPushPullRmv#id@1720808085#parent@#x@87#y@79
-docker build -t imagename:tagname . 
-docker build -t imagename:tagname -f DockerFileName DockerFileLocation
+~*control plane~* - Manage the overall state of the cluster
+componentes of control plane
+~*kube-apiserver~* exposes the Kubernetes HTTP API
+~*etcd~* is a ~*key value store~* for all API server data
+~*kube-scheduler~* Looks for Pods not bound to node and assigns a node.
+~*kube-controller-manager~* Runs controllers to implement ~*Kubernetes API behavior~*.
+~*cloud-controller-manager~* (optional) - Integrates with underlying cloud providers.
 
-docker push imagename:tagname 
-docker pull imagename:tagname 
+Node Components - Run on ~*every node~*, maintaining running pods and providing the Kubernetes runtime environment
+~*kubelet~* ensures that Pods are running, including their containers.
+~*kube-proxy~* (optional) Maintains network rules on nodes to implement Services.
+~*Container runtime~* - Software responsible for containers.
+additional software might also exist eg systemd on Linux to supervise local components.
 
-=remove container 
-docker rm <container id> # removes stopped container 
-docker rm -f <container id> # removes running container SIGKILL
+#?#box#calculatedX@87#calculatedY@79#children@1732906954,1732907378,1733771022#name@objects#id@1732903770#parent@#x@87#y@79
+A Kubernetes object is a ~*record of intent~* which describes ~*clusters desired state~*.
+~*manifest~* is a yaml file (default) which describes the objects spec - which describes desired state 
 
-=remove image
-docker rmi <image id> # removes an image 
-docker rmi -f <image id> # forces remove even if it is referenced in multiple repositories, same image id given multiple names/tags 
-                         # will still fail if there is a docker container referencing this image 
-gotcha: 
-conflict: unable to delete must be foreced - image is being used - docker ps -a to findout 
-find all the container associated with this image using ps -a , remove the container , then remove the iamge
+~*labels~* are key/value pairs that are attached to objects such as Pods.
+Labels can be used to ~*select objects~* and to find collections of objects that satisfy certain conditions
+use Kubernetes annotations to attach ~*arbitrary non-identifying metadata~* to objects
+annotations are not used to identify and select objects
 
-#?#box#calculatedX@87#calculatedY@79#children@#name@list#id@1720808085#parent@#x@87#y@79
-docker images 
-=check what containers are running 
-# ADD --no-trunc for wide output 
-docker container ls -a
-docker ps -a  #tells you which image they came from 
+example
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
 
-note: images pulled by deployment yaml via kubectl command is stored in separate place and not listed in docker images
+#?#box#calculatedX@87#calculatedY@79#children@#name@Service#id@1732906954#parent@#x@87#y@79
+Service is an abstraction to help you expose ~*groups of Pods~* over a ~*network~*
+The set of Pods targeted by a Service is usually determined by a ~*selector~*
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-service
+spec:
+  selector:
+    app.kubernetes.io/name: MyApp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9376
+
+Applying this manifest creates a new Service named "my-service" with the default ~*ClusterIP~* service type. The Service targets TCP port 9376 on any Pod with the app.kubernetes.io/name: MyApp label.
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@Ingress#id@1732907378#parent@#x@87#y@79
+Ingress exposes ~*HTTP and HTTPS~* routes from outside the cluster to ~*services~* within the cluster
+In order for an Ingress to work in your cluster, there must be an ~*ingress controller~* running 
+Kubernetes as a project supports and maintains AWS, GCE, and nginx ingress controllers
+
+client -> ingress managed load balancer -> ingress -> routing rule -> service -> matching pods
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: minimal-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-example
+  rules:
+  - http:
+      paths:
+      - path: /testpath
+        pathType: Prefix
+        backend:
+          service:
+            name: test
+            port:
+              number: 80
+
+#?#box#calculatedX@87#calculatedY@79#children@1733771913,1733771977#name@configMap#id@1733771022#parent@#x@87#y@79
+A ConfigMap is an API object used to store ~*non-confidential~* data in ~*key-value pairs~*
+Pods can consume ConfigMaps as ~*environment variables~*, ~*command-line arguments~*, or as ~*configuration files~* in a volume or Write code to run inside the Pod that uses the Kubernetes API to read a ConfigMap
+A ConfigMap allows you to decouple ~*environment-specific configuration~* from your container images
+a ConfigMap has ~*data~* ( ~*UTF-8 strings~*  )  and ~*binaryData~* ( ~*base64-encoded strings~* ) fields
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@volumemount#id@1733771913#parent@#x@87#y@79
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: game-demo
+data:
+  # property-like keys; each key maps to a simple value
+  player_initial_lives: "3"
+  ui_properties_file_name: "user-interface.properties"
+
+  # file-like keys
+  game.properties: |
+    enemy.types=aliens,monsters
+    player.maximum-lives=5    
+  user-interface.properties: |
+    color.good=purple
+    color.bad=yellow
+    allow.textmode=true    
+    
+
+Below pod uses above config maps as volume mount 
+================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-demo-pod
+spec:
+  containers:
+    - name: demo
+      image: alpine
+      command: ["sleep", "3600"]
+      env:
+        # Define the environment variable
+        - name: PLAYER_INITIAL_LIVES # Notice that the case is different here from the key name in the ConfigMap.
+          valueFrom:
+            configMapKeyRef:
+              name: game-demo           # The ConfigMap this value comes from.
+              key: player_initial_lives # The key to fetch.
+      volumeMounts:
+      - name: config
+        mountPath: "/config"
+        readOnly: true
+  volumes:
+  # You set volumes at the Pod level, then mount them into containers inside that Pod
+  - name: config
+    configMap:
+      # Provide the name of the ConfigMap you want to mount.
+      name: game-demo
+      # An array of keys from the ConfigMap to create as files
+      # if items is ignored every key in the ConfigMap becomes a file with the same name as the key, and you get 4 files
+      items:
+      - key: "game.properties"
+        path: "game.properties"
+      - key: "user-interface.properties"
+        path: "user-interface.properties"
+        
+#?#box#calculatedX@87#calculatedY@79#children@#name@envVar#id@1733771977#parent@#x@87#y@79
+The ~*envFrom~* field instructs Kubernetes to create environment variables from the configMapRef which refers to ConfigMap by its name and selects all its key-value pairs
+==============================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: env-configmap
+spec:
+  containers:
+    - name: app
+      command: ["/bin/sh", "-c", "printenv"]
+      image: busybox:latest
+      envFrom:
+        - configMapRef:
+            name: myconfigmap
+
+use the ~*env.valueFrom~* syntax to select individual keys in a ConfigMap
+======================================================================
+apiVersion: v1
+kind: Pod
+metadata:
+  name: env-configmap
+spec:
+  containers:
+  - name: envars-test-container
+    image: nginx
+    env:
+    - name: CONFIGMAP_USERNAME
+      valueFrom:
+        configMapKeyRef:
+          name: myconfigmap
+          key: username
+#?#box#calculatedX@87#calculatedY@79#children@#name@namespace#id@1732905512#parent@#x@87#y@79
+namespaces provide a mechanism for isolating groups of resources within a ~*single cluster~*
+Names of resources need to be unique within a namespace, but not ~*across namespaces~*. 
+Namespace-based scoping is applicable only for namespaced objects like ~*Deployments, Services~* and not for cluster-wide objects like ~*StorageClass, Nodes, PersistentVolumes~*
+Namespaces cannot be ~*nested~* inside one another
+each Kubernetes resource can only be in ~*one namespace~*.
+
 #?#box#calculatedX@87#calculatedY@79#children@1720809282,1720817329,1720809290#name@helm#id@1720809170#parent@#x@87#y@79
 content
 #?#box#calculatedX@87#calculatedY@79#children@#name@listSearch#id@1720809282#parent@#x@87#y@79
@@ -75,3 +233,60 @@ kubectl create -f filename.yaml
 kubectl delete pod < pod name > -n <name space>
 #https://kubernetes.io/docs/reference/kubectl/generated/kubectl_delete/
 grace period for peaceful terminate etc
+#?#box#calculatedX@87#calculatedY@79#children@1732026978,1720807954,1720808085,1720808085#name@docker#id@#parent@#x@87#y@79
+content
+#?#box#calculatedX@87#calculatedY@79#children@#name@architecture#id@1732026978#parent@#x@87#y@79
+CLIENT         HOST(Client+host can be on same machine)         Registry
+commands                 dockerd                                  redis
+docker run            ( daemon process )                          nginx
+docker pull
+
+~*Docker Hub~* is a public registry
+~*Docker image~* is a template with instructions for creating a ~*Docker container~*
+Docker container is a ~*runnable instance~* of an image 
+
+VM vs docker container
+VM is an entire ~*OS with its own kernel~*, hardware drivers, programs, and applications. Spinning up a VM only to isolate a single application is a lot of overhead.
+A container is an ~*isolated process~* with all of the files it needs to run. If you run ~*multiple containers~*, they all share the ~*same kernel~*, allowing you to run more applications on less infrastructure.
+
+Docker ~*compose~* is a ~*single YAML file~* that define all of your containers and their configurations
+instead of bringing up several docker run command, ~*docker compose up~* will do same
+
+docker compose vs helm chart 
+Docker Compose is primarily for managing ~*simple multi-container applications~* on a ~*single machine~*, while Helm charts are designed for complex deployments across a ~*Kubernetes cluster~*
+~*Docker swarm~* is comparable to helm chart
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@logInOut#id@1720807954#parent@#x@87#y@79
+docker login something.abc.com
+docker login -u srvcdopd
+
+docker logout
+
+note: output stored at /<user>/.docker/config.json
+#?#box#calculatedX@87#calculatedY@79#children@#name@buildPushPullRmv#id@1720808085#parent@#x@87#y@79
+docker build -t imagename:tagname . 
+docker build -t imagename:tagname -f DockerFileName DockerFileLocation
+
+docker push imagename:tagname 
+docker pull imagename:tagname 
+
+=remove container 
+docker rm <container id> # removes stopped container 
+docker rm -f <container id> # removes running container SIGKILL
+
+=remove image
+docker rmi <image id> # removes an image 
+docker rmi -f <image id> # forces remove even if it is referenced in multiple repositories, same image id given multiple names/tags 
+                         # will still fail if there is a docker container referencing this image 
+gotcha: 
+conflict: unable to delete must be foreced - image is being used - docker ps -a to findout 
+find all the container associated with this image using ps -a , remove the container , then remove the iamge
+
+#?#box#calculatedX@87#calculatedY@79#children@#name@list#id@1720808085#parent@#x@87#y@79
+docker images 
+=check what containers are running 
+# ADD --no-trunc for wide output 
+docker container ls -a
+docker ps -a  #tells you which image they came from 
+
+note: images pulled by deployment yaml via kubectl command is stored in separate place and not listed in docker images

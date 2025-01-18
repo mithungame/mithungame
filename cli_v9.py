@@ -1178,7 +1178,7 @@ def calculate_table_block_size( curr_arr_pos, first_block_in_scope , block_size,
         #print(values)
     return curr_arr_pos, values, first_block_in_scope
 
-generated_node_ids = { 'ids': [i+j for i in list('abcdefghijklmnopqrstuvwxyz0123456789') for j in list('abcdefghijklmnopqrstuvwxyz0123456789') ], 'curr_id': 0 }
+generated_node_ids = { 'ids': [i+j for i in list('abcdefghijklmnopqrstuvwxyz0123456789') for j in list('abcdefghijklmnopqrstuvwxyz0123456789') ] + [i+j+k for i in list('abcdefghijklmnopqrstuvwxyz0123456789') for j in list('abcdefghijklmnopqrstuvwxyz0123456789') for k in list('abcdefghijklmnopqrstuvwxyz0123456789') ], 'curr_id': 0 }
 @debug_gate
 def generate_node_id():
     global generate_node_ids
@@ -2281,6 +2281,14 @@ def identify_files(key='all',filename=None):
                     'spark' : [base_dir+r'\Desktop\projects\d3\map\core\data\sp*.txt'],
                     'secret' : [base_dir+r'\Downloads\track\projects\d3\privateData\secrets_1.txt'],
                     'private' : [base_dir+r'\Downloads\track\projects\d3\privateData\*.txt'],
+                    'study' : [base_dir+r'\Desktop\projects\d3\map\core\data\dwh1intro_1.txt',
+                    base_dir+r'\Desktop\projects\d3\map\core\data\sf1Concepts_1.txt',
+                    base_dir+r'\Desktop\projects\d3\map\core\data\py1basics_1.txt',
+                    base_dir+r'\Desktop\projects\d3\map\core\data\bl1intro_1.txt',
+                    base_dir+r'\Desktop\projects\d3\map\core\data\eks1intro_1.txt',
+                    base_dir+r'\Desktop\projects\d3\map\core\data\aw1intro_1.txt',
+                    base_dir+r'\Desktop\projects\d3\map\core\data\pt1basics_1.txt'
+                    ],
                     'quickref' : [
                     #base_dir+r'\Downloads\track\**\*quickref*.txt', 
                     #base_dir+r'\Desktop\projects\**\*quickref*.txt'
